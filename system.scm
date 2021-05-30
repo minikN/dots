@@ -17,15 +17,28 @@
 (use-modules (gnu)
 	     (srfi srfi-1)
 	     (ice-9 pretty-print)
-	     (gnu services desktop)
-	     (gnu services xorg))
+	     (guix channels)
+	     (gnu services desktop))
 (use-package-modules wm)
 (use-service-modules networking)
 
 (define installation-os-nonfree
   (operating-system
    (inherit installation-os)
-   (kernel linux)
+   (kernel
+    (let*
+      ((channels
+        (list (channel
+               (name 'nonguix)
+               (url "https://gitlab.com/nonguix/nonguix")
+               (commit "ff6ca98099c7c90e64256236a49ab21fa96fe11e"))
+              (channel
+               (name 'guix)
+               (url "https://git.savannah.gnu.org/git/guix.git")
+               (commit "3be96aa9d93ea760e2d965cb3ef03540f01a0a22"))))
+       (inferior
+        (inferior-for-channels channels)))
+      (first (lookup-inferior-packages inferior "linux" "5.10.41"))))
    (initrd microcode-initrd)
    (firmware (list linux-firmware))
 
