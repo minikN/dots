@@ -38,7 +38,7 @@
                (commit "3be96aa9d93ea760e2d965cb3ef03540f01a0a22"))))
        (inferior
         (inferior-for-channels channels)))
-      (first (lookup-inferior-packages inferior "linux" "5.10.41"))))
+      (first (lookup-inferior-packages inferior "linux" "5.4.123"))))
    (initrd microcode-initrd)
    (firmware (list linux-firmware))
 
@@ -49,6 +49,20 @@
 		       "modprobe.blacklist=radeon"
 		       "modprobe.blacklist=nouveau"
 		       "net.ifnames=0"))
+   
+   ;; Loadable kernel modules
+   (kernel-loadable-modules (list nvidia-driver))
+   
+   ;; Services
+   (services (cons* (simple-service 
+		     'custom-udev-rules udev-service-type 
+		     (list nvidia-driver)))
+	     	    (service kernel-module-loader-service-type
+			     '("ipmi_devintf"
+			       "nvidia"
+			       "nvidia-modeset"
+			       "nvidia-uvm"))
+                   %base-services))
    
    (host-name "geekcave")
    (timezone "Europe/Berlin")
