@@ -45,7 +45,10 @@
    ;; Add the 'net.ifnames' argument to prevent network interfaces
    ;; from having really long names.  This can cause an issue with
    ;; wpa_supplicant when you try to connect to a wifi network.
-   (kernel-arguments '("quiet" "modprobe.blacklist=radeon" "net.ifnames=0"))
+   (kernel-arguments '("quiet"
+		       "modprobe.blacklist=radeon"
+		       "modprobe.blacklist=nouveau"
+		       "net.ifnames=0"))
    
    (host-name "geekcave")
    (timezone "Europe/Berlin")
