@@ -52,12 +52,17 @@
 		
    (bootloader (bootloader-configuration
 		(bootloader grub-efi-bootloader)
-		(target "/dev/sda")
-		(timeout 3)))		
-   (file-systems (cons (file-system
-			(device "/dev/sda1")
-			(mount-point "/")
-			(type "ext4"))
+		(target "/boot/efi")
+		(timeout 3)))
+		
+   (file-systems (cons* (file-system ;; System partition
+			 (device (file-system-label "GUIX"))
+			 (mount-point "/")
+			 (type "ext3"))
+			(file-system ;; Boot partition
+			 (device (file-system-label "BOOT"))
+			 (mount-point "/boot/efi")
+			 (type "vfat"))
 		       %base-file-systems))
 
    ;; Add some extra packages useful for the installation process
