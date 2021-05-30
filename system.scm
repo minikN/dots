@@ -18,6 +18,7 @@
 	     (srfi srfi-1)
 	     (ice-9 pretty-print)
 	     (guix channels)
+	     (guix inferior)
 	     (gnu services desktop))
 (use-package-modules wm)
 (use-service-modules networking)
@@ -56,7 +57,7 @@
    ;; Services
    (services (cons* (simple-service 
 		     'custom-udev-rules udev-service-type 
-		     (list nvidia-driver)))
+		     (list nvidia-driver))
 	     	    (service kernel-module-loader-service-type
 			     '("ipmi_devintf"
 			       "nvidia"
