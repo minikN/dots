@@ -5,7 +5,6 @@
   #:use-module (gnu services linux)
   #:use-module (gnu services desktop)
   #:use-module (gnu services xorg)
-  #:use-module (gnu services sddm)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages certs)
@@ -47,14 +46,9 @@
 			       "nvidia-modeset"
 			       "nvidia-uvm"))
 		    (service dhcp-client-service-type)
-		    (service elogind-service-type)
-		    (service sddm-service-type
-			     (sddm-configuration
-			       (display-server "wayland")
-			       (sessions-directory "/home/db/.config/sessions/")))
-		    (remove (lambda (service)
-			      (eq? (service-kind service) gdm-service-type))
-                   %base-services)))
+		    ;(remove (lambda (service)
+			;      (eq? (service-kind service) gdm-service-type))
+                   %desktop-services)))
    
    (host-name "geekcave")
    (timezone "Europe/Berlin")
@@ -89,14 +83,15 @@
 
    ;; Add some extra packages useful for the installation process
    (packages
-    (append (list git
-		  curl
-		  vim
-		  emacs
-		  sway
-		  nss-certs
-		  nvidia-driver)
-	    %base-packages))
+    (append
+     (list (specification->package "git")
+	   (specification->package "wget")
+	   (specification->package "vim")
+	   (specification->package "emacs")
+	   (specification->package "emacs-exwm")
+	   (specification->package "emacs-desktop-environment")
+	   (specification->package "nss-certs")
+	   (specification->package "nvidia-driver")
 		     
    (name-service-switch %mdns-host-lookup-nss)))
 base-operating-system
