@@ -91,7 +91,7 @@
 	   (specification->package "emacs-exwm")
 	   (specification->package "emacs-desktop-environment")
 	   (specification->package "nss-certs")
-	   (specification->package "nvidia-driver")
+	   (specification->package "nvidia-driver"))))
 		     
    (name-service-switch %mdns-host-lookup-nss)))
 base-operating-system
