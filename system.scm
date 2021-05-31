@@ -107,11 +107,6 @@
 		  nss-certs
 		  nvidia-driver)
 	    (operating-system-packages installation-os)))
-	    
-   (services (remove
-   		(lambda (service)
-		       (eq? (service-kind service) gdm-service-type))
-		     %desktop-services))
 		     
    (services (append
    		(list (service dhcp-client-service-type))
