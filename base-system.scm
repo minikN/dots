@@ -4,6 +4,8 @@
   #:use-module (ice-9 pretty-print)
   #:use-module (gnu services linux)
   #:use-module (gnu services desktop)
+  #:use-module (gnu services xorg)
+  #:use-module (gnu services sddm)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages certs)
@@ -13,9 +15,7 @@
   #:use-module (gnu packages package-management)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
-  #:use-module (nongnu packages nvidia)
-  #:use-module (guix channels)
-  #:use-module (guix inferior))	
+  #:use-module (nongnu packages nvidia))
 
 (use-package-modules wm)
 (use-service-modules networking)
@@ -47,7 +47,14 @@
 			       "nvidia-modeset"
 			       "nvidia-uvm"))
 		    (service dhcp-client-service-type)
-                   %base-services))
+		    (service elogind-service-type)
+		    (service sddm-service-type
+			     (sddm-configuration
+			       (display-server "wayland")
+			       (sessions-directory "/home/db/.config/sessions/")))
+		    (remove (lambda (service)
+			      (eq? (service-kind service) gdm-service-type))
+                   %base-services)))
    
    (host-name "geekcave")
    (timezone "Europe/Berlin")
