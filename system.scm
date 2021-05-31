@@ -9,6 +9,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mtools)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu services linux)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
   #:use-module (nongnu packages nvidia)
