@@ -15,8 +15,7 @@
   #:use-module (nongnu system linux-initrd)
   #:use-module (nongnu packages nvidia)
   #:use-module (guix channels)
-  #:use-module (guix inferior) 
-  #:export (installation-os-nonfree))	
+  #:use-module (guix inferior))	
 
 (use-package-modules wm)
 (use-service-modules networking)
@@ -93,4 +92,4 @@
 	    %base-packages))
 		     
    (name-service-switch %mdns-host-lookup-nss)))
-installation-os-nonfree
+base-operating-system
