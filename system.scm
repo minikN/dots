@@ -32,11 +32,11 @@
         (list (channel
                (name 'nonguix)
                (url "https://gitlab.com/nonguix/nonguix")
-               (commit "ff6ca98099c7c90e64256236a49ab21fa96fe11e"))
+               (commit "46c1d8bcca674d3a71cd077c52dde9552a89873d"))
               (channel
                (name 'guix)
                (url "https://git.savannah.gnu.org/git/guix.git")
-               (commit "3be96aa9d93ea760e2d965cb3ef03540f01a0a22"))))
+               (commit "6086e6ed1a038793e358becddded50d97593f691"))))
        (inferior
         (inferior-for-channels channels)))
       (first (lookup-inferior-packages inferior "linux" "5.4.123"))))
