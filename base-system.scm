@@ -2,6 +2,7 @@
   #:use-module (gnu)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 pretty-print)
+  #:use-module (gnu services linux)
   #:use-module (gnu services desktop)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim)
@@ -23,7 +24,6 @@
 
 (define-public base-operating-system
   (operating-system
-   (inherit installation-os)
    (kernel linux)
    (initrd microcode-initrd)
    (firmware (list linux-firmware))
@@ -47,6 +47,7 @@
 			       "nvidia"
 			       "nvidia-modeset"
 			       "nvidia-uvm"))
+		    (service dhcp-client-service-type)
                    %base-services))
    
    (host-name "geekcave")
@@ -89,10 +90,7 @@
 		  sway
 		  nss-certs
 		  nvidia-driver)
-	    (operating-system-packages installation-os)))
+	    %base-packages))
 		     
-   (services (append
-   		(list (service dhcp-client-service-type))
-   		%base-services))
    (name-service-switch %mdns-host-lookup-nss)))
 installation-os-nonfree
