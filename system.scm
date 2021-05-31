@@ -13,13 +13,13 @@
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
   #:use-module (nongnu packages nvidia)
+  #:use-module (guix channels)
+  #:use-module (guix inferior) 
   #:export (installation-os-nonfree))	
 
 (use-modules (gnu)
 	     (srfi srfi-1)
 	     (ice-9 pretty-print)
-	     (guix channels)
-	     (guix inferior)
 	     (gnu services desktop))
 (use-package-modules wm)
 (use-service-modules networking)
@@ -33,14 +33,14 @@
         (list (channel
                (name 'nonguix)
                (url "https://gitlab.com/nonguix/nonguix")
-               (commit "46c1d8bcca674d3a71cd077c52dde9552a89873d"))
+               (commit "ff6ca98099c7c90e64256236a49ab21fa96fe11e"))
               (channel
                (name 'guix)
                (url "https://git.savannah.gnu.org/git/guix.git")
-               (commit "6086e6ed1a038793e358becddded50d97593f691"))))
+               (commit "3be96aa9d93ea760e2d965cb3ef03540f01a0a22"))))
        (inferior
         (inferior-for-channels channels)))
-      (first (lookup-inferior-packages inferior "linux" "5.4.123"))))
+      (first (lookup-inferior-packages inferior "linux" "5.4.21"))))
    (initrd microcode-initrd)
    (firmware (list linux-firmware))
 
