@@ -1,15 +1,15 @@
-(define-module (nongnu system install)
-  #:use-module (gnu system)
-  #:use-module (gnu system install)
+(define-module (base-system)
+  #:use-module (gnu)
+  #:use-module (srfi srfi-1)
+  #:use-module (ice-9 pretty-print)
+  #:use-module (gnu services desktop)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages mtools)
   #:use-module (gnu packages package-management)
-  #:use-module (gnu services linux)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
   #:use-module (nongnu packages nvidia)
@@ -17,30 +17,14 @@
   #:use-module (guix inferior) 
   #:export (installation-os-nonfree))	
 
-(use-modules (gnu)
-	     (srfi srfi-1)
-	     (ice-9 pretty-print)
-	     (gnu services desktop))
 (use-package-modules wm)
 (use-service-modules networking)
+(use-service-modules desktop)
 
-(define installation-os-nonfree
+(define-public base-operating-system
   (operating-system
    (inherit installation-os)
-   (kernel
-    (let*
-      ((channels
-        (list (channel
-               (name 'nonguix)
-               (url "https://gitlab.com/nonguix/nonguix")
-               (commit "ff6ca98099c7c90e64256236a49ab21fa96fe11e"))
-              (channel
-               (name 'guix)
-               (url "https://git.savannah.gnu.org/git/guix.git")
-               (commit "3be96aa9d93ea760e2d965cb3ef03540f01a0a22"))))
-       (inferior
-        (inferior-for-channels channels)))
-      (first (lookup-inferior-packages inferior "linux" "5.4.21"))))
+   (kernel linux)
    (initrd microcode-initrd)
    (firmware (list linux-firmware))
 
@@ -48,8 +32,7 @@
    ;; from having really long names.  This can cause an issue with
    ;; wpa_supplicant when you try to connect to a wifi network.
    (kernel-arguments '("quiet"
-		       "modprobe.blacklist=radeon"
-		       "modprobe.blacklist=nouveau"
+		       "modprobe.blacklist=radeon,nouveau"
 		       "net.ifnames=0"))
    
    ;; Loadable kernel modules
@@ -69,8 +52,7 @@
    (host-name "geekcave")
    (timezone "Europe/Berlin")
    (locale "en_US.utf8")
-   (keyboard-layout
-   		(keyboard-layout "us" "altgr-intl"))
+   (keyboard-layout (keyboard-layout "us" "altgr-intl"))
    		
    (users (cons (user-account
 		 (name "db")
@@ -79,6 +61,7 @@
 		 (supplementary-groups '("wheel"
 					 "audio"
 					 "video"
+					 "input"
 					 "cdrom")))
 		%base-user-accounts))
 		
@@ -90,7 +73,7 @@
    (file-systems (cons* (file-system ;; System partition
 			 (device (file-system-label "GUIX"))
 			 (mount-point "/")
-			 (type "ext3"))
+			 (type "ext4"))
 			(file-system ;; Boot partition
 			 (device (file-system-label "BOOT"))
 			 (mount-point "/boot/efi")
@@ -102,7 +85,7 @@
     (append (list git
 		  curl
 		  vim
-		  emacs-no-x-toolkit
+		  emacs
 		  sway
 		  nss-certs
 		  nvidia-driver)
