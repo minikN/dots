@@ -65,21 +65,7 @@
 
 (define-public base-operating-system
   (operating-system
-   ;(kernel linux)
-   (kernel
-    (let*
-      ((channels
-        (list (channel
-               (name 'nonguix)
-               (url "https://gitlab.com/nonguix/nonguix")
-               (commit "46c1d8bcca674d3a71cd077c52dde9552a89873d"))
-              (channel
-               (name 'guix)
-               (url "https://git.savannah.gnu.org/git/guix.git")
-               (commit "b4e3b77270be9d6ff579429d5ced84b467f0f6a3"))))
-       (inferior
-        (inferior-for-channels channels)))
-      (first (lookup-inferior-packages inferior "linux" "5.4.123"))))
+   (kernel linux-lts)
    (initrd microcode-initrd)
    (firmware (list linux-firmware))
 
