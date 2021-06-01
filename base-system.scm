@@ -10,6 +10,7 @@
   #:use-module (gnu packages certs)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages package-management)
   #:use-module (nongnu packages linux)
@@ -17,8 +18,48 @@
   #:use-module (nongnu packages nvidia))
 
 (use-package-modules wm)
-(use-service-modules networking)
 (use-service-modules desktop)
+
+;; Xorg monitor setup
+(define %xorg-monitor-config
+  "Section       \"ServerLayout\"
+          Identifier    \"Layout0\"
+          Screen       0\"Screen0\" 0 0
+          Option        \"Xinerama\" \"0\"
+      EndSection
+
+      Section \"Monitor\"
+          Identifier    \"Monitor0\"
+          VendorName    \"Unknown\"
+          ModelName     \"Philips PHL 245E1\"
+          HorizSync     30.0 - 114.0
+          VertRefresh   48.0 - 75.0
+          Option        \"DPMS\"
+      EndSection
+
+      Section \"Device\"
+          Identifier    \"Device0\"
+          Driver        \"nvidia\"
+          VendorName    \"NVIDIA Corporation\"
+          BoardName     \"GeForce GTX 1050 Ti\"
+      EndSection
+
+      Section \"Screen\"
+          Identifier    \"Screen0\"
+          Device        \"Device0\"
+          Monitor       \"Monitor0\"
+          DefaultDepth  24
+          Option        \"Stereo\" \"0\"
+          Option        \"nvidiaXineramaInfoOrder\" \"DFP-2\"
+          Option        \"TripleBuffer\" \"true\"
+          Option        \"metamodes\" \"HDMI-0: nvidia-auto-select +2560+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}, DP-0:   nvidia-auto-select +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}\"
+          Option        \"SLI\" \"Off\"
+          Option        \"MultiGPU\" \"Off\"
+          Option        \"BaseMosaic\" \"Off\"
+          SubSection    \"Display\"
+              Depth     24
+          EndSubSection
+      EndSection")        
 
 (define-public base-operating-system
   (operating-system
@@ -35,7 +76,7 @@
    
    ;; Loadable kernel modules
    (kernel-loadable-modules (list nvidia-driver))
-   
+ 
    ;; Services
    (services (cons* (simple-service 
 		     'custom-udev-rules udev-service-type 
@@ -45,9 +86,14 @@
 			       "nvidia"
 			       "nvidia-modeset"
 			       "nvidia-uvm"))
-		    (service dhcp-client-service-type)
-		    ;(remove (lambda (service)
-			;      (eq? (service-kind service) gdm-service-type))
+		    (service slim-service-type
+			     (slim-configuration
+			      (xorg-configuration
+			       (xorg-configuration
+				;(keyboard-layout keyboard-layout)
+				(extra-config (list %xorg-monitor-config))))))
+		    (remove (lambda (service)
+			      (eq? (service-kind service) gdm-service-type))
                    %desktop-services)))
    
    (host-name "geekcave")
@@ -81,17 +127,18 @@
 			 (type "vfat"))
 		       %base-file-systems))
 
-   ;; Add some extra packages useful for the installation process
+   ;; Packages to install
    (packages
-    (append
-     (list (specification->package "git")
-	   (specification->package "wget")
-	   (specification->package "vim")
-	   (specification->package "emacs")
-	   (specification->package "emacs-exwm")
-	   (specification->package "emacs-desktop-environment")
-	   (specification->package "nss-certs")
-	   (specification->package "nvidia-driver"))))
-		     
+     (append
+       (list git
+	     curl
+	     vim
+	     emacs
+	     emacs-exwm
+	     emacs-desktop-environment
+	     nss-certs
+	     nvidia-driver)
+       %base-packages))
+
    (name-service-switch %mdns-host-lookup-nss)))
 base-operating-system
