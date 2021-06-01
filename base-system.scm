@@ -75,9 +75,7 @@
    (initrd microcode-initrd)
    (firmware (list linux-firmware))
 
-   ;; Add the 'net.ifnames' argument to prevent network interfaces
-   ;; from having really long names.  This can cause an issue with
-   ;; wpa_supplicant when you try to connect to a wifi network.
+   ;; Kernel arguments
    (kernel-arguments (append 
 		       '("quiet"
 			 "modprobe.blacklist=radeon,nouveau"
@@ -87,6 +85,24 @@
    ;; Loadable kernel modules
    (kernel-loadable-modules (list nvidia-driver))
  
+   ;; Machine settings
+   (host-name "geekcave")
+   (timezone "Europe/Berlin")
+   (locale "en_US.utf8")
+   (keyboard-layout (keyboard-layout "us" "altgr-intl"))
+   		
+   ;; User account
+   (users (cons (user-account
+		 (name "db")
+		 (group "users")
+		 (home-directory "/home/db")
+		 (supplementary-groups '("wheel"
+					 "audio"
+					 "video"
+					 "input"
+					 "cdrom")))
+		%base-user-accounts))
+
    ;; Services
    (services (cons* (simple-service 
 		     'custom-udev-rules udev-service-type 
@@ -99,7 +115,7 @@
 		    (service slim-service-type
 			     (slim-configuration
 			      (xorg-configuration (xorg-configuration
-						    ;(keyboard-layout keyboard-layout)
+						    (keyboard-layout keyboard-layout)
 						    (modules (cons* nvidia-driver %default-xorg-modules))
 						    (server (transform xorg-server))
 						    (drivers '("nvidia"))
@@ -107,28 +123,14 @@
 		    (remove (lambda (service)
 			      (eq? (service-kind service) gdm-service-type))
                    %desktop-services)))
-   
-   (host-name "geekcave")
-   (timezone "Europe/Berlin")
-   (locale "en_US.utf8")
-   (keyboard-layout (keyboard-layout "us" "altgr-intl"))
-   		
-   (users (cons (user-account
-		 (name "db")
-		 (group "users")
-		 (home-directory "/home/db")
-		 (supplementary-groups '("wheel"
-					 "audio"
-					 "video"
-					 "input"
-					 "cdrom")))
-		%base-user-accounts))
-		
+
+   ;; Bootloader		
    (bootloader (bootloader-configuration
 		(bootloader grub-efi-bootloader)
 		(target "/boot/efi")
 		(timeout 3)))
 		
+   ;; File systems
    (file-systems (cons* (file-system ;; System partition
 			 (device (file-system-label "GUIX"))
 			 (mount-point "/")
