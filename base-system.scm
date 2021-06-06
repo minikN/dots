@@ -15,7 +15,9 @@
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages shells)
   #:use-module (guix channels)
+  #:use-module (guix utils)
   #:use-module (guix inferior)
+  #:use-module (guix packages)
   #:use-module (guix transformations)
   #:use-module (flat packages emacs)
   #:use-module (nongnu packages linux)
@@ -69,6 +71,16 @@
               Depth     24
           EndSubSection
       EndSection")        
+
+;; Override emacs-exwm to enable emacs 28
+(define emacs-pgtk-native-comp-exwm
+	       (package
+		 (inherit emacs-exwm)
+		 (name "emacs-pgtk-native-comp-exwm")
+		 (arguments 
+		   `(,@(substitute-keyword-arguments
+			 (package-arguments emacs-exwm)
+			 ((#:emacs? _) emacs-pgtk-native-comp))))))
 
 (define-public base-operating-system
   (operating-system
@@ -166,7 +178,7 @@
 	     curl
 	     vim
 	     emacs-pgtk-native-comp
-	     ;emacs-exwm
+	     emacs-pgtk-native-comp-exwm
 	     ;emacs-desktop-environment
 	     nss-certs
 	     nvidia-driver
