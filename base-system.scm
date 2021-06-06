@@ -73,14 +73,14 @@
       EndSection")        
 
 ;; Override emacs-exwm to enable emacs 28
-(define emacs-pgtk-native-comp-exwm
+(define emacs-native-comp-exwm
 	       (package
 		 (inherit emacs-exwm)
-		 (name "emacs-pgtk-native-comp-exwm")
+		 (name "emacs-native-comp-exwm")
 		 (arguments 
 		   `(,@(substitute-keyword-arguments
 			 (package-arguments emacs-exwm)
-			 ((#:emacs? _) emacs-pgtk-native-comp))))))
+			 ((#:emacs? _) emacs-native-comp))))))
 
 (define-public base-operating-system
   (operating-system
