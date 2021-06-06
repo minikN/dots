@@ -10,13 +10,14 @@
   #:use-module (gnu packages vim)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages curl)
-  #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu packages shells)
   #:use-module (guix channels)
   #:use-module (guix inferior)
   #:use-module (guix transformations)
+  #:use-module (flat packages emacs)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
   #:use-module (nongnu packages nvidia))
@@ -96,6 +97,7 @@
 		 (name "db")
 		 (group "users")
 		 (home-directory "/home/db")
+		 (shell (file-append zsh "/bin/zsh"))
 		 (supplementary-groups '("wheel"
 					 "audio"
 					 "video"
@@ -115,16 +117,32 @@
 		    (service slim-service-type
 			     (slim-configuration
 			      (xorg-configuration (xorg-configuration
-						    (keyboard-layout keyboard-layout)
-						    (modules (cons* nvidia-driver %default-xorg-modules))
-						    (server (transform xorg-server))
-						    (drivers '("nvidia"))
-						    (extra-config (list %xorg-monitor-config))))))
-		    (remove (lambda (service)
-			      (eq? (service-kind service) gdm-service-type))
-                   %desktop-services)))
+						   (keyboard-layout keyboard-layout)
+						   (modules (cons* nvidia-driver %default-xorg-modules))
+						   (server (transform xorg-server))
+						   (drivers '("nvidia"))
+						   (extra-config (list %xorg-monitor-config))))))
+		    (simple-service 'zshrc etc-service-type
+				    `(("zprofile" ,(plain-file "zprofile" "\
+							       emulate sh -c 'source /etc/profile'
+							       export ZDOTDIR=\"$HOME/.config/zsh\""))))
 
-   ;; Bootloader		
+		    (remove (lambda (service)
+			      (eq? (service-kind service) (or gdm-service-type slim-service-type)))
+			    (modify-services %desktop-services
+					     (guix-service-type
+					      config =>
+					      (guix-configuration
+					       (inherit config)
+					       (substitute-urls
+						(append (list "https://mirror.brielmaier.net")
+							%default-substitute-urls))
+					       (authorized-keys
+						(append (list (local-file "/home/db/.config/guix/mirror.brielmaier.net.pub"))
+							%default-authorized-guix-keys))))))))
+
+
+  ;; Bootloader		
    (bootloader (bootloader-configuration
 		(bootloader grub-efi-bootloader)
 		(target "/boot/efi")
@@ -147,11 +165,14 @@
        (list git
 	     curl
 	     vim
-	     emacs
-	     emacs-exwm
-	     emacs-desktop-environment
+	     emacs-pgtk-native-comp
+	     ;emacs-exwm
+	     ;emacs-desktop-environment
 	     nss-certs
-	     nvidia-driver)
+	     nvidia-driver
+	     xinit
+	     xorg-server
+	     zsh)
        %base-packages))
 
    (name-service-switch %mdns-host-lookup-nss)))
