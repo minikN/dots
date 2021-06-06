@@ -177,13 +177,11 @@
        (list git
 	     curl
 	     vim
-	     emacs-pgtk-native-comp
-	     emacs-pgtk-native-comp-exwm
+	     emacs-native-comp
+	     emacs-native-comp-exwm
 	     ;emacs-desktop-environment
 	     nss-certs
 	     nvidia-driver
-	     xinit
-	     xorg-server
 	     zsh)
        %base-packages))
 
