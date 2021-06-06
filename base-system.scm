@@ -140,7 +140,7 @@
 							       export ZDOTDIR=\"$HOME/.config/zsh\""))))
 
 		    (remove (lambda (service)
-			      (eq? (service-kind service) (or gdm-service-type slim-service-type)))
+			      (eq? (service-kind service) gdm-service-type))
 			    (modify-services %desktop-services
 					     (guix-service-type
 					      config =>
