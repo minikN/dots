@@ -10,6 +10,7 @@
   #:use-module (gnu packages vim)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages compton)
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages package-management)
@@ -33,53 +34,126 @@
 
 ;; Xorg monitor setup
 (define %xorg-monitor-config
-  "Section       \"ServerLayout\"
-          Identifier    \"Layout0\"
-          Screen       0\"Screen0\" 0 0
-          Option        \"Xinerama\" \"0\"
-      EndSection
+  "Section \"ServerLayout\"
+    Identifier     \"Layout0\"
+    Screen      0  \"Screen0\" 0 0
+    InputDevice    \"Keyboard0\" \"CoreKeyboard\"
+    InputDevice    \"Mouse0\" \"CorePointer\"
+    Option         \"Xinerama\" \"0\"
+EndSection
 
-      Section \"Monitor\"
-          Identifier    \"Monitor0\"
-          VendorName    \"Unknown\"
-          ModelName     \"Philips PHL 245E1\"
-          HorizSync     30.0 - 114.0
-          VertRefresh   48.0 - 75.0
-          Option        \"DPMS\"
-      EndSection
+Section \"Module\"
+    Load           \"dbe\"
+    Load           \"extmod\"
+    Load           \"type1\"
+    Load           \"freetype\"
+    Load           \"glx\"
+EndSection
 
-      Section \"Device\"
-          Identifier    \"Device0\"
-          Driver        \"nvidia\"
-          VendorName    \"NVIDIA Corporation\"
-          BoardName     \"GeForce GTX 1050 Ti\"
-      EndSection
+Section \"InputDevice\"
+    # generated from default
+    Identifier     \"Mouse0\"
+    Driver         \"mouse\"
+    Option         \"Protocol\" \"auto\"
+    Option         \"Device\" \"/dev/psaux\"
+    Option         \"Emulate3Buttons\" \"no\"
+    Option         \"ZAxisMapping\" \"4 5\"
+EndSection
 
-      Section \"Screen\"
-          Identifier    \"Screen0\"
-          Device        \"Device0\"
-          Monitor       \"Monitor0\"
-          DefaultDepth  24
-          Option        \"Stereo\" \"0\"
-          Option        \"nvidiaXineramaInfoOrder\" \"DFP-2\"
-          Option        \"TripleBuffer\" \"true\"
-          Option        \"metamodes\" \"HDMI-0: nvidia-auto-select +2560+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}, DP-0:   nvidia-auto-select +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}\"
-          Option        \"SLI\" \"Off\"
-          Option        \"MultiGPU\" \"Off\"
-          Option        \"BaseMosaic\" \"Off\"
-          SubSection    \"Display\"
-              Depth     24
-          EndSubSection
-      EndSection")        
+Section \"InputDevice\"
+    # generated from default
+    Identifier     \"Keyboard0\"
+    Driver         \"kbd\"
+EndSection
 
-;; Override emacs-exwm to enable emacs 28
+Section \"Monitor\"
+    # HorizSync source: edid, VertRefresh source: edid
+    Identifier     \"Monitor0\"
+    VendorName     \"Unknown\"
+    ModelName      \"Philips PHL 245E1\"
+    HorizSync       30.0 - 114.0
+    VertRefresh     48.0 - 75.0
+    Option         \"DPMS\"
+EndSection
+
+Section \"Device\"
+    Identifier     \"Device0\"
+    Driver         \"nvidia\"
+    VendorName     \"NVIDIA Corporation\"
+    BoardName      \"GeForce GTX 1050 Ti\"
+EndSection
+
+Section \"Screen\"
+    Identifier     \"Screen0\"
+    Device         \"Device0\"
+    Monitor        \"Monitor0\"
+    DefaultDepth    24
+    Option         \"Stereo\" \"0\"
+    Option         \"nvidiaXineramaInfoOrder\" \"DFP-2\"
+    Option         \"TripleBuffer\" \"true\"
+    Option         \"TearFree\" \"true\"
+    Option         \"MetaModes\" \"HDMI-0: nvidia-auto-select +2560+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}, DP-0: nvidia-auto-select +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}\"
+    Option         \"SLI\" \"Off\"
+    Option         \"MultiGPU\" \"Off\"
+    Option         \"BaseMosaic\" \"off\"
+    SubSection     \"Display\"
+        Depth       24
+    EndSubSection
+EndSection")        
+
+; Override emacs-exwm to enable emacs 28
 (define-public emacs-native-comp-exwm
-  (package
-    (inherit emacs-exwm)
-    (name "emacs-native-comp-exwm")
-    (arguments
-     (substitute-keyword-arguments (package-arguments emacs-exwm)
-       ((#:emacs emacs) `,emacs-native-comp)))))
+	       (package
+		 (inherit emacs-exwm)
+		 (name "emacs-native-comp-exwm")
+		 (synopsis "test")
+		 (inputs
+		   `(("picom" ,picom)
+		     ,@(package-inputs emacs-exwm)))
+		 (arguments
+		   `(,@(package-arguments emacs-exwm)
+		      #:emacs ,emacs-native-comp
+		      #:phases (modify-phases %standard-phases
+					      (add-after 'build 'install-xsession
+					     (lambda* (#:key inputs outputs #:allow-other-keys)
+						      (let* ((out (assoc-ref outputs "out"))
+							     (xsessions (string-append out "/share/xsessions"))
+							     (bin (string-append out "/bin"))
+							     (exwm-executable (string-append bin "/exwm")))
+							;; Add a .desktop file to xsessions
+							(mkdir-p xsessions)
+							(mkdir-p bin)
+							(make-desktop-entry-file
+							  (string-append xsessions "/exwm.desktop")
+							  #:name ,name
+							  #:comment ,synopsis
+							  #:exec exwm-executable
+							  #:try-exec exwm-executable)
+
+							;; Add a shell wrapper to bin
+							(with-output-to-file exwm-executable
+									     (lambda _
+									       (format #t "#!~a ~@
+										       ~a +SI:localuser:$USER ~@
+										       ~a &
+										       exec ~a --exit-with-session ~a \"$@\" --eval '~s' ~%"
+										       (string-append (assoc-ref inputs "bash") "/bin/sh")
+										       (string-append (assoc-ref inputs "xhost") "/bin/xhost")
+										       (string-append (assoc-ref inputs "picom") "/bin/picom")
+										       (string-append (assoc-ref inputs "dbus") "/bin/dbus-launch")
+										       (string-append (assoc-ref inputs "emacs") "/bin/emacs")
+										       '(cond
+											  ((file-exists-p "~/.exwm")
+											   (load-file "~/.exwm"))
+											  ((not (featurep 'exwm))
+											   (require 'exwm)
+											   (require 'exwm-config)
+											   (exwm-config-default)
+											   (message (concat "exwm configuration not found. "
+													    "Falling back to default configuration...")))))))
+									     (chmod exwm-executable #o555)
+									     #t))))))))
+
 
 (define-public base-operating-system
   (operating-system
