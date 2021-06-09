@@ -93,7 +93,7 @@
       Option         \"nvidiaXineramaInfoOrder\" \"DFP-2\"
       Option         \"TripleBuffer\" \"true\"
       Option         \"TearFree\" \"true\"
-      Option         \"MetaModes\" \"HDMI-0: nvidia-auto-select +2560+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}, DP-0: nvidia-auto-select +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}\"
+      Option         \"MetaModes\" \"HDMI-0: 2560x1440_75 +2560+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}, DP-0: 2560x1440_75 +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}\"
       Option         \"SLI\" \"Off\"
       Option         \"MultiGPU\" \"Off\"
       Option         \"BaseMosaic\" \"off\"
