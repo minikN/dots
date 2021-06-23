@@ -51,6 +51,16 @@
    "[Wayland]
     EnableHiDPI=true"))
 
+(define %brielmaier-public-key
+  (plain-file
+   "mirror.brielmaier.net.pub"
+   "(public-key 
+ (ecc 
+  (curve Ed25519)
+  (q #7514F8D729DB1935470A581CE3851ED9FD6F1F9BAFE1D8BEC77A931ADB7A4337#)
+  )
+ )"))
+
 (define-public base-operating-system
   (operating-system
    (kernel linux-lts)
@@ -86,6 +96,8 @@
    ;; Services
    (services (cons* 
 	      (extra-special-file "/etc/guix/channels.scm" %guix-channels)
+	      (extra-special-file "/home/db/.config/guix/channels.scm" %guix-channels)
+	      (extra-special-file "/home/db/.config/guix/mirror.brielmaier.net.pub" %brielmaier-public-key)
 	      (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
 	      (service sddm-service-type)
 	      (remove (lambda (service)
