@@ -2,29 +2,28 @@
 #+PROPERTY: header-args :mkdirp yes
 #+PROPERTY: header-args :tangle-mode (identity #o444)
 
+This file contains the configuration for my desktop system. This includes my configuration- or dotfiles. Please note however, that it does not include my emacs configuration. It is separated into its own ORG file.
+
 * Table Of Contents
   :PROPERTIES:
-  :TOC:      :include all :depth 3
+  :TOC:      :include all :depth 3 :ignore (this)
   :END:
   
-:CONTENTS:
-- [[#table-of-contents][Table Of Contents]]
-- [[#zshell][ZShell]]
-  - [[#basic-settings][Basic settings]]
-  - [[#exports][Exports]]
-    - [[#guix-profile][Guix profile]]
-    - [[#xdg-base-directories][XDG base directories]]
-    - [[#custom-directories][Custom directories]]
-    - [[#default-applications][Default applications]]
-    - [[#application-specific-variables][Application specific variables]]
-  - [[#aliases][Aliases]]
-    - [[#navigation-helpers][Navigation helpers]]
-    - [[#application-specific-aliases][Application specific aliases]]
-  - [[#prompt][Prompt]]
-:END:
-
-
-This file contains the configuration for my desktop system. This includes my configuration- or dotfiles. Please note however, that it does not include my emacs configuration. It is separated into its own ORG file.
+  :CONTENTS:
+  - [[#table-of-contents][Table Of Contents]]
+  - [[#zshell][ZShell]]
+    - [[#basic-settings][Basic settings]]
+    - [[#exports][Exports]]
+      - [[#guix-profile][Guix profile]]
+      - [[#xdg-base-directories][XDG base directories]]
+      - [[#custom-directories][Custom directories]]
+      - [[#default-applications][Default applications]]
+      - [[#application-specific-variables][Application specific variables]]
+    - [[#aliases][Aliases]]
+      - [[#navigation-helpers][Navigation helpers]]
+      - [[#application-specific-aliases][Application specific aliases]]
+    - [[#prompt][Prompt]]
+  :END:
 
 * ZShell
   I use =zsh= as my main shell. I have configured my system in a way so that =$ZDOTDIR= is automatically set to =$HOME/.config/zsh=. This is the entry for all of my own configuration.
@@ -78,11 +77,11 @@ This file contains the configuration for my desktop system. This includes my con
 
       # Setting $XDG_RUNTIME_DIR
       if test -z "${XDG_RUNTIME_DIR}"; then
-	      export XDG_RUNTIME_DIR=/tmp/${UID}-runtime-dir
-	      if ! test -d "${XDG_RUNTIME_DIR}"; then
-		      mkdir "${XDG_RUNTIME_DIR}"
-		      chmod 0700 "${XDG_RUNTIME_DIR}"
-	      fi
+	  export XDG_RUNTIME_DIR=/tmp/${UID}-runtime-dir
+	  if ! test -d "${XDG_RUNTIME_DIR}"; then
+	      mkdir "${XDG_RUNTIME_DIR}"
+	      chmod 0700 "${XDG_RUNTIME_DIR}"
+	  fi
       fi
     #+end_src
 
@@ -133,14 +132,14 @@ This file contains the configuration for my desktop system. This includes my con
    This section covers all of my aliases. To some extend, this also includes aliases to applications which offer a =--config= (or simliar) parameter for its config directory. There is an argument to be made whether one should rather keep this somewhere else (maybe a section of each application with =export=\s and =alias=\es bundlded together). However, I decided to split it like this.
 
 *** Navigation helpers
-   First some handy aliases to navigate the shell
+    First some handy aliases to navigate the shell
 
-   #+begin_src sh :noweb-ref zsh
-     alias lss="ls --group-directories-first --color=always -laAh"
-     alias ..="cd .."
-     alias ...="cd ../../"
-     alias ....="cd ../../../"
-   #+end_src
+    #+begin_src sh :noweb-ref zsh
+      alias lss="ls --group-directories-first --color=always -laAh"
+      alias ..="cd .."
+      alias ...="cd ../../"
+      alias ....="cd ../../../"
+    #+end_src
     
 *** Application specific aliases
     #+begin_src sh :noweb-ref zsh
@@ -163,35 +162,35 @@ This file contains the configuration for my desktop system. This includes my con
    #+begin_src sh :noweb-ref zsh
      # Set timer before every command.
      function preexec() {
-       timer=$(date +%s%3N)
+	 timer=$(date +%s%3N)
      }
 
      # Calculate time elapsed since setting the timer.
      function precmd() {
-       if [ $timer ]; then
-	 local tc
-	 local now=$(date +%s%3N)
-	 local d_ms=$(($now-$timer))
+	 if [ $timer ]; then
+	     local tc
+	     local now=$(date +%s%3N)
+	     local d_ms=$(($now-$timer))
 
-	 case $((
-		   d_ms <= 20 ? 1 :
-		   d_ms <= 100 ? 2 :
-		   d_ms <= 250 ? 3 :
-		   d_ms <= 500 ? 4 :
-		   d_ms <= 999 ? 5 : 6)) in
-	     (1) tc="%F{green}" ;;
-	     (2) tc="%F{yellow}" ;;
-	     (3) tc="%F{cyan}" ;;
-	     (4) tc="%F{blue}" ;;
-	     (5) tc="%F{magenta}" ;;
-	     (6|*) tc="%F{red}" d_ms=$((d_ms / 1000)) ;;
-	 esac
+	     case $((
+		       d_ms <= 20 ? 1 :
+		       d_ms <= 100 ? 2 :
+		       d_ms <= 250 ? 3 :
+		       d_ms <= 500 ? 4 :
+		       d_ms <= 999 ? 5 : 6)) in
+		 (1) tc="%F{green}" ;;
+		 (2) tc="%F{yellow}" ;;
+		 (3) tc="%F{cyan}" ;;
+		 (4) tc="%F{blue}" ;;
+		 (5) tc="%F{magenta}" ;;
+		 (6|*) tc="%F{red}" d_ms=$((d_ms / 1000)) ;;
+	     esac
 
-	 ms=$(printf '%03d' $d_ms)
+	     ms=$(printf '%03d' $d_ms)
 
-	 export PROMPT="${tc}${ms}%{$reset_color%} %F{yellow} ➜%{$reset_color%} "
-	 unset timer
-       fi
+	     export PROMPT="${tc}${ms}%{$reset_color%} %F{yellow} ➜%{$reset_color%} "
+	     unset timer
+	 fi
      }
    #+end_src
 
@@ -205,4 +204,3 @@ This file contains the configuration for my desktop system. This includes my con
    :TOC:      :ignore (this)
    :END:
    TODO: Add to own channel: https://git.rekahsoft.ca/rekahsoft/rekahsoft-guix/commit/aa5bc5da9d8861648c961345e4420e7905c0e6a4?lang=de-DE
-   
