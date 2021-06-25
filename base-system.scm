@@ -6,6 +6,7 @@
   #:use-module (gnu services desktop)
   #:use-module (gnu services xorg)
   #:use-module (gnu services sddm)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages certs)
@@ -55,11 +56,10 @@
   (plain-file
    "mirror.brielmaier.net.pub"
    "(public-key 
- (ecc 
-  (curve Ed25519)
-  (q #7514F8D729DB1935470A581CE3851ED9FD6F1F9BAFE1D8BEC77A931ADB7A4337#)
-  )
- )"))
+   (ecc 
+     (curve Ed25519)
+     (q #7514F8D729DB1935470A581CE3851ED9FD6F1F9BAFE1D8BEC77A931ADB7A4337#)
+     ))"))
 
 (define-public base-operating-system
   (operating-system
@@ -96,10 +96,14 @@
    ;; Services
    (services (cons* 
 	      (extra-special-file "/etc/guix/channels.scm" %guix-channels)
-	      (extra-special-file "/home/db/.config/guix/channels.scm" %guix-channels)
-	      (extra-special-file "/home/db/.config/guix/mirror.brielmaier.net.pub" %brielmaier-public-key)
 	      (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
 	      (service sddm-service-type)
+
+	      ;; zsh
+	      (simple-service 'zshrc etc-service-type
+			      `(("zprofile" ,(plain-file "zprofile" "\
+							       emulate sh -c '. /etc/profile'
+							       emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'"))))
 	      (remove (lambda (service)
 			(eq? (service-kind service) gdm-service-type))
 		      (modify-services %desktop-services
@@ -111,7 +115,7 @@
 					  (append (list "https://mirror.brielmaier.net")
 						  %default-substitute-urls))
 					 (authorized-keys
-					  (append (list (local-file "/home/db/.config/guix/mirror.brielmaier.net.pub"))
+					  (append (list %brielmaier-public-key)
 						  %default-authorized-guix-keys))))))))
 
 
@@ -144,13 +148,14 @@
 	   swayidle
 	   swaylock
 	   mesa
-	   dxvk
+	   ;dxvk
 	   vkd3d
 	   mesa-headers
 	   spirv-cross
 	   spirv-tools
 	   mesa-utils
 	   spirv-headers
+	   shepherd
 	   zsh)
      %base-packages))
 
