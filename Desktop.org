@@ -5,25 +5,24 @@
 This file contains the configuration for my desktop system. This includes my configuration- or dotfiles. Please note however, that it does not include my emacs configuration. It is separated into its own ORG file.
 
 * Table Of Contents
-  :PROPERTIES:
-  :TOC:      :include all :ignore (this)
-  :END:
+:PROPERTIES:
+:TOC:      :include all :ignore (this)
+:END:
   
-  :CONTENTS:
-  - [[#table-of-contents][Table Of Contents]]
-  - [[#zshell][ZShell]]
-    - [[#basic-settings][Basic settings]]
-    - [[#exports][Exports]]
-      - [[#guix-profile][Guix profile]]
-      - [[#xdg-base-directories][XDG base directories]]
-      - [[#custom-directories][Custom directories]]
-      - [[#default-applications][Default applications]]
-      - [[#application-specific-variables][Application specific variables]]
-    - [[#aliases][Aliases]]
-      - [[#navigation-helpers][Navigation helpers]]
-      - [[#application-specific-aliases][Application specific aliases]]
-    - [[#prompt][Prompt]]
-  :END:
+:CONTENTS:
+- [[#zshell][ZShell]]
+  - [[#basic-settings][Basic settings]]
+  - [[#exports][Exports]]
+    - [[#guix-profile][Guix profile]]
+    - [[#xdg-base-directories][XDG base directories]]
+    - [[#custom-directories][Custom directories]]
+    - [[#default-applications][Default applications]]
+    - [[#application-specific-variables][Application specific variables]]
+  - [[#aliases][Aliases]]
+    - [[#navigation-helpers][Navigation helpers]]
+    - [[#application-specific-aliases][Application specific aliases]]
+  - [[#prompt][Prompt]]
+:END:
 
 * ZShell
   I use =zsh= as my main shell. I have configured my system in a way so that =$ZDOTDIR= is automatically set to =$HOME/.config/zsh=. This is the entry for all of my own configuration.
