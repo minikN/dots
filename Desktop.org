@@ -109,7 +109,7 @@ This file contains the configuration for my desktop system. This includes my con
       export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) # SSH
     #+end_src
     
-** Alias
+** Aliases
    This section covers all of my aliases. To some extend, this also includes aliases to applications which offer a =--config= (or simliar) parameter for its config directory. There is an argument to be made whether one should rather keep this somewhere else (maybe a section of each application with =export=\s and =alias=\es bundlded together). However, I decided to split it like this.
 
 *** Navigation helpers
@@ -137,7 +137,7 @@ This file contains the configuration for my desktop system. This includes my con
     #+end_src
 
 ** Prompt
-   I like minimal prompts. Something like starship, while being cool (I admit that), is too much for me.
+   I like minimal prompts. Something like [[https://starship.rs/de-de/][starship]], while being cool (I admit that), is too much for me.
    This is a simple prompt that displays the execution time of the last command and colors it based on how long it took.
 
    #+begin_src sh :noweb-ref zsh
@@ -175,9 +175,8 @@ This file contains the configuration for my desktop system. This includes my con
      }
    #+end_src
 
-
 ** TODO Add spaceship prompt
-   https://git.rekahsoft.ca/rekahsoft/rekahsoft-guix/commit/98909ea29a928b7aee1ad92775f73f12ba1d3382
+   TODO: Try it out: https://git.rekahsoft.ca/rekahsoft/rekahsoft-guix/commit/98909ea29a928b7aee1ad92775f73f12ba1d3382
 ** TODO Add zsh syntax highlighting
-   https://git.rekahsoft.ca/rekahsoft/rekahsoft-guix/commit/aa5bc5da9d8861648c961345e4420e7905c0e6a4?lang=de-DE
+   TODO: Add to own channel: https://git.rekahsoft.ca/rekahsoft/rekahsoft-guix/commit/aa5bc5da9d8861648c961345e4420e7905c0e6a4?lang=de-DE
    
