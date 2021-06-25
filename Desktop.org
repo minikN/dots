@@ -6,7 +6,7 @@ This file contains the configuration for my desktop system. This includes my con
 
 * Table Of Contents
   :PROPERTIES:
-  :TOC:      :include all :depth 3 :ignore (this)
+  :TOC:      :include all :ignore (this)
   :END:
   
   :CONTENTS:
