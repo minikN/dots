@@ -1,0 +1,58 @@
+#+TITLE: Desktop Environment
+#+PROPERTY: header-args :mkdirp yes
+#+PROPERTY: header-args :tangle-mode (identity #o444)
+
+TOC here
+
+This file contains the configuration for my desktop system. This includes the setup of all my dotfiles. Please not that it does not include my emacs setup. This is separated into its own file.
+
+* ZShell
+  I use =zsh= as my main shell. I have setup my system configuration in a way to automatically set =$ZDOTDIR= to =$HOME/.config.zsh=. This is the entry for all of my configuration.
+  By default, =zsh= is set up to look for a =.zshrc= inside =$ZDOTDIR=. Let's do it.
+
+  #+begin_src sh :tangle ~/.config/zsh/.zshrc :noweb yes :mkdirp yes
+    ## This file is auto-generated. Do not make changes manually.
+    ## Exported from Desktop.org
+
+    <<zsh>>
+  #+end_src
+
+** Exports
+   This section covers all the global variables I define in my =.zshrc=. This includes all =export= statements.
+  
+*** Guix profile
+    I'm using GNU/Guix as my operating system of choice (By the way, it's great, you should too!). The very first thing we need to do is to export =$GUIX_PROFILE= so Guix knows where to find our profile. 
+    #+begin_src sh :noweb-ref zsh
+      # Setting Guix profile
+      export GUIX_PROFILE="${HOME}/.guix-profile"
+      . "/etc/profile"
+    #+end_src
+   
+*** XDG base directories
+    After setting the =$GUIX_PROFILE=, the most important thing for me is to properly set my base directories following the [[http://www.gnu.org/software/emacs/][XDG specification]]. With Guix, one doesn't need to set =$XDG_DATA_DIRS= and =$XDG_CONFIG_DIRS= (unless you want to add to it of course) because it is already set by default.
+    #+begin_src sh :noweb-ref zsh
+      # With Guix, there is no need to set these two.
+      # export XDG_DATA_DIRS="/usr/local/share:/usr/share"
+      # export XDG_CONFIG_DIRS="/etc/xdg"
+
+      # Setting $XDG_RUNTIME_DIR
+      if test -z "${XDG_RUNTIME_DIR}"; then
+	      export XDG_RUNTIME_DIR=/tmp/${UID}-runtime-dir
+	      if ! test -d "${XDG_RUNTIME_DIR}"; then
+		      mkdir "${XDG_RUNTIME_DIR}"
+		      chmod 0700 "${XDG_RUNTIME_DIR}"
+	      fi
+      fi
+    #+end_src
+
+*** Custom directories
+    I need a couple of custom directories. For now, =$GITDIR= is where I store all my cloned git repositories, this includes projects I'm working on. I should probably derive a =$WORKDIR= variable from it to house my work related project, but for now this is good. =$BINDIR= is the path to my local binaries, this would include shell scripts I need system wide access to. Hence why I add it to the =$PATH=.
+
+    #+begin_src sh :noweb-ref zsh
+      # Important personal directories
+      export GITDIR="${XDG_DATA_HOME}/git"
+      export BINDIR="${XDG_DATA_HOME}/bin"
+
+      # Adding local bin dir to $PATH
+      export PATH="${BINDIR}:$PATH"
+    #+end_src
