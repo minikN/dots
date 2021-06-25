@@ -2,7 +2,27 @@
 #+PROPERTY: header-args :mkdirp yes
 #+PROPERTY: header-args :tangle-mode (identity #o444)
 
-TOC here
+* Table Of Contents
+  :PROPERTIES:
+  :TOC:      :include all :depth 3
+  :END:
+  
+:CONTENTS:
+- [[#table-of-contents][Table Of Contents]]
+- [[#zshell][ZShell]]
+  - [[#basic-settings][Basic settings]]
+  - [[#exports][Exports]]
+    - [[#guix-profile][Guix profile]]
+    - [[#xdg-base-directories][XDG base directories]]
+    - [[#custom-directories][Custom directories]]
+    - [[#default-applications][Default applications]]
+    - [[#application-specific-variables][Application specific variables]]
+  - [[#aliases][Aliases]]
+    - [[#navigation-helpers][Navigation helpers]]
+    - [[#application-specific-aliases][Application specific aliases]]
+  - [[#prompt][Prompt]]
+:END:
+
 
 This file contains the configuration for my desktop system. This includes my configuration- or dotfiles. Please note however, that it does not include my emacs configuration. It is separated into its own ORG file.
 
@@ -176,7 +196,13 @@ This file contains the configuration for my desktop system. This includes my con
    #+end_src
 
 ** TODO Add spaceship prompt
+   :PROPERTIES:
+   :TOC:      :ignore (this)
+   :END:
    TODO: Try it out: https://git.rekahsoft.ca/rekahsoft/rekahsoft-guix/commit/98909ea29a928b7aee1ad92775f73f12ba1d3382
 ** TODO Add zsh syntax highlighting
+   :PROPERTIES:
+   :TOC:      :ignore (this)
+   :END:
    TODO: Add to own channel: https://git.rekahsoft.ca/rekahsoft/rekahsoft-guix/commit/aa5bc5da9d8861648c961345e4420e7905c0e6a4?lang=de-DE
    
