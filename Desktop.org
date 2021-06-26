@@ -3,6 +3,15 @@
 #+PROPERTY: header-args :tangle-mode (identity #o444)
 
 This file contains the configuration for my desktop system. This includes my configuration- or dotfiles. Please note however, that it does not include my emacs configuration. It is separated into its own ORG file.
+This file will tangle various files. One of which is =desktop.scm=, which is used to install the desktop profile in Guix. It's path is =~/.config/guix/manifests/desktop.scm=.
+#+begin_src scheme :tangle ~/.config/guix/manifests/desktop.scm :noweb yes :mkdirp yes
+  ;; This file is auto-generated. Do not make changes manually.
+  ;; Exported from Desktop.org
+  (specifications->manifest
+   '(
+     <<packages>>
+     ))
+#+end_src
 
 * Table Of Contents
 :PROPERTIES:
@@ -36,6 +45,10 @@ By default, =zsh= will look for a =.zshrc= inside =$ZDOTDIR=. Let's do it.
   ## Exported from Desktop.org
   
   <<zsh>>
+#+end_src
+
+#+begin_src scheme :noweb-ref packages
+  "zsh"
 #+end_src
 
 ** Basic settings
@@ -197,6 +210,12 @@ This covers my prompt. I recently switched to [[https://github.com/spaceship-pro
   autoload -U promptinit && promptinit
   prompt spaceship
 #+end_src
+
+#+begin_src scheme :noweb-ref packages
+  "starship-prompt"
+  "font-tamzen"
+#+end_src
+
 *** TODO Syntax highlighting
 The plugin for syntax highlighting must be sourced at the end of the tangled =.zshrc=. Therefore nothing should follow this plugin. More information can be found [[https://github.com/zsh-users/zsh-syntax-highlighting#why-must-zsh-syntax-highlightingzsh-be-sourced-at-the-end-of-the-zshrc-file][here]].
 
@@ -205,4 +224,8 @@ The plugin for syntax highlighting must be sourced at the end of the tangled =.z
   if [ -d "${GUIX_EXTRA_PROFILES}"/desktop/desktop/share/zsh-syntax-highlighting ]; then
       . "${GUIX_EXTRA_PROFILES}"/desktop/desktop/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
   fi
+#+end_src
+
+#+begin_src scheme :noweb-ref packages
+  "zsh-syntax-highlighting"
 #+end_src
