@@ -28,152 +28,152 @@ This file contains the configuration for my desktop system. This includes my con
 :END:
 
 * ZShell
-  I use =zsh= as my main shell. I have configured my system in a way so that =$ZDOTDIR= is automatically set to =$HOME/.config/zsh=. This is the entry for all of my own configuration.
-  By default, =zsh= will look for a =.zshrc= inside =$ZDOTDIR=. Let's do it.
+I use =zsh= as my main shell. I have configured my system in a way so that =$ZDOTDIR= is automatically set to =$HOME/.config/zsh=. This is the entry for all of my own configuration.
+By default, =zsh= will look for a =.zshrc= inside =$ZDOTDIR=. Let's do it.
 
-  #+begin_src sh :tangle ~/.config/zsh/.zshrc :noweb yes :mkdirp yes
-    ## This file is auto-generated. Do not make changes manually.
-    ## Exported from Desktop.org
-
-    <<zsh>>
-  #+end_src
+#+begin_src sh :tangle ~/.config/zsh/.zshrc :noweb yes :mkdirp yes
+  ## This file is auto-generated. Do not make changes manually.
+  ## Exported from Desktop.org
+  
+  <<zsh>>
+#+end_src
 
 ** Basic settings
-   This covers the basic settings, like =HISTSIZE=, I configured my =zsh= with. Plugins, like syntax-highlighting have add to the file's tail. They therefore appear last in this chapter.
+This covers the basic settings, like =HISTSIZE=, I configured my =zsh= with. Plugins, like syntax-highlighting have add to the file's tail. They therefore appear last in this chapter.
 
-   #+begin_src sh :noweb-ref zsh
-     HISTFILE="${XDG_DATA_HOME}"/zsh/history
-     HISTSIZE=1000
-     SAVEHIST=1000
-     setopt nomatch
-     unsetopt beep
-     bindkey -e
-     
-     # Add to $fpath so that we can install plugins
-     FPATH_FUNCTION_DIR="${ZDOTDIR}"/functions
-     if [ ! -d ${FPATH_FUNCTION_DIR} ]; then
-	 mkdir -p ${FPATH_FUNCTION_DIR}
-     fi
-     fpath=( ${FPATH_FUNCTION_DIR} $fpath )
-   #+end_src
+#+begin_src sh :noweb-ref zsh
+  HISTFILE="${XDG_DATA_HOME}"/zsh/history
+  HISTSIZE=1000
+  SAVEHIST=1000
+  setopt nomatch
+  unsetopt beep
+  bindkey -e
+  
+  # Add to $fpath so that we can install plugins
+  FPATH_FUNCTION_DIR="${ZDOTDIR}"/functions
+  if [ ! -d ${FPATH_FUNCTION_DIR} ]; then
+      mkdir -p ${FPATH_FUNCTION_DIR}
+  fi
+  fpath=( ${FPATH_FUNCTION_DIR} $fpath )
+#+end_src
 ** Exports
-   This section covers all the global variables I define in my =.zshrc=. This includes all =export= statements.
+This section covers all the global variables I define in my =.zshrc=. This includes all =export= statements.
   
 *** Guix profile
-    I use GNU/Guix as my operating system of choice (it's great, you should too!). The very first thing I need to do is to export =$GUIX_PROFILE= so Guix knows where to find my profile. 
-    #+begin_src sh :noweb-ref zsh
-      # Setting Guix profile
-      export GUIX_PROFILE="${HOME}"/.guix-profile
-      . "/etc/profile"
-    #+end_src
+I use GNU/Guix as my operating system of choice (it's great, you should too!). The very first thing I need to do is to export =$GUIX_PROFILE= so Guix knows where to find my profile. 
+#+begin_src sh :noweb-ref zsh
+  # Setting Guix profile
+  export GUIX_PROFILE="${HOME}"/.guix-profile
+  . "/etc/profile"
+#+end_src
 
-    Apart from the default profile, Guix allows me to add custom profile which group certain packages into separate files. This code block activates all available profiles. That means, after you installed them, their packages get usable.
-    #+begin_src sh :noweb-ref zsh
-      GUIX_EXTRA_PROFILES="${HOME}"/.guix-extra-profiles
-      for i in ${GUIX_EXTRA_PROFILES}/*; do
-	profile=$i/$(basename "$i")
-	if [ -f "${profile}"/etc/profile ]; then
+Apart from the default profile, Guix allows me to add custom profile which group certain packages into separate files. This code block activates all available profiles. That means, after you installed them, their packages get usable.
+#+begin_src sh :noweb-ref zsh
+  GUIX_EXTRA_PROFILES="${HOME}"/.guix-extra-profiles
+  for i in ${GUIX_EXTRA_PROFILES}/*; do
+      profile=$i/$(basename "$i")
+      if [ -f "${profile}"/etc/profile ]; then
 	  GUIX_PROFILE="${profile}"
 	  . "${GUIX_PROFILE}"/etc/profile
-	fi
-	unset profile
-      done
-    #+end_src
+      fi
+      unset profile
+  done
+#+end_src
 
-    You can install (or update) a profile like so
-    #+begin_src sh
-      guix package --manifest=/path/to/guix-my-project-manifest.scm --profile="$GUIX_EXTRA_PROFILES"/my-project/my-project
-    #+end_src
+You can install (or update) a profile like so
+#+begin_src sh
+  guix package --manifest=/path/to/guix-my-project-manifest.scm --profile="$GUIX_EXTRA_PROFILES"/my-project/my-project
+#+end_src
     
 *** XDG base directories
-    After setting =$GUIX_PROFILE=, the most important thing for me is to properly set my base directories following the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables][XDG specification]]. With Guix, I do not need to set =$XDG_DATA_DIRS= and =$XDG_CONFIG_DIRS= (you could of course add to them with =export XDG_CONFIG_DIRS=<your path>:$XDG_CONFIG_DIRS=) because it is already set by default. I'm finde with the default so I commented the section out.
-    #+begin_src sh :noweb-ref zsh
-      export XDG_CONFIG_HOME="${HOME}"/.config
-      export XDG_CACHE_HOME="${HOME}"/.cache
-      export XDG_DATA_HOME="${HOME}"/.local/share
-      # export XDG_DATA_DIRS="/usr/local/share:/usr/share"
-      # export XDG_CONFIG_DIRS="/etc/xdg"
-
-      # Setting $XDG_RUNTIME_DIR
-      if test -z "${XDG_RUNTIME_DIR}"; then
-	  export XDG_RUNTIME_DIR=/tmp/${UID}-runtime-dir
-	  if ! test -d "${XDG_RUNTIME_DIR}"; then
-	      mkdir "${XDG_RUNTIME_DIR}"
-	      chmod 0700 "${XDG_RUNTIME_DIR}"
-	  fi
+After setting =$GUIX_PROFILE=, the most important thing for me is to properly set my base directories following the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables][XDG specification]]. With Guix, I do not need to set =$XDG_DATA_DIRS= and =$XDG_CONFIG_DIRS= (you could of course add to them with =export XDG_CONFIG_DIRS=<your path>:$XDG_CONFIG_DIRS=) because it is already set by default. I'm finde with the default so I commented the section out.
+#+begin_src sh :noweb-ref zsh
+  export XDG_CONFIG_HOME="${HOME}"/.config
+  export XDG_CACHE_HOME="${HOME}"/.cache
+  export XDG_DATA_HOME="${HOME}"/.local/share
+  # export XDG_DATA_DIRS="/usr/local/share:/usr/share"
+  # export XDG_CONFIG_DIRS="/etc/xdg"
+  
+  # Setting $XDG_RUNTIME_DIR
+  if test -z "${XDG_RUNTIME_DIR}"; then
+      export XDG_RUNTIME_DIR=/tmp/${UID}-runtime-dir
+      if ! test -d "${XDG_RUNTIME_DIR}"; then
+	  mkdir "${XDG_RUNTIME_DIR}"
+	  chmod 0700 "${XDG_RUNTIME_DIR}"
       fi
-    #+end_src
+  fi
+#+end_src
 
 *** Custom directories
-    I need a couple of custom directories. For now, =$GITDIR= is where I store all my cloned git repositories, this includes projects I'm working on. I should probably derive a =$WORKDIR= variable from it to house my work related projects, but for now this is good. =$BINDIR= is the path to my local binaries, this would include shell scripts I need system wide access to. Hence why I add it to the =$PATH=.
+I need a couple of custom directories. For now, =$GITDIR= is where I store all my cloned git repositories, this includes projects I'm working on. I should probably derive a =$WORKDIR= variable from it to house my work related projects, but for now this is good. =$BINDIR= is the path to my local binaries, this would include shell scripts I need system wide access to. Hence why I add it to the =$PATH=.
 
-    #+begin_src sh :noweb-ref zsh
-      # Important personal directories
-      export GITDIR="${XDG_DATA_HOME}"/git
-      export BINDIR="${XDG_DATA_HOME}"/bin
+#+begin_src sh :noweb-ref zsh
+  # Important personal directories
+  export GITDIR="${XDG_DATA_HOME}"/git
+  export BINDIR="${XDG_DATA_HOME}"/bin
+  
+  # Adding local bin dir to $PATH
+  export PATH="${BINDIR}:$PATH"
+#+end_src
 
-      # Adding local bin dir to $PATH
-      export PATH="${BINDIR}:$PATH"
-    #+end_src
-
-    I used to use =doom-emacs= (and maybe I will again). It places its CLI binary into a =bin= folder inside your emacs configuration. It's probably useful to add this to the path as well.
-    #+begin_src sh :noweb-ref zsh
-      export PATH="${XDG_CONFIG_HOME}/emacs/bin:${PATH}"
-    #+end_src
+I used to use =doom-emacs= (and maybe I will again). It places its CLI binary into a =bin= folder inside your emacs configuration. It's probably useful to add this to the path as well.
+#+begin_src sh :noweb-ref zsh
+  export PATH="${XDG_CONFIG_HOME}/emacs/bin:${PATH}"
+#+end_src
     
 *** Default applications
-    Next are variables to declare default applications. Stuff like =$BROWSER= and =$EDITOR= goes in here. Again, there is no need to set =$SHELL= manually. Guix sets it by default.
+Next are variables to declare default applications. Stuff like =$BROWSER= and =$EDITOR= goes in here. Again, there is no need to set =$SHELL= manually. Guix sets it by default.
 
-    #+begin_src sh :noweb-ref zsh
-      export VISUAL="emacsclient"
-      export EDITOR="${VISUAL}"
-      export BROWSER="next"
-    #+end_src
+#+begin_src sh :noweb-ref zsh
+  export VISUAL="emacsclient"
+  export EDITOR="${VISUAL}"
+  export BROWSER="next"
+#+end_src
 
 *** Application specific variables
-    This section covers application-specific exports. This, for the most part, is an effort in keeping my home directory clean. I set my =$XDG_CONFIG_HOME= to =$HOME/.config=, and many applications respect that, which is great. However, there still is a plethora of applications that are not aware of it and have default config file paths in =$HOME=.
-    However, many, but not all (looking at you, [[https://bugzilla.mindrot.org/show_bug.cgi?id=2050][ssh]]) of them can be configured to be aware of where I want them to put their config files.
-    The Arch-Wiki offers a good [[https://wiki.archlinux.org/title/XDG_Base_Directory][list]] of applications that can be configured that way.
+This section covers application-specific exports. This, for the most part, is an effort in keeping my home directory clean. I set my =$XDG_CONFIG_HOME= to =$HOME/.config=, and many applications respect that, which is great. However, there still is a plethora of applications that are not aware of it and have default config file paths in =$HOME=.
+However, many, but not all (looking at you, [[https://bugzilla.mindrot.org/show_bug.cgi?id=2050][ssh]]) of them can be configured to be aware of where I want them to put their config files.
+The Arch-Wiki offers a good [[https://wiki.archlinux.org/title/XDG_Base_Directory][list]] of applications that can be configured that way.
 
-    #+begin_src sh :noweb-ref zsh
-      # This list is sorted alphabetically.
-      export CC="gcc"                                              # GCC
-      export CUDA_CACHE_PATH="${XDG_CACHE_HOME}"/nv                # CUDA
-      export DOCKER_CONFIG="${XDG_CONFIG_HOME}"/docker             # DOCKER
-      export EMACS_USER_DIRECTORY="${XDG_CONFIG_HOME}"/emacs       # EMACS: Not needed since 27.1?
-      export GNUPGHOME="${XDG_DATA_HOME}"/gnupg                    # GNUPG
-      export LC_COLLATE="C"                                        # ls  
-      export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}"/npm/npmrc  # NPM
-      export PASSWORD_STORE_DIR="${XDG_DATA_HOME}"/pass            # PASS
-      export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) # SSH
-    #+end_src
+#+begin_src sh :noweb-ref zsh
+  # This list is sorted alphabetically.
+  export CC="gcc"                                              # GCC
+  export CUDA_CACHE_PATH="${XDG_CACHE_HOME}"/nv                # CUDA
+  export DOCKER_CONFIG="${XDG_CONFIG_HOME}"/docker             # DOCKER
+  export EMACS_USER_DIRECTORY="${XDG_CONFIG_HOME}"/emacs       # EMACS: Not needed since 27.1?
+  export GNUPGHOME="${XDG_DATA_HOME}"/gnupg                    # GNUPG
+  export LC_COLLATE="C"                                        # ls  
+  export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}"/npm/npmrc  # NPM
+  export PASSWORD_STORE_DIR="${XDG_DATA_HOME}"/pass            # PASS
+  export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) # SSH
+#+end_src
     
 ** Aliases
-   This section covers all of my aliases. To some extend, this also includes aliases to applications which offer a =--config= (or simliar) parameter for its config directory. There is an argument to be made whether one should rather keep this somewhere else (maybe a section of each application with =export=\s and =alias=\es bundlded together). However, I decided to split it like this.
+This section covers all of my aliases. To some extend, this also includes aliases to applications which offer a =--config= (or simliar) parameter for its config directory. There is an argument to be made whether one should rather keep this somewhere else (maybe a section of each application with =export=\s and =alias=\es bundlded together). However, I decided to split it like this.
 
 *** Navigation helpers
-    First some handy aliases to navigate the shell
+First some handy aliases to navigate the shell
 
-    #+begin_src sh :noweb-ref zsh
-      alias lss="ls --group-directories-first --color=always -laAh"
-      alias ..="cd .."
-      alias ...="cd ../../"
-      alias ....="cd ../../../"
-    #+end_src
+#+begin_src sh :noweb-ref zsh
+  alias lss="ls --group-directories-first --color=always -laAh"
+  alias ..="cd .."
+  alias ...="cd ../../"
+  alias ....="cd ../../../"
+#+end_src
     
 *** Application specific aliases
-    #+begin_src sh :noweb-ref zsh
-      # This list is sorted alphabetically.
-      alias dall="d-stp; d-rmc; d-rmv; d-rmi"                    # DOCKER
-      alias drmc="docker rm $(docker ps -aq)"
-      alias drmi="docker rmi $(docker images -q)"
-      alias drmv="docker volume rm $(docker volume ls -q)"
-      alias dstp="docker stop $(docker ps -aq)"
-      alias gpg2="gpg2 --homedir ${GNUPGHOME}"                   # GNUPG
-      alias mbsync="mbsync -c ${XDG_CONFIG_HOME}/isync/mbsyncrc" # MBSYNC
-      alias next="next --session nil"                            # NEXT
-      alias qutebrowser="qutebrowser -R"                         # QUTEBROWSER
-    #+end_src
+#+begin_src sh :noweb-ref zsh
+  # This list is sorted alphabetically.
+  alias dall="d-stp; d-rmc; d-rmv; d-rmi"                    # DOCKER
+  alias drmc="docker rm $(docker ps -aq)"
+  alias drmi="docker rmi $(docker images -q)"
+  alias drmv="docker volume rm $(docker volume ls -q)"
+  alias dstp="docker stop $(docker ps -aq)"
+  alias gpg2="gpg2 --homedir ${GNUPGHOME}"                   # GNUPG
+  alias mbsync="mbsync -c ${XDG_CONFIG_HOME}/isync/mbsyncrc" # MBSYNC
+  alias next="next --session nil"                            # NEXT
+  alias qutebrowser="qutebrowser -R"                         # QUTEBROWSER
+#+end_src
 
 ** Plugins
 ZShell has the ability to install plugins quite easily. This section covers all the various plugins I use for my setup.
@@ -188,6 +188,7 @@ Some basic plugins like =colors= and =compinit=
 
 *** TODO Prompt
 This covers my prompt. I recently switched to [[https://github.com/spaceship-prompt/spaceship-prompt][starship]]. However, in order for it to work properly, I need to symlink the installed packaged to =$FPATH_FUNCTION_DIR=.
+
 *Note*: This will not work if the profile =starship-prompt= has been installed with is not called =desktop=. This needs some further tweaking.
 #+begin_src sh :noweb-ref zsh
   if [ ! -d "${FPATH_FUNCTION_DIR}"/prompt_spaceship_setup ]; then
@@ -198,7 +199,8 @@ This covers my prompt. I recently switched to [[https://github.com/spaceship-pro
 #+end_src
 *** TODO Syntax highlighting
 The plugin for syntax highlighting must be sourced at the end of the tangled =.zshrc=. Therefore nothing should follow this plugin. More information can be found [[https://github.com/zsh-users/zsh-syntax-highlighting#why-must-zsh-syntax-highlightingzsh-be-sourced-at-the-end-of-the-zshrc-file][here]].
-*Note*: This will not work if the profile =starship-prompt= has been installed with is not called =desktop=. This needs some further tweaking.
+
+*Note*: This will not work if the profile =zsh-syntax-highlighting= has been installed with is not called =desktop=. This needs some further tweaking.
 #+begin_src sh :noweb-ref zsh
   if [ -d "${GUIX_EXTRA_PROFILES}"/desktop/desktop/share/zsh-syntax-highlighting ]; then
       . "${GUIX_EXTRA_PROFILES}"/desktop/desktop/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
