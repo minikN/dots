@@ -31,6 +31,7 @@ This file will tangle various files. One of which is =desktop.scm=, which is use
     - [[#aliases][Aliases]]
       - [[#navigation-helpers][Navigation helpers]]
       - [[#application-specific-aliases][Application specific aliases]]
+    - [[#functions][Functions]]
     - [[#plugins][Plugins]]
       - [[#basic-plugins][Basic plugins]]
       - [[#prompt][Prompt]]
@@ -191,6 +192,23 @@ First some handy aliases to navigate the shell
   alias qutebrowser="qutebrowser -R"                         # QUTEBROWSER
 #+end_src
 
+*** Functions
+It's always a good idea to have some handy functions helping maintaining the system.
+
+This function lets me easily install/update manifest files into profiles. I may update this in the future if I see the need for it. For now, it's enough. All my manifests get tangled into =$XDG_CONFIG_HOME/guix/manifests= and my profiles are located at =$GUIX_EXTRA_PROFILES=.
+
+#+begin_src sh :noweb-ref zsh 
+  manifest-update() {
+      if [ -n "$1" ]; then
+	  guix package \
+	       -m ${XDG_CONFIG_HOME}/guix/manifests/"$1".scm \
+	       -p ${GUIX_EXTRA_PROFILES}/"$1"/"$1"
+      else
+	  echo "Manifest name missing."
+      fi
+  }
+  
+#+end_src
 *** Plugins
 ZShell has the ability to install plugins quite easily. This section covers all the various plugins I use for my setup.
 
