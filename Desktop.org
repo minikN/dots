@@ -21,7 +21,10 @@ This file contains the configuration for my desktop system. This includes my con
   - [[#aliases][Aliases]]
     - [[#navigation-helpers][Navigation helpers]]
     - [[#application-specific-aliases][Application specific aliases]]
-  - [[#prompt][Prompt]]
+  - [[#plugins][Plugins]]
+    - [[#basic-plugins][Basic plugins]]
+    - [[#prompt][Prompt]]
+    - [[#syntax-highlighting][Syntax highlighting]]
 :END:
 
 * ZShell
@@ -39,20 +42,19 @@ This file contains the configuration for my desktop system. This includes my con
    This covers the basic settings, like =HISTSIZE=, I configured my =zsh= with. Plugins, like syntax-highlighting have add to the file's tail. They therefore appear last in this chapter.
 
    #+begin_src sh :noweb-ref zsh
-     # Colors
-     autoload -U colors && colors
-
      HISTFILE="${XDG_DATA_HOME}"/zsh/history
      HISTSIZE=1000
      SAVEHIST=1000
      setopt nomatch
      unsetopt beep
      bindkey -e
-
-     # Compinstall
-     zstyle :compinstall filename '${ZDOTDIR}/.zshrc'
-     autoload -Uz compinit
-     compinit
+     
+     # Add to $fpath so that we can install plugins
+     FPATH_FUNCTION_DIR="${ZDOTDIR}"/functions
+     if [ ! -d ${FPATH_FUNCTION_DIR} ]; then
+	 mkdir -p ${FPATH_FUNCTION_DIR}
+     fi
+     fpath=( ${FPATH_FUNCTION_DIR} $fpath )
    #+end_src
 ** Exports
    This section covers all the global variables I define in my =.zshrc=. This includes all =export= statements.
@@ -61,16 +63,34 @@ This file contains the configuration for my desktop system. This includes my con
     I use GNU/Guix as my operating system of choice (it's great, you should too!). The very first thing I need to do is to export =$GUIX_PROFILE= so Guix knows where to find my profile. 
     #+begin_src sh :noweb-ref zsh
       # Setting Guix profile
-      export GUIX_PROFILE="${HOME}/.guix-profile"
+      export GUIX_PROFILE="${HOME}"/.guix-profile
       . "/etc/profile"
+    #+end_src
+
+    Apart from the default profile, Guix allows me to add custom profile which group certain packages into separate files. This code block activates all available profiles. That means, after you installed them, their packages get usable.
+    #+begin_src sh :noweb-ref zsh
+      GUIX_EXTRA_PROFILES="${HOME}"/.guix-extra-profiles
+      for i in ${GUIX_EXTRA_PROFILES}/*; do
+	profile=$i/$(basename "$i")
+	if [ -f "${profile}"/etc/profile ]; then
+	  GUIX_PROFILE="${profile}"
+	  . "${GUIX_PROFILE}"/etc/profile
+	fi
+	unset profile
+      done
+    #+end_src
+
+    You can install (or update) a profile like so
+    #+begin_src sh
+      guix package --manifest=/path/to/guix-my-project-manifest.scm --profile="$GUIX_EXTRA_PROFILES"/my-project/my-project
     #+end_src
     
 *** XDG base directories
     After setting =$GUIX_PROFILE=, the most important thing for me is to properly set my base directories following the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables][XDG specification]]. With Guix, I do not need to set =$XDG_DATA_DIRS= and =$XDG_CONFIG_DIRS= (you could of course add to them with =export XDG_CONFIG_DIRS=<your path>:$XDG_CONFIG_DIRS=) because it is already set by default. I'm finde with the default so I commented the section out.
     #+begin_src sh :noweb-ref zsh
-      export XDG_CONFIG_HOME="${HOME}/.config"
-      export XDG_CACHE_HOME="${HOME}/.cache"
-      export XDG_DATA_HOME="${HOME}/.local/share"
+      export XDG_CONFIG_HOME="${HOME}"/.config
+      export XDG_CACHE_HOME="${HOME}"/.cache
+      export XDG_DATA_HOME="${HOME}"/.local/share
       # export XDG_DATA_DIRS="/usr/local/share:/usr/share"
       # export XDG_CONFIG_DIRS="/etc/xdg"
 
@@ -89,8 +109,8 @@ This file contains the configuration for my desktop system. This includes my con
 
     #+begin_src sh :noweb-ref zsh
       # Important personal directories
-      export GITDIR="${XDG_DATA_HOME}/git"
-      export BINDIR="${XDG_DATA_HOME}/bin"
+      export GITDIR="${XDG_DATA_HOME}"/git
+      export BINDIR="${XDG_DATA_HOME}"/bin
 
       # Adding local bin dir to $PATH
       export PATH="${BINDIR}:$PATH"
@@ -98,7 +118,7 @@ This file contains the configuration for my desktop system. This includes my con
 
     I used to use =doom-emacs= (and maybe I will again). It places its CLI binary into a =bin= folder inside your emacs configuration. It's probably useful to add this to the path as well.
     #+begin_src sh :noweb-ref zsh
-      export PATH="${XDG_CONFIG_HOME}/emacs/bin:$PATH"
+      export PATH="${XDG_CONFIG_HOME}/emacs/bin:${PATH}"
     #+end_src
     
 *** Default applications
@@ -107,7 +127,7 @@ This file contains the configuration for my desktop system. This includes my con
     #+begin_src sh :noweb-ref zsh
       export VISUAL="emacsclient"
       export EDITOR="${VISUAL}"
-      export BROWSER="nyxt"
+      export BROWSER="next"
     #+end_src
 
 *** Application specific variables
@@ -117,13 +137,14 @@ This file contains the configuration for my desktop system. This includes my con
 
     #+begin_src sh :noweb-ref zsh
       # This list is sorted alphabetically.
-      export CC=gcc                                                # GCC
+      export CC="gcc"                                              # GCC
       export CUDA_CACHE_PATH="${XDG_CACHE_HOME}"/nv                # CUDA
       export DOCKER_CONFIG="${XDG_CONFIG_HOME}"/docker             # DOCKER
-      export EMACS_USER_DIRECTORY="${XDG_CONFIG_HOME}/emacs"       # EMACS: Not needed since 27.1?
-      export GNUPGHOME="${XDG_DATA_HOME}/gnupg"                    # GNUPG
-      export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"  # NPM
-      export PASSWORD_STORE_DIR="${XDG_DATA_HOME}/pass"            # PASS
+      export EMACS_USER_DIRECTORY="${XDG_CONFIG_HOME}"/emacs       # EMACS: Not needed since 27.1?
+      export GNUPGHOME="${XDG_DATA_HOME}"/gnupg                    # GNUPG
+      export LC_COLLATE="C"                                        # ls  
+      export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}"/npm/npmrc  # NPM
+      export PASSWORD_STORE_DIR="${XDG_DATA_HOME}"/pass            # PASS
       export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) # SSH
     #+end_src
     
@@ -143,7 +164,7 @@ This file contains the configuration for my desktop system. This includes my con
 *** Application specific aliases
     #+begin_src sh :noweb-ref zsh
       # This list is sorted alphabetically.
-      alias dall="d-stp; d-rmc; d-rmv; d-rmi"                   # DOCKER
+      alias dall="d-stp; d-rmc; d-rmv; d-rmi"                    # DOCKER
       alias drmc="docker rm $(docker ps -aq)"
       alias drmi="docker rmi $(docker images -q)"
       alias drmv="docker volume rm $(docker volume ls -q)"
@@ -154,52 +175,32 @@ This file contains the configuration for my desktop system. This includes my con
       alias qutebrowser="qutebrowser -R"                         # QUTEBROWSER
     #+end_src
 
-** Prompt
-   I like minimal prompts. Something like [[https://starship.rs/de-de/][starship]], while being cool (I admit that), is too much for me.
-   This is a simple prompt that displays the execution time of the last command and colors it based on how long it took.
+** Plugins
+ZShell has the ability to install plugins quite easily. This section covers all the various plugins I use for my setup.
 
-   #+begin_src sh :noweb-ref zsh
-     # Set timer before every command.
-     function preexec() {
-	 timer=$(date +%s%3N)
-     }
+*** Basic plugins
+Some basic plugins like =colors= and =compinit=
+#+begin_src sh :noweb-ref zsh
+  zstyle :compinstall filename '${ZDOTDIR}/.zshrc'
+  autoload -Uz compinit && compinit
+  autoload -U colors && colors
+#+end_src
 
-     # Calculate time elapsed since setting the timer.
-     function precmd() {
-	 if [ $timer ]; then
-	     local tc
-	     local now=$(date +%s%3N)
-	     local d_ms=$(($now-$timer))
-
-	     case $((
-		       d_ms <= 20 ? 1 :
-		       d_ms <= 100 ? 2 :
-		       d_ms <= 250 ? 3 :
-		       d_ms <= 500 ? 4 :
-		       d_ms <= 999 ? 5 : 6)) in
-		 (1) tc="%F{green}" ;;
-		 (2) tc="%F{yellow}" ;;
-		 (3) tc="%F{cyan}" ;;
-		 (4) tc="%F{blue}" ;;
-		 (5) tc="%F{magenta}" ;;
-		 (6|*) tc="%F{red}" d_ms=$((d_ms / 1000)) ;;
-	     esac
-
-	     ms=$(printf '%03d' $d_ms)
-
-	     export PROMPT="${tc}${ms}%{$reset_color%} %F{yellow} ➜%{$reset_color%} "
-	     unset timer
-	 fi
-     }
-   #+end_src
-
-** TODO Add spaceship prompt
-   :PROPERTIES:
-   :TOC:      :ignore (this)
-   :END:
-   TODO: Try it out: https://git.rekahsoft.ca/rekahsoft/rekahsoft-guix/commit/98909ea29a928b7aee1ad92775f73f12ba1d3382
-** TODO Add zsh syntax highlighting
-   :PROPERTIES:
-   :TOC:      :ignore (this)
-   :END:
-   TODO: Add to own channel: https://git.rekahsoft.ca/rekahsoft/rekahsoft-guix/commit/aa5bc5da9d8861648c961345e4420e7905c0e6a4?lang=de-DE
+*** TODO Prompt
+This covers my prompt. I recently switched to [[https://github.com/spaceship-prompt/spaceship-prompt][starship]]. However, in order for it to work properly, I need to symlink the installed packaged to =$FPATH_FUNCTION_DIR=.
+*Note*: This will not work if the profile =starship-prompt= has been installed with is not called =desktop=. This needs some further tweaking.
+#+begin_src sh :noweb-ref zsh
+  if [ ! -d "${FPATH_FUNCTION_DIR}"/prompt_spaceship_setup ]; then
+      ln -sf "${GUIX_EXTRA_PROFILES}"/desktop/desktop/lib/spaceship-prompt "${FPATH_FUNCTION_DIR}"/prompt_spaceship_setup
+  fi
+  autoload -U promptinit && promptinit
+  prompt spaceship
+#+end_src
+*** TODO Syntax highlighting
+The plugin for syntax highlighting must be sourced at the end of the tangled =.zshrc=. Therefore nothing should follow this plugin. More information can be found [[https://github.com/zsh-users/zsh-syntax-highlighting#why-must-zsh-syntax-highlightingzsh-be-sourced-at-the-end-of-the-zshrc-file][here]].
+*Note*: This will not work if the profile =starship-prompt= has been installed with is not called =desktop=. This needs some further tweaking.
+#+begin_src sh :noweb-ref zsh
+  if [ -d "${GUIX_EXTRA_PROFILES}"/desktop/desktop/share/zsh-syntax-highlighting ]; then
+      . "${GUIX_EXTRA_PROFILES}"/desktop/desktop/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+  fi
+#+end_src
