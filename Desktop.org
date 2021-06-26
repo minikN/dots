@@ -19,24 +19,27 @@ This file will tangle various files. One of which is =desktop.scm=, which is use
 :END:
   
 :CONTENTS:
-- [[#zshell][ZShell]]
-  - [[#basic-settings][Basic settings]]
-  - [[#exports][Exports]]
-    - [[#guix-profile][Guix profile]]
-    - [[#xdg-base-directories][XDG base directories]]
-    - [[#custom-directories][Custom directories]]
-    - [[#default-applications][Default applications]]
-    - [[#application-specific-variables][Application specific variables]]
-  - [[#aliases][Aliases]]
-    - [[#navigation-helpers][Navigation helpers]]
-    - [[#application-specific-aliases][Application specific aliases]]
-  - [[#plugins][Plugins]]
-    - [[#basic-plugins][Basic plugins]]
-    - [[#prompt][Prompt]]
-    - [[#syntax-highlighting][Syntax highlighting]]
+- [[#applications][Applications]]
+  - [[#zshell][ZShell]]
+    - [[#basic-settings][Basic settings]]
+    - [[#exports][Exports]]
+      - [[#guix-profile][Guix profile]]
+      - [[#xdg-base-directories][XDG base directories]]
+      - [[#custom-directories][Custom directories]]
+      - [[#default-applications][Default applications]]
+      - [[#application-specific-variables][Application specific variables]]
+    - [[#aliases][Aliases]]
+      - [[#navigation-helpers][Navigation helpers]]
+      - [[#application-specific-aliases][Application specific aliases]]
+    - [[#plugins][Plugins]]
+      - [[#basic-plugins][Basic plugins]]
+      - [[#prompt][Prompt]]
+      - [[#syntax-highlighting][Syntax highlighting]]
+  - [[#gnupg][GnuPG]]
 :END:
 
-* ZShell
+* Applications
+** ZShell
 I use =zsh= as my main shell. I have configured my system in a way so that =$ZDOTDIR= is automatically set to =$HOME/.config/zsh=. This is the entry for all of my own configuration.
 By default, =zsh= will look for a =.zshrc= inside =$ZDOTDIR=. Let's do it.
 
@@ -51,7 +54,7 @@ By default, =zsh= will look for a =.zshrc= inside =$ZDOTDIR=. Let's do it.
   "zsh"
 #+end_src
 
-** Basic settings
+*** Basic settings
 This covers the basic settings, like =HISTSIZE=, I configured my =zsh= with. Plugins, like syntax-highlighting have add to the file's tail. They therefore appear last in this chapter.
 
 #+begin_src sh :noweb-ref zsh
@@ -69,10 +72,10 @@ This covers the basic settings, like =HISTSIZE=, I configured my =zsh= with. Plu
   fi
   fpath=( ${FPATH_FUNCTION_DIR} $fpath )
 #+end_src
-** Exports
+*** Exports
 This section covers all the global variables I define in my =.zshrc=. This includes all =export= statements.
   
-*** Guix profile
+**** Guix profile
 I use GNU/Guix as my operating system of choice (it's great, you should too!). The very first thing I need to do is to export =$GUIX_PROFILE= so Guix knows where to find my profile. 
 #+begin_src sh :noweb-ref zsh
   # Setting Guix profile
@@ -98,7 +101,7 @@ You can install (or update) a profile like so
   guix package --manifest=/path/to/guix-my-project-manifest.scm --profile="$GUIX_EXTRA_PROFILES"/my-project/my-project
 #+end_src
     
-*** XDG base directories
+**** XDG base directories
 After setting =$GUIX_PROFILE=, the most important thing for me is to properly set my base directories following the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables][XDG specification]]. With Guix, I do not need to set =$XDG_DATA_DIRS= and =$XDG_CONFIG_DIRS= (you could of course add to them with =export XDG_CONFIG_DIRS=<your path>:$XDG_CONFIG_DIRS=) because it is already set by default. I'm finde with the default so I commented the section out.
 #+begin_src sh :noweb-ref zsh
   export XDG_CONFIG_HOME="${HOME}"/.config
@@ -117,7 +120,7 @@ After setting =$GUIX_PROFILE=, the most important thing for me is to properly se
   fi
 #+end_src
 
-*** Custom directories
+**** Custom directories
 I need a couple of custom directories. For now, =$GITDIR= is where I store all my cloned git repositories, this includes projects I'm working on. I should probably derive a =$WORKDIR= variable from it to house my work related projects, but for now this is good. =$BINDIR= is the path to my local binaries, this would include shell scripts I need system wide access to. Hence why I add it to the =$PATH=.
 
 #+begin_src sh :noweb-ref zsh
@@ -134,7 +137,7 @@ I used to use =doom-emacs= (and maybe I will again). It places its CLI binary in
   export PATH="${XDG_CONFIG_HOME}/emacs/bin:${PATH}"
 #+end_src
     
-*** Default applications
+**** Default applications
 Next are variables to declare default applications. Stuff like =$BROWSER= and =$EDITOR= goes in here. Again, there is no need to set =$SHELL= manually. Guix sets it by default.
 
 #+begin_src sh :noweb-ref zsh
@@ -143,7 +146,7 @@ Next are variables to declare default applications. Stuff like =$BROWSER= and =$
   export BROWSER="next"
 #+end_src
 
-*** Application specific variables
+**** Application specific variables
 This section covers application-specific exports. This, for the most part, is an effort in keeping my home directory clean. I set my =$XDG_CONFIG_HOME= to =$HOME/.config=, and many applications respect that, which is great. However, there still is a plethora of applications that are not aware of it and have default config file paths in =$HOME=.
 However, many, but not all (looking at you, [[https://bugzilla.mindrot.org/show_bug.cgi?id=2050][ssh]]) of them can be configured to be aware of where I want them to put their config files.
 The Arch-Wiki offers a good [[https://wiki.archlinux.org/title/XDG_Base_Directory][list]] of applications that can be configured that way.
@@ -161,10 +164,10 @@ The Arch-Wiki offers a good [[https://wiki.archlinux.org/title/XDG_Base_Director
   export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) # SSH
 #+end_src
     
-** Aliases
+*** Aliases
 This section covers all of my aliases. To some extend, this also includes aliases to applications which offer a =--config= (or simliar) parameter for its config directory. There is an argument to be made whether one should rather keep this somewhere else (maybe a section of each application with =export=\s and =alias=\es bundlded together). However, I decided to split it like this.
 
-*** Navigation helpers
+**** Navigation helpers
 First some handy aliases to navigate the shell
 
 #+begin_src sh :noweb-ref zsh
@@ -174,7 +177,7 @@ First some handy aliases to navigate the shell
   alias ....="cd ../../../"
 #+end_src
     
-*** Application specific aliases
+**** Application specific aliases
 #+begin_src sh :noweb-ref zsh
   # This list is sorted alphabetically.
   alias dall="d-stp; d-rmc; d-rmv; d-rmi"                    # DOCKER
@@ -188,10 +191,10 @@ First some handy aliases to navigate the shell
   alias qutebrowser="qutebrowser -R"                         # QUTEBROWSER
 #+end_src
 
-** Plugins
+*** Plugins
 ZShell has the ability to install plugins quite easily. This section covers all the various plugins I use for my setup.
 
-*** Basic plugins
+**** Basic plugins
 Some basic plugins like =colors= and =compinit=
 #+begin_src sh :noweb-ref zsh
   zstyle :compinstall filename '${ZDOTDIR}/.zshrc'
@@ -199,7 +202,7 @@ Some basic plugins like =colors= and =compinit=
   autoload -U colors && colors
 #+end_src
 
-*** TODO Prompt
+**** TODO Prompt
 This covers my prompt. I recently switched to [[https://github.com/spaceship-prompt/spaceship-prompt][starship]]. However, in order for it to work properly, I need to symlink the installed packaged to =$FPATH_FUNCTION_DIR=.
 
 *Note*: This will not work if the profile =starship-prompt= has been installed with is not called =desktop=. This needs some further tweaking.
@@ -212,11 +215,11 @@ This covers my prompt. I recently switched to [[https://github.com/spaceship-pro
 #+end_src
 
 #+begin_src scheme :noweb-ref packages
-  "starship-prompt"
+  "spaceship-prompt"
   "font-tamzen"
 #+end_src
 
-*** TODO Syntax highlighting
+**** TODO Syntax highlighting
 The plugin for syntax highlighting must be sourced at the end of the tangled =.zshrc=. Therefore nothing should follow this plugin. More information can be found [[https://github.com/zsh-users/zsh-syntax-highlighting#why-must-zsh-syntax-highlightingzsh-be-sourced-at-the-end-of-the-zshrc-file][here]].
 
 *Note*: This will not work if the profile =zsh-syntax-highlighting= has been installed with is not called =desktop=. This needs some further tweaking.
@@ -228,4 +231,27 @@ The plugin for syntax highlighting must be sourced at the end of the tangled =.z
 
 #+begin_src scheme :noweb-ref packages
   "zsh-syntax-highlighting"
+#+end_src
+
+** GnuPG
+I use [[https://gnupg.org/][GnuPG]] to manage my key chain. I also configure it to work well with Emacs. Because I work from within Emacs most of the time I use =pinentry-emacs= to control passphrase prompts. Take a look at [[Emacs.org][Emacs.org]] for details.
+
+In my ZShell config, I set =$GNUPGHOME= to =$XDG_DATA_HOME/gnupg= which defaults to =$HOME/.local/share/gnupg= in my case. Now I need to set up the GPG agent to work with my setup. Unfortunately, its configuration only accepts hardcoded paths.
+
+#+begin_src conf :tangle ~/.local/share/gnupg/gpg-agent.conf :mkdirp yes
+  pinentry-program /home/db/.guix-extra-profiles/desktop/desktop/bin/pinentry-emacs
+  enable-ssh-support
+#+end_src
+
+The GPG agent can also take care of authentication through =ssh=. We just need a =sshcontrol= file in the same place with our authentication keygrip.
+
+#+begin_src conf :tangle ~/.local/share/gnupg/sshcontrol :mkdirp yes
+  E3FFA5A1B444A4F099E594758008C1D8845EC7C0
+#+end_src
+
+In order for this to work, we need a GPG keychain (obviously). I have my keychain saved on a USB drive. Together with the management of my password store, this is the only thing about my setup I do not try to automate. So what I would do at this point is copy my keychain from the USB drive to =$GNUPGHOME=. 
+
+#+begin_src scheme :noweb-ref packages
+  "pinentry-emacs"
+  "gnupg"
 #+end_src
