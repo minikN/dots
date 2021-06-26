@@ -44,6 +44,14 @@
                "33f86a4b48205c0dc19d7c036c85393f0766f806"
                (openpgp-fingerprint
 		"736A C00E 1254 378B A982  7AF6 9DBE 8265 81B6 4490"))))
+	    (channel
+	     (name 'rekahsoft)
+	     (url "https://git.rekahsoft.ca/rekahsoft/rekahsoft-guix.git")
+	     (introduction
+	      (make-channel-introduction
+	       "ff64eb4a161665625a6b0c017811e07d1d26482a"
+	       (openpgp-fingerprint
+		"F8D5 46F3 AF37 EF53 D1B6  48BE 7B4D EB93 212B 3022"))))
             %default-channels)))
 
 (define %sddm-hidpi
@@ -155,8 +163,7 @@
 	   spirv-tools
 	   mesa-utils
 	   spirv-headers
-	   shepherd
-	   zsh)
+	   shepherd)
      %base-packages))
 
    (name-service-switch %mdns-host-lookup-nss)))
