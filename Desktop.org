@@ -42,6 +42,7 @@ This file will tangle various files. One of which is =desktop.scm=, which is use
       - [[#syntax-highlighting][Syntax highlighting]]
   - [[#gnupg][GnuPG]]
   - [[#git][Git]]
+  - [[#openssh][OpenSSH]]
 :END:
 
 * Environment
@@ -316,13 +317,19 @@ This is how I globally configure git. At this point, this is just a basic config
 
 #+begin_src conf :tangle ~/.config/git/config :mkdirp yes
   [user]
-	  name = Demis Balbach
-	  email = db@minikn.xyz
-	  signingKey = F17DDB98CC3C405C
+  name = Demis Balbach
+  email = db@minikn.xyz
+  signingKey = F17DDB98CC3C405C
   [core]
-	  editor = emacsclient -c
+  editor = emacsclient -c
   [commit]
-	  gpgSign = true
+  gpgSign = true
   [gpg]
-	  program = gpg
+  program = gpg
+#+end_src
+
+** OpenSSH
+
+#+begin_src scheme :noweb-ref packages
+  "openssh"
 #+end_src
