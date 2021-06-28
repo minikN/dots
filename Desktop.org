@@ -41,6 +41,7 @@ This file will tangle various files. One of which is =desktop.scm=, which is use
       - [[#prompt][Prompt]]
       - [[#syntax-highlighting][Syntax highlighting]]
   - [[#gnupg][GnuPG]]
+  - [[#git][Git]]
 :END:
 
 * Environment
@@ -154,14 +155,14 @@ This section covers all the system wide aliases I need access to.
 :PROPERTIES:
 :CUSTOM_ID: aliases
 :END:
-#+begin_src sh :noweb-ref zsh
+#+begin_src sh :noweb-ref env
   # This list is sorted alphabetically.
   alias dall="d-stp; d-rmc; d-rmv; d-rmi"                    # DOCKER
   alias drmc="docker rm $(docker ps -aq)"
   alias drmi="docker rmi $(docker images -q)"
   alias drmv="docker volume rm $(docker volume ls -q)"
   alias dstp="docker stop $(docker ps -aq)"
-  alias gpg2="gpg2 --homedir ${GNUPGHOME}"                   # GNUPG
+  alias gpg="gpg --homedir ${GNUPGHOME}"                     # GNUPG
   alias mbsync="mbsync -c ${XDG_CONFIG_HOME}/isync/mbsyncrc" # MBSYNC
   alias next="next --session nil"                            # NEXT
   alias qutebrowser="qutebrowser -R"                         # QUTEBROWSER
@@ -293,6 +294,8 @@ In my ZShell config, I set =$GNUPGHOME= to =$XDG_DATA_HOME/gnupg= which defaults
 #+begin_src conf :tangle ~/.local/share/gnupg/gpg-agent.conf :mkdirp yes
   pinentry-program /home/db/.guix-extra-profiles/desktop/desktop/bin/pinentry-emacs
   enable-ssh-support
+  allow-emacs-pinentry
+  allow-loopback-pinentry
 #+end_src
 
 The GPG agent can also take care of authentication through =ssh=. We just need a =sshcontrol= file in the same place with our authentication keygrip.
@@ -306,4 +309,20 @@ In order for this to work, we need a GPG keychain (obviously). I have my keychai
 #+begin_src scheme :noweb-ref packages
   "pinentry-emacs"
   "gnupg"
+#+end_src
+
+** Git
+This is how I globally configure git. At this point, this is just a basic configuration that sets my user as well as my signing key. *Note*: I set my editor to emacs. That way, If I ever wanted to commit something from the terminal, emacs opens in a new frame.
+
+#+begin_src conf :tangle ~/.config/git/config :mkdirp yes
+  [user]
+	  name = Demis Balbach
+	  email = db@minikn.xyz
+	  signingKey = F17DDB98CC3C405C
+  [core]
+	  editor = emacsclient -c
+  [commit]
+	  gpgSign = true
+  [gpg]
+	  program = gpg
 #+end_src
