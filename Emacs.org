@@ -26,10 +26,10 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
   - [[#gpg][GPG]]
 
 * Bugs
-- DOOM [[https://github.com/hlissner/doom-emacs/5219][paste from clipboard]]
+- DOOM [[https://github.com/hlissner/doom-emacs/issues/5219][paste from clipboard]]
 
 * Manifest
-I use DOOM's built-in package manager. However, some packages require external packages (binaries, fonts, ...). I use a Guix profiles called =Emacs= for that purpose. It's manifest file will be tangled to =$XDG_CONFIG_HOME/guix/manifests/emacs.scm= and can be installed with =update-manifest emacs=.
+Some packages require external packages (binaries, fonts, ...). I use a Guix profile called =Emacs= for that purpose. Its manifest file will be tangled to =$XDG_CONFIG_HOME/guix/manifests/emacs.scm= and can be installed with =update-manifest emacs=.
 
 #+begin_src emacs-lisp :tangle ~/.config/guix/manifests/emacs.scm :noweb yes
 ;; This file is auto-generated. Do not make changes manually.
@@ -44,7 +44,7 @@ I use DOOM's built-in package manager. However, some packages require external p
 * Modules
 First, let's define the modules doom should use. These go into =$DOOMDIR/init.el=. Note that you can also declare your own modules, there's a [[https://github.com/hlissner/doom-emacs/blob/develop/docs/getting_started.org#writing-your-own-modules][section]] about it in the documentation. Please note that this list is shortened, I excluded module sections I will never use.
 
-*Note*: I removed the =:completion= block entirely. I don't use any of the completion solutions provided by doom. Instead, I use my own set of packages centered around [[https://github.com/mindad/vertico][vertico]].
+*Note*: I removed the =:completion= block entirely. I don't use any of the completion solutions provided by doom. Instead, I use my own set of packages centered around [[https://github.com/minad/vertico][vertico]].
 #+begin_src emacs-lisp :tangle ~/.config/doom/init.el :noweb yes
 ;;; init.el -*- lexical-binding: t; -*-
 ;; This file is auto-generated. Do not make changes manually.
@@ -261,7 +261,6 @@ sh                      ; she sells {ba,z,fi}sh shells on the C xor
 ;;twitter               ; twitter client https://twitter.com/vnought
 #+end_src
 
-
 * Configuration
 This chapter covers the essential configuration. While I do enjoy GNU/Guix, I currently don't use it to manage my emacs packages (Exceptions to this will be clarified as such). The reason for this is that doom comes with its own package manager built on top of [[https://github.com/raxod502/straight.el][straight.el]], which is (in my opinion) superior to Guix. Doom looks for package definitions in =$DOOMDIR/packages.el=, therefore, I'll create the file and add package definitions to it wherever needed.
 
@@ -283,7 +282,6 @@ This chapter covers the essential configuration. While I do enjoy GNU/Guix, I cu
 #+end_src
 
 ** Basic Settings
-
 Set global user information.
 #+begin_src emacs-lisp :noweb-ref config
 (setq user-full-name "Demis Balbach"
