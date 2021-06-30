@@ -152,6 +152,11 @@ syntax                  ; tasing you for every semicolon you forget
 grammar                 ; tasing grammar mistake every you make
 #+end_src
 
+=flyspell= requires =ispell=. Let's install it.
+#+begin_src emacs-lisp :tangle no :noweb-ref external-packages
+"ispell"
+#+end_src
+
 ** Tools
 #+begin_src emacs-lisp :noweb-ref doom-tools
 (eval +overlay)         ; run code, run (also, repls)
