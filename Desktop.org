@@ -178,9 +178,13 @@ This scripts installs or updates a given manifest. It's [[https://en.wikipedia.o
 
 #+begin_src sh :mkdirp yes :tangle ~/.local/share/bin/update-manifest :tangle-mode (identity #o755) :shebang "#!/bin/sh"
   if [ -n "$1" ]; then
+      DEST="${GUIX_EXTRA_PROFILES}"/"$1"/"$1"
+      if [ ! -d "${DEST}" ]; then
+	  mkdir -p "${DEST}"
+      fi
       guix package \
-	   -m ${XDG_CONFIG_HOME}/guix/manifests/"$1".scm \
-	   -p ${GUIX_EXTRA_PROFILES}/"$1"/"$1"
+	   -m "${XDG_CONFIG_HOME}"/guix/manifests/"$1".scm \
+	   -p "${DEST}"
   else
       echo "Manifest name missing."
   fi  
