@@ -1,0 +1,268 @@
+#+TITLE: Emacs Configuration
+#+AUTHOR: Demis Balbach
+#+PROPERTY: header-args :mkdirp yes
+#+PROPERTY: header-args :tangle-mode (identity #o444)
+
+This file includes the complete configuration for my Emacs setup. Although I have started an emacs config from scratch when I first got into emacs, I soon realized that there are great [[https://github.com/caisah/emacs.dz][pre-built configurations]] out there that save you a lot of time and head-scratching when delving into the rabbit hole that is emacs. However, pre-built configurations themselves can be a rabbit hole as the linked table hopefully shows. Personally, I settled with [[https://github.com/hlissner/doom-emacs][Doom Emacs]], it's a popular configuration and for good reason. I can't imagine going back to anything else at this point.
+
+I like to have *one* org file to configure emacs. Doom on the other hand expects three files to be present: =$DOOMDIR/init.el= for its active modules, =$DOOMDIR/config.el= as a main configuration and =$DOOMDIR/packages.el= for package declarations. Well, what is org mode good for if not tangling files? Just kidding. Generally speaking, the source blocks of this file will be tangled to =config.el= while I'll tangle bits and pieces to =init.el= and =packages.el= where needed.
+
+* Table Of Contents :TOC:
+- [[#bugs][Bugs]]
+- [[#modules][Modules]]
+  - [[#ui][UI]]
+  - [[#editor][Editor]]
+  - [[#emacs][Emacs]]
+  - [[#terminal][Terminal]]
+  - [[#checkers][Checkers]]
+  - [[#tools][Tools]]
+  - [[#languages][Languages]]
+  - [[#email][Email]]
+  - [[#applications][Applications]]
+- [[#applications-1][Applications]]
+  - [[#gpg][GPG]]
+
+* Bugs
+- DOOM [[https://github.com/hlissner/doom-emacs/5219][paste from clipboard]]
+
+* Modules
+First, let's define the modules doom should use. These go into =$DOOMDIR/init.el=. Note that you can also declare your own modules, there's a [[https://github.com/hlissner/doom-emacs/blob/develop/docs/getting_started.org#writing-your-own-modules][section]] about it in the documentation. Please note that this list is shortened, I excluded module sections I will never use.
+
+*Note*: I removed the =:completion= block entirely. I don't use any of the completion solutions provided by doom. Instead, I use my own set of packages centered around [[https://github.com/mindad/vertico][vertico]].
+#+begin_src emacs-lisp :tangle ~/.config/doom/init.el :noweb yes
+;;; init.el -*- lexical-binding: t; -*-
+;; This file is auto-generated. Do not make changes manually.
+;; Exported from Emacs.org
+
+(doom! :ui
+       <<doom-ui>>
+
+       :editor
+       <<doom-editor>>
+
+       :emacs
+       <<doom-emacs>>
+
+       :term
+       <<doom-term>>
+
+       :checkers
+       <<doom-checkers>>
+
+       :tools
+       <<doom-tools>>
+
+       :lang
+       <<doom-lang>>
+
+       :email
+       <<doom-email>>
+
+       :app
+       <<doom-app>>
+
+       (default +bindings +smartparens))
+#+end_src
+
+** UI
+#+begin_src emacs-lisp :noweb-ref doom-ui
+;; This list is sorted alphabetically.
+
+;;(emoji +unicode)      ; 🙂
+;;(popup +defaults)     ; tame sudden yet inevitable temporary windows
+;;deft                  ; notational velocity for Emacs
+;;doom-quit             ; DOOM quit-message prompts when you quit Emacs
+;;fill-column           ; a `fill-column' indicator
+;;hydra
+;;indent-guides         ; highlighted indent columns
+;;ligatures             ; ligatures and symbols to make your code pretty again
+;;minimap               ; show a map of the code on the side
+;;nav-flash             ; blink cursor line after big motions
+;;neotree               ; a project drawer, like NERDTree for vim
+;;tabs                  ; a tab bar for Emacs
+;;treemacs              ; a project drawer, like neotree but cooler
+;;unicode               ; extended unicode support for various languages
+;;vc-gutter             ; vcs diff in the fringe
+;;vi-tilde-fringe       ; fringe tildes to mark beyond EOB
+;;window-select         ; visually switch windows
+;;zen                   ; distraction-free coding or writing
+doom                    ; what makes DOOM look the way it does
+doom-dashboard          ; a nifty splash screen for Emacs
+hl-todo                 ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+modeline                ; snazzy, Atom-inspired modeline, plus API
+ophints                 ; highlight the region an operation acts on
+workspaces              ; tab emulation, persistence & separate workspaces
+#+end_src
+
+** Editor
+#+begin_src emacs-lisp :noweb-ref doom-editor
+;; This list is sorted alphabetically.
+
+(evil +everywhere)      ; come to the dark side, we have cookies
+;;(format +onsave)      ; automated prettiness
+;;fold                  ; (nigh) universal code folding
+;;god                   ; run Emacs commands without modifier keys
+;;lispy                 ; vim for lisp, for people who don't like vim
+;;multiple-cursors      ; editing in many places at once
+;;objed                 ; text object editing for the innocent
+;;parinfer              ; turn lisp into python, sort of
+;;rotate-text           ; cycle region at point between text candidates
+;;word-wrap             ; soft wrapping with language-aware indent
+file-templates          ; auto-snippets for empty files
+snippets                ; my elves. They type so I don't have to
+#+end_src
+
+** Emacs
+#+begin_src emacs-lisp :noweb-ref doom-emacs
+;;ibuffer               ; interactive buffer management
+dired                   ; making dired pretty [functional]
+electric                ; smarter, keyword-based electric-indent
+undo                    ; persistent, smarter undo for your inevitable mistakes
+vc                      ; version-control and Emacs, sitting in a tree
+#+end_src
+
+** Terminal
+#+begin_src emacs-lisp :noweb-ref doom-term
+;;eshell                ; the elisp shell that works everywhere
+;;shell                 ; simple shell REPL for Emacs
+;;term                  ; basic terminal emulator for Emacs
+;;vterm                 ; the best terminal emulation in Emacs
+#+end_src
+
+** Checkers
+#+begin_src emacs-lisp :noweb-ref doom-checkers
+(spell +flyspell)       ; tasing you for misspelling mispelling
+syntax                  ; tasing you for every semicolon you forget
+grammar                 ; tasing grammar mistake every you make
+#+end_src
+
+** Tools
+#+begin_src emacs-lisp :noweb-ref doom-tools
+(eval +overlay)         ; run code, run (also, repls)
+;;ansible
+;;debugger              ; FIXME stepping through code, to help you add bugs
+;;direnv
+;;docker
+;;editorconfig          ; let someone else argue about tabs vs spaces
+;;ein                   ; tame Jupyter notebooks with emacs
+;;gist                  ; interacting with github gists
+;;lsp
+;;make                  ; run make tasks from Emacs
+;;pass                  ; password manager for nerds
+;;pdf                   ; pdf enhancements
+;;prodigy               ; FIXME managing external services & code builders
+;;rgb                   ; creating color strings
+;;taskrunner            ; taskrunner for all your projects
+;;terraform             ; infrastructure as code
+;;tmux                  ; an API for interacting with tmux
+lookup                  ; navigate your code and its documentation
+magit                   ; a git porcelain for Emacs
+;;upload                ; map local to remote projects via ssh/ftp
+#+end_src
+
+** Languages
+#+begin_src emacs-lisp :noweb-ref doom-lang
+;;(dart +flutter)       ; paint ui and not much else
+;;(go +lsp)             ; the hipster dialect
+;;(haskell +dante)      ; a language that's lazier than I am
+;;(java +meghanada)     ; the poster child for carpal tunnel syndrome
+;;(ruby +rails)         ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+;;(scheme +guile)       ; a fully conniving family of lisps
+;;agda                  ; types of types of types of types...
+;;beancount             ; mind the GAAP
+;;cc                    ; C > C++ == 1
+;;clojure               ; java with a lisp
+;;common-lisp           ; if you've seen one lisp, you've seen them all
+;;coq                   ; proofs-as-programs
+;;crystal               ; ruby at the speed of c
+;;csharp                ; unity, .NET, and mono shenanigans
+;;data                  ; config/data formats
+;;elixir                ; erlang done right
+;;elm                   ; care for a cup of TEA?
+;;erlang                ; an elegant language for a more civilized age
+;;ess                   ; emacs speaks statistics
+;;factor
+;;faust                 ; dsp, but you get to keep your soul
+;;fsharp                ; ML stands for Microsoft's Language
+;;fstar                 ; (dependent) types and (monadic) effects and Z3
+;;gdscript              ; the language you waited for
+;;hy                    ; readability of scheme w/ speed of python
+;;idris                 ; a language you can depend on
+;;javascript            ; all(hope(abandon(ye(who(enter(here))))))
+;;json                  ; At least it ain't XML
+;;julia                 ; a better, faster MATLAB
+;;kotlin                ; a better, slicker Java(Script)
+;;latex                 ; writing papers in Emacs has never been so fun
+;;lean                  ; for folks with too much to prove
+;;ledger                ; be audit you can be
+;;lua                   ; one-based indices? one-based indices
+;;markdown              ; writing docs for people to ignore
+;;nim                   ; python + lisp at the speed of c
+;;nix                   ; I hereby declare "nix geht mehr!"
+;;ocaml                 ; an objective camel
+;;php                   ; perl's insecure younger brother
+;;plantuml              ; diagrams for confusing people more
+;;purescript            ; javascript, but functional
+;;python                ; beautiful is better than ugly
+;;qt                    ; the 'cutest' gui framework ever
+;;racket                ; a DSL for DSLs
+;;raku                  ; the artist formerly known as perl6
+;;rest                  ; Emacs as a REST client
+;;rst                   ; ReST in peace
+;;rust                  ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+;;scala                 ; java, but good
+;;sml
+;;solidity              ; do you need a blockchain? No.
+;;swift                 ; who asked for emoji variables?
+;;terra                 ; Earth and Moon in alignment for performance.
+;;web                   ; the tubes
+;;yaml                  ; JSON, but readable
+;;zig                   ; C, but simpler
+emacs-lisp              ; drown in parentheses
+org                     ; organize your plain life in plain text
+sh                      ; she sells {ba,z,fi}sh shells on the C xor
+#+end_src
+
+** Email
+#+begin_src emacs-lisp :noweb-ref doom-email
+;;(mu4e +gmail)
+;;notmuch
+;;(wanderlust +gmail)
+#+end_src
+
+** Applications
+#+begin_src emacs-lisp :noweb-ref doom-app
+;;(rss +org)            ; emacs as an RSS reader
+;;calendar
+;;emms
+;;everywhere            ; *leave* Emacs!? You must be joking
+;;irc                   ; how neckbeards socialize
+;;twitter               ; twitter client https://twitter.com/vnought
+#+end_src
+
+* Applications
+
+#+begin_src emacs-lisp :tangle ~/.config/doom/config.el :noweb yes
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+
+<<config>>
+#+end_src
+
+#+begin_src emacs-lisp :tangle ~/.config/doom/packages.el :noweb yes
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
+
+<<packages>>
+#+end_src
+
+** GPG
+#+begin_src emacs-lisp :noweb-ref config
+(use-package! pinentry
+  :config
+  (setq epa-pinentry-mode 'loopback)
+  (pinentry-start))
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref packages
+(package! pinentry)
+#+end_src
