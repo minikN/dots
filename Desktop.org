@@ -1,4 +1,5 @@
 #+TITLE: Desktop Environment
+#+AUTHOR: Demis Balbach
 #+PROPERTY: header-args :mkdirp yes
 #+PROPERTY: header-args :tangle-mode (identity #o444)
 
