@@ -77,7 +77,7 @@ First, let's define the modules doom should use. These go into =$DOOMDIR/init.el
        :app
        <<doom-app>>
 
-       (default +bindings +smartparens))
+       (default +smartparens))
 #+end_src
 
 ** UI
