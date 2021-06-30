@@ -261,22 +261,60 @@ sh                      ; she sells {ba,z,fi}sh shells on the C xor
 ;;twitter               ; twitter client https://twitter.com/vnought
 #+end_src
 
-* Applications
 
-#+begin_src emacs-lisp :tangle ~/.config/doom/config.el :noweb yes
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-
-<<config>>
-#+end_src
+* Configuration
+This chapter covers the essential configuration. While I do enjoy GNU/Guix, I currently don't use it to manage my emacs packages (Exceptions to this will be clarified as such). The reason for this is that doom comes with its own package manager built on top of [[https://github.com/raxod502/straight.el][straight.el]], which is (in my opinion) superior to Guix. Doom looks for package definitions in =$DOOMDIR/packages.el=, therefore, I'll create the file and add package definitions to it wherever needed.
 
 #+begin_src emacs-lisp :tangle ~/.config/doom/packages.el :noweb yes
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
+;;; This file is auto-generated. Do not make changes manually.
+;;; Exported from Emacs.org
 
 <<packages>>
 #+end_src
 
-** GPG
+#+begin_src emacs-lisp :tangle ~/.config/doom/config.el :noweb yes
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+;;; This file is auto-generated. Do not make changes manually.
+;;; Exported from Emacs.org
+
+<<config>>
+#+end_src
+
+** Basic Settings
+
+Set global user information.
+#+begin_src emacs-lisp :noweb-ref config
+(setq user-full-name "Demis Balbach"
+      user-nick-name "minikN"
+      user-mail-address "db@minikn.xyz")
+#+end_src
+
+Set the theme.
+#+begin_src emacs-lisp :noweb-ref config
+(setq doom-theme 'doom-monokai-spectrum)
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref packages
+(package! emacs-doom-themes ;recipe
+  (:host github
+   :repo "minikN/emacs-doom-themes"
+   :files ("*.el" "themes/*.el")))
+#+end_src
+
+Set the font and line spacing.
+#+begin_src emacs-lisp :noweb-ref config
+(setq line-spacing 0.2
+      doom-font (font-spec :family "Fira Code Retina" :size 18))
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref external-packages
+"font-fira-code"
+#+end_src
+
+* TODO Applications
+** TODO GPG
 #+begin_src emacs-lisp :noweb-ref config
 (use-package! pinentry
   :config
