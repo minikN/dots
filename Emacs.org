@@ -2,12 +2,13 @@
 #+AUTHOR: Demis Balbach
 #+PROPERTY: header-args :mkdirp yes
 #+PROPERTY: header-args :tangle-mode (identity #o444)
-
+#+DOOMDIR: ~/.config/doom/
+#+MANIFEST: ~/.config/guix/manifests/emacs.scm
 This file includes the complete configuration for my Emacs setup. Although I have started an emacs config from scratch when I first got into emacs, I soon realized that there are great [[https://github.com/caisah/emacs.dz][pre-built configurations]] out there that save you a lot of time and head-scratching when delving into the rabbit hole that is emacs. However, pre-built configurations themselves can be a rabbit hole as the linked table hopefully shows. Personally, I settled with [[https://github.com/hlissner/doom-emacs][Doom Emacs]], it's a popular configuration and for good reason. I can't imagine going back to anything else at this point.
 
 I like to have *one* ORG file to configure emacs. Doom on the other hand expects three files to be present: =$DOOMDIR/init.el= for its active modules, =$DOOMDIR/config.el= as a main configuration and =$DOOMDIR/packages.el= for package declarations. Well, what is ORG mode good for if not tangling files? Just kidding. Generally speaking, the source blocks of this file will be tangled to =config.el= while I'll tangle bits and pieces to =init.el= and =packages.el= where needed. I also create =emacs.scm= in =~/.config/guix/manifests= for external packages (binaries, fonts, ...) I need.
 
-#+begin_src emacs-lisp :tangle ~/.config/guix/manifests/emacs.scm :noweb yes
+#+begin_src emacs-lisp :tangle (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) :noweb yes
 ;; This file is auto-generated. Do not make changes manually.
 ;; Exported from Emacs.org
 
@@ -20,7 +21,7 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
 * Table Of Contents :TOC:
 - [[#bugs][Bugs]]
 - [[#modules][Modules]]
-  - [[#ui][UI]]
+  - [[#user-interface][User Interface]]
   - [[#editor][Editor]]
   - [[#emacs][Emacs]]
   - [[#terminal][Terminal]]
@@ -41,11 +42,11 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
 First, let's define the modules doom should use. These go into =$DOOMDIR/init.el=. Note that you can also declare your own modules, there's a [[https://github.com/hlissner/doom-emacs/blob/develop/docs/getting_started.org#writing-your-own-modules][section]] about it in the documentation. Please note that this list is shortened, I excluded module sections I will never use.
 
 *Note*: I removed the =:completion= block entirely. I don't use any of the completion solutions provided by doom. Instead, I use my own set of packages centered around [[https://github.com/minad/vertico][vertico]].
-#+begin_src emacs-lisp :tangle ~/.config/doom/init.el :noweb yes
+#+begin_src emacs-lisp :tangle (concat (cadr (assoc "DOOMDIR" (org-collect-keywords '("DOOMDIR")))) "init.el") :noweb yes
 ;;; init.el -*- lexical-binding: t; -*-
 ;; This file is auto-generated. Do not make changes manually.
 ;; Exported from Emacs.org
-
+11
 (doom! :ui
        <<doom-ui>>
 
@@ -76,10 +77,8 @@ First, let's define the modules doom should use. These go into =$DOOMDIR/init.el
        (default +smartparens))
 #+end_src
 
-** UI
+** User Interface
 #+begin_src emacs-lisp :noweb-ref doom-ui
-;; This list is sorted alphabetically.
-
 ;;(emoji +unicode)      ; 🙂
 ;;(popup +defaults)     ; tame sudden yet inevitable temporary windows
 ;;deft                  ; notational velocity for Emacs
@@ -108,8 +107,6 @@ workspaces              ; tab emulation, persistence & separate workspaces
 
 ** Editor
 #+begin_src emacs-lisp :noweb-ref doom-editor
-;; This list is sorted alphabetically.
-
 (evil +everywhere)      ; come to the dark side, we have cookies
 ;;(format +onsave)      ; automated prettiness
 ;;fold                  ; (nigh) universal code folding
@@ -260,7 +257,7 @@ sh                      ; she sells {ba,z,fi}sh shells on the C xor
 * Configuration
 This chapter covers the essential configuration. While I do enjoy GNU/Guix, I currently don't use it to manage my emacs packages (Exceptions to this will be clarified as such). The reason for this is that doom comes with its own package manager built on top of [[https://github.com/raxod502/straight.el][straight.el]], which is (in my opinion) superior to Guix. Doom looks for package definitions in =$DOOMDIR/packages.el=, therefore, I'll create the file and add package definitions to it wherever needed.
 
-#+begin_src emacs-lisp :tangle ~/.config/doom/packages.el :noweb yes
+#+begin_src emacs-lisp :tangle (concat (cadr (assoc "DOOMDIR" (org-collect-keywords '("DOOMDIR")))) "packages.el") :noweb yes
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 ;;; This file is auto-generated. Do not make changes manually.
@@ -269,7 +266,7 @@ This chapter covers the essential configuration. While I do enjoy GNU/Guix, I cu
 <<packages>>
 #+end_src
 
-#+begin_src emacs-lisp :tangle ~/.config/doom/config.el :noweb yes
+#+begin_src emacs-lisp :tangle (concat (cadr (assoc "DOOMDIR" (org-collect-keywords '("DOOMDIR")))) "config.el") :noweb yes
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 ;;; This file is auto-generated. Do not make changes manually.
 ;;; Exported from Emacs.org
