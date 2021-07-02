@@ -4,6 +4,7 @@
 #+PROPERTY: header-args :tangle-mode (identity #o444)
 #+DOOMDIR: ~/.config/doom/
 #+MANIFEST: ~/.config/guix/manifests/emacs.scm
+
 This file includes the complete configuration for my Emacs setup. Although I have started an emacs config from scratch when I first got into emacs, I soon realized that there are great [[https://github.com/caisah/emacs.dz][pre-built configurations]] out there that save you a lot of time and head-scratching when delving into the rabbit hole that is emacs. However, pre-built configurations themselves can be a rabbit hole as the linked table hopefully shows. Personally, I settled with [[https://github.com/hlissner/doom-emacs][Doom Emacs]], it's a popular configuration and for good reason. I can't imagine going back to anything else at this point.
 
 I like to have *one* ORG file to configure emacs. Doom on the other hand expects three files to be present: =$DOOMDIR/init.el= for its active modules, =$DOOMDIR/config.el= as a main configuration and =$DOOMDIR/packages.el= for package declarations. Well, what is ORG mode good for if not tangling files? Just kidding. Generally speaking, the source blocks of this file will be tangled to =config.el= while I'll tangle bits and pieces to =init.el= and =packages.el= where needed. I also create =emacs.scm= in =~/.config/guix/manifests= for external packages (binaries, fonts, ...) I need.
@@ -33,7 +34,7 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
 - [[#configuration][Configuration]]
   - [[#basic-settings][Basic Settings]]
 - [[#applications-1][Applications]]
-  - [[#gpg][GPG]]
+  - [[#pinentry][Pinentry]]
 
 * Bugs
 - DOOM [[https://github.com/hlissner/doom-emacs/issues/5219][paste from clipboard]]
@@ -353,8 +354,13 @@ Set the font and line spacing.
 "font-fira-code"
 #+end_src
 
-* TODO Applications
-** TODO GPG
+* Applications
+** Pinentry
+
+I use [[https://gnupg.org][GnuPG]] to manage my keys. More information about the system setup of GnuPG can be found [[file:Desktop.org::*GnuPG][here]]. This all is fine, but I want to be prompted for my passphrase in the mini buffer when working with git or similar tools. We can use the =pinentry= package for that, it needs some additional configuration to work. After that, we need to start it with =pinentry-start=.
+
+With that configuration (together with the configuration in [[Desktop.org][Desktop.org]]) I'll be prompted for my passphrase when encrypting, signing or authenticating. Neat!
+
 #+begin_src emacs-lisp :noweb-ref config
 (use-package! pinentry
   :config
