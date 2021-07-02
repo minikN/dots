@@ -276,10 +276,38 @@ This chapter covers the essential configuration. While I do enjoy GNU/Guix, I cu
 
 ** Basic Settings
 Set global user information.
+
 #+begin_src emacs-lisp :noweb-ref config
 (setq user-full-name "Demis Balbach"
       user-nick-name "minikN"
       user-mail-address "db@minikn.xyz")
+#+end_src
+
+*** Editor
+Some sensible defaults for working with emacs.
+
+#+begin_src emacs-lisp :noweb-ref config
+(setq-default
+ undo-limit (* 8 1024 1024)                     ; Set the undo history limit to 80 MB
+ gc-cons-threshold (* 8 1024 1024)              ; Threshold for garbage collection (80 MB)
+ read-process-output-max (* 1024 1024)          ; Threshold for process output (10 MB)
+ evil-want-fine-undo t                          ; Be more granular with undo in insert mode
+ global-auto-revert-none-file-buffers t         ; Automatically revert non-file buffers
+ auto-save-default t                            ; auto-save is a nice feature
+ backup-directory-alist                         ; But I don't like emacs littering my file system
+ `((".*" . ,temporary-file-directory))          ; with auto-save and backup files.
+ auto-save-file-name-transforms                 ; Therefore, move them to /tmp/.
+ `((".*" ,temporary-file-directory t))
+ delete-by-moving-to-trash t                    ; Delete by moving to trash
+ ;; help-window-select t                        ; Focus new help buffers (set this with popper)
+ indent-tabs-mode nil                           ; No tabs for indentation
+ tab-with 4                                     ; 4 spaces = 1 tab
+ scroll-margin 2                                ; Margin when scrolling vertically
+ select-enable-clipboard t)                     ; Merge emacs' and system' clipboard.
+
+(global-auto-revert-mode 1)                     ; Automatically revert file buffers
+(global-subword-mode 1)                         ; Iterate through camelCase
+(set-default-coding-systems 'utf-8)             ; Default utf-8 encoding
 #+end_src
 
 *** Default Applications
