@@ -309,10 +309,10 @@ Set the theme. I use my own fork of [[https://github.com/hlissner/emacs-doom-the
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref packages
-(package! emacs-doom-themes ;recipe
-  (:host github
-   :repo "minikN/emacs-doom-themes"
-   :files ("*.el" "themes/*.el")))
+(package! emacs-doom-themes
+  :recipe (:host github
+           :repo "minikN/emacs-doom-themes"
+           :files ("*.el" "themes/*.el")))
 #+end_src
 
 Set the font and line spacing.
