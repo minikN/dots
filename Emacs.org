@@ -21,7 +21,8 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
 #+end_src
 
 * Table Of Contents :TOC:
-- [[#todo][TODO]]
+- [[#things-to-do][Things to do]]
+  - [[#in-general][In general]]
   - [[#packages][Packages]]
 - [[#modules][Modules]]
   - [[#user-interface][User Interface]]
@@ -43,9 +44,11 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
   - [[#pinentry][Pinentry]]
 - [[#local-variables][Local Variables]]
 
-* TODO
+* Things to do
+** TODO In general
 - popper key bindings via =general=
-** Packages
+
+** TODO Packages
 =move-text=
 
 * Modules
