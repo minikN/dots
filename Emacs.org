@@ -90,7 +90,6 @@ First, let's define the modules doom should use. These go into =$DOOMDIR/init.el
 ** User Interface
 #+begin_src emacs-lisp :noweb-ref doom-ui
 ;;(emoji +unicode)      ; 🙂
-;;(popup +defaults)     ; tame sudden yet inevitable temporary windows
 ;;deft                  ; notational velocity for Emacs
 ;;doom-quit             ; DOOM quit-message prompts when you quit Emacs
 ;;fill-column           ; a `fill-column' indicator
@@ -112,6 +111,7 @@ doom-dashboard          ; a nifty splash screen for Emacs
 hl-todo                 ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 modeline                ; snazzy, Atom-inspired modeline, plus API
 ophints                 ; highlight the region an operation acts on
+popup                   ; tame sudden yet inevitable temporary windows
 workspaces              ; tab emulation, persistence & separate workspaces
 #+end_src
 
@@ -363,6 +363,51 @@ Set the font and line spacing.
 "font-fira-code"
 #+end_src
 
+** Window Management
+
+Emacs has the ability to spawn windows on demand. However, controlling their placement is as close to rocket science as it gets. Here is a quote from the DOOM manual:
+#+begin_quote
+Not all windows are created equally. Some are less important. Some I want gone once they have served their purpose, like code out or a help buffer. Others I want to stick around, like a scratch buffer or org-capture popup.
+#+end_quote
+
+There are a couple of ways to control the way Emacs spawns windows. One can dig in an customize =display-buffer-alist=, the function responsible for deciding how and where to place a window. However, I believe the Emacs manual itself states that understanding and therefore properly customizing the function itself is not easy. There also are a couple of packages, most notably =shackle=, which is an option. However DOOM also features a built-in popup manager. Let's use it and define some rules.
+
+#+begin_src emacs-lisp :noweb-ref config
+(set-popup-rules!
+  '(
+    ("^\\*\\([Hh]elp\\|Apropos\\)"      :side right :slot 0 :vslot 0 :width 0.25 :select t :quit 'current :modeline nil)
+    ("^\\*Buffer List\\*$"              :side right :slot 0 :vslot 0 :width 0.25 :select t :quit 'current :modeline nil)
+    ("^\\*Warnings\\*$"                 :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
+    ("^\\*Messages\\*$"                 :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
+    ))
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref config
+(use-package! popper
+  :bind (("C-<escape>" . popper-toggle-latest)
+         ("M-<escape>" . popper-cycle)
+         ("C-M-<escape>" . popper-toggle-type))
+  :init
+  (setq popper-reference-buffers
+        '("^\\*\\([Hh]elp\\|Apropos\\)"
+          "^\\*Buffer List\\*$"
+          "^\\*Warnings\\*$"
+          "^\\*Messages\\*$"
+          help-mode
+          helpful-mode))
+  (popper-mode +1)
+  :config
+  (setq popper-display-control nil))
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref packages
+(package! popper)
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref config
+(add-hook! (helpful-mode help-mode)
+  (buffer-face-set :height 105))
+#+End_src
 * Applications
 ** Pinentry
 
