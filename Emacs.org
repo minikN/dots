@@ -41,6 +41,7 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
   - [[#window-management][Window Management]]
 - [[#applications-1][Applications]]
   - [[#pinentry][Pinentry]]
+- [[#local-variables][Local Variables]]
 
 * TODO
 - popper key bindings via =general=
@@ -311,6 +312,7 @@ Some sensible defaults for working with emacs.
  indent-tabs-mode nil                           ; No tabs for indentation
  tab-with 4                                     ; 4 spaces = 1 tab
  scroll-margin 2                                ; Margin when scrolling vertically
+ enable-local-variables t                       ; Automaticall enable safe local variables
  select-enable-clipboard t)                     ; Merge emacs' and system' clipboard.
 
 (global-auto-revert-mode 1)                     ; Automatically revert file buffers
@@ -378,3 +380,9 @@ With that configuration (together with the configuration in [[Desktop.org][Deskt
 #+begin_src emacs-lisp :noweb-ref packages
 (package! pinentry)
 #+end_src
+
+* Local Variables
+# Local Variables:
+# eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload DOOM?") (doom/reload))) nil t)
+# eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Tangle the file?") (org-babel-tangle))) nil t)
+# End:
