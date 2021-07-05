@@ -33,8 +33,12 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
   - [[#languages][Languages]]
   - [[#email][Email]]
   - [[#applications][Applications]]
-- [[#configuration][Configuration]]
-  - [[#basic-settings][Basic Settings]]
+- [[#basic-settings][Basic Settings]]
+  - [[#editor-1][Editor]]
+  - [[#wayland][Wayland]]
+  - [[#default-applications][Default Applications]]
+  - [[#user-interface-1][User Interface]]
+  - [[#window-management][Window Management]]
 - [[#applications-1][Applications]]
   - [[#pinentry][Pinentry]]
 
@@ -258,8 +262,7 @@ sh                      ; she sells {ba,z,fi}sh shells on the C xor
 ;;irc                   ; how neckbeards socialize
 ;;twitter               ; twitter client https://twitter.com/vnought
 #+end_src
-
-* Configuration
+* Basic Settings
 This chapter covers the essential configuration. While I do enjoy GNU/Guix, I currently don't use it to manage my emacs packages (Exceptions to this will be clarified as such). The reason for this is that doom comes with its own package manager built on top of [[https://github.com/raxod502/straight.el][straight.el]], which is (in my opinion) superior to Guix. Doom looks for package definitions in =$DOOMDIR/packages.el=, therefore, I'll create the file and add package definitions to it wherever needed.
 
 #+begin_src emacs-lisp :tangle (concat (cadr (assoc "DOOMDIR" (org-collect-keywords '("DOOMDIR")))) "packages.el") :noweb yes
@@ -279,7 +282,6 @@ This chapter covers the essential configuration. While I do enjoy GNU/Guix, I cu
 <<config>>
 #+end_src
 
-** Basic Settings
 Set global user information.
 
 #+begin_src emacs-lisp :noweb-ref config
@@ -288,7 +290,8 @@ Set global user information.
       user-mail-address "db@minikn.xyz")
 #+end_src
 
-*** Editor
+** Editor
+
 Some sensible defaults for working with emacs.
 
 #+begin_src emacs-lisp :noweb-ref config
