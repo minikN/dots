@@ -15,6 +15,7 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
 
 (specifications->manifest
  '(
+   "emacs-pgtk-native-comp"
    <<external-packages>>
    ))
 #+end_src
