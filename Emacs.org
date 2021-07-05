@@ -56,7 +56,7 @@ First, let's define the modules doom should use. These go into =$DOOMDIR/init.el
 ;;; init.el -*- lexical-binding: t; -*-
 ;; This file is auto-generated. Do not make changes manually.
 ;; Exported from Emacs.org
-11
+
 (doom! :ui
        <<doom-ui>>
 
