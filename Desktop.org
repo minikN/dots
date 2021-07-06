@@ -26,6 +26,7 @@ This file will tangle various files. One of which is =desktop.scm=, which is use
   - [[#gnupg][GnuPG]]
   - [[#git][Git]]
   - [[#openssh][OpenSSH]]
+- [[#local-variables][Local Variables]]
 
 * Environment
 :PROPERTIES:
@@ -320,3 +321,9 @@ program = gpg
 #+begin_src scheme :noweb-ref packages
 "openssh"
 #+end_src
+
+* Local Variables
+# Local Variables:
+# eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload Desktop profile?") (message (shell-command-to-string "update-manifest desktop")))) nil t)
+# eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Tangle the file?") (org-babel-tangle))) nil t)
+# End:
