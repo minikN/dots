@@ -40,6 +40,8 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
   - [[#default-applications][Default Applications]]
   - [[#user-interface-1][User Interface]]
   - [[#window-management][Window Management]]
+  - [[#completion-system][Completion System]]
+  - [[#launching-external-applications][Launching External Applications]]
 - [[#applications-1][Applications]]
   - [[#pinentry][Pinentry]]
 - [[#local-variables][Local Variables]]
@@ -436,6 +438,36 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
 (add-hook! (helpful-mode help-mode)
   (buffer-face-set :height 105))
 #+End_src
+
+** Completion System
+
+I am using the [[https://github.com/minad/vertico][vertico]] stack for completion in emacs, besides vertico, this includes [[https://github.com/minad/consult][consult]], [[https://github.com/minad/marginalia][marginalia]], [[https://github.com/oantolin/orderless][orderless]], [[https://github.com/oantolin/embark][embark]] and [[https://github.com/minad/corfu][corfu]].
+Vertico is a
+
+#+BEGIN_QUOTE
+performant and minimalistic vertical completion UI, which is based on the default completion system
+#+END_QUOTE
+
+similar to [[https://github.com/abo-abo/swiper][ivy]] or [[https://github.com/emacs-helm/helm][helm]]. However, I like the minimalism in the vertico completion stack. So let's get to town.
+
+#+begin_src emacs-lisp :noweb-ref config
+(use-package! vertico
+  :init
+  (vertico-mode)
+  (setq vertico-cycle t))
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref packages
+(package! vertico)
+#+end_src
+
+** Launching External Applications
+I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch external applications
+
+#+begin_src emacs-lisp :noweb-ref packages
+(package! app-launcher
+  :recipe (:host github :repo "SebastienWae/app-launcher"))
+#+end_src
 * Applications
 ** Pinentry
 
