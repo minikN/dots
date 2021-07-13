@@ -18,14 +18,14 @@ This file will tangle various files. One of which is =desktop.scm=, which is use
 * Table Of Contents :TOC:
 - [[#environment][Environment]]
   - [[#exports][Exports]]
-  - [[#aliases][Aliases]]
   - [[#scripts][Scripts]]
   - [[#fonts][Fonts]]
 - [[#applications][Applications]]
-  - [[#zshell][ZShell]]
-  - [[#gnupg][GnuPG]]
   - [[#git][Git]]
+  - [[#browsers][Browsers]]
+  - [[#gnupg][GnuPG]]
   - [[#openssh][OpenSSH]]
+  - [[#zshell][ZShell]]
 - [[#local-variables][Local Variables]]
 
 * Environment
@@ -118,37 +118,19 @@ This section covers application-specific exports. This, for the most part, is an
 However, many, but not all (looking at you, [[https://bugzilla.mindrot.org/show_bug.cgi?id=2050][ssh]]) of them can be configured to be aware of where I want them to put their config files.
 The Arch-Wiki offers a good [[https://wiki.archlinux.org/title/XDG_Base_Directory][list]] of applications that can be configured that way.
 
-#+begin_src sh
-export CC="gcc"                                              # GCC
-export CUDA_CACHE_PATH="${XDG_CACHE_HOME}"/nv                # CUDA
-export DOCKER_CONFIG="${XDG_CONFIG_HOME}"/docker             # DOCKER
-export EMACS_USER_DIRECTORY="${XDG_CONFIG_HOME}"/emacs       # EMACS: Not needed since 27.1?
-export GNUPGHOME="${XDG_DATA_HOME}"/gnupg                    # GNUPG
-export LC_COLLATE="C"                                        # ls
-export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}"/npm/npmrc  # NPM
-export PASSWORD_STORE_DIR="${XDG_DATA_HOME}"/pass            # PASS
-export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) # SSH
+This is a list containing generic exports I need. However, each application may export its own environment variables using the =env-exports= reference.
+
+#+begin_src sh :noweb yes
+export CC="gcc"
+export CUDA_CACHE_PATH="${XDG_CACHE_HOME}"/nv
+export DOCKER_CONFIG="${XDG_CONFIG_HOME}"/docker
+export EMACS_USER_DIRECTORY="${XDG_CONFIG_HOME}"/emacs
+export LC_COLLATE="C"
+export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}"/npm/npmrc
+export PASSWORD_STORE_DIR="${XDG_DATA_HOME}"/pass
+<<env-exports>>
 #+end_src
     
-** Aliases
-This section covers all the system wide aliases I need access to.
-
-*** Application specific aliases
-:PROPERTIES:
-:CUSTOM_ID: aliases
-:END:
-#+begin_src sh
-alias dall="d-stp; d-rmc; d-rmv; d-rmi"                    # DOCKER
-alias drmc="docker rm $(docker ps -aq)"
-alias drmi="docker rmi $(docker images -q)"
-alias drmv="docker volume rm $(docker volume ls -q)"
-alias dstp="docker stop $(docker ps -aq)"
-alias gpg="gpg --homedir ${GNUPGHOME}"                     # GNUPG
-alias mbsync="mbsync -c ${XDG_CONFIG_HOME}/isync/mbsyncrc" # MBSYNC
-alias next="next --session nil"                            # NEXT
-alias qutebrowser="qutebrowser -R"                         # QUTEBROWSER
-#+end_src
-
 ** Scripts
 This section houses all my shell scripts. They will all be tangled to =$BINDIR=. That way, I have access to them when I need to.
 
@@ -182,6 +164,77 @@ In terms of configuration, I don't pack all the fonts I install together. I rath
 #+end_src
 
 * Applications
+
+** Git
+This is how I globally configure git. At this point, this is just a basic configuration that sets my user as well as my signing key. *Note*: I set my editor to emacs. That way, If I ever wanted to commit something from the terminal, emacs opens in a new frame.
+
+#+begin_src conf :tangle ~/.config/git/config :mkdirp yes
+[user]
+name = Demis Balbach
+email = db@minikn.xyz
+signingKey = F17DDB98CC3C405C
+[core]
+editor = emacsclient -c
+[commit]
+gpgSign = true
+[gpg]
+program = gpg
+#+end_src
+
+** Browsers
+
+*** Chromium
+
+GNU/Guix offers an [[https://git.savannah.gnu.org/cgit/guix.git/tree/gnu/packages/chromium.scm#n476][ungoogled]] version of the chromium browser which I like to use. However, because I use wayland, I have to explicitly instruct chromium to use it.
+
+#+begin_src scheme :noweb-ref packages
+"ungoogled-chromium-wayland"
+#+end_src
+
+** GnuPG
+I use [[https://gnupg.org/][GnuPG]] to manage my key chain. I also configure it to work well with Emacs. Because I work from within Emacs most of the time I use =pinentry-emacs= to control passphrase prompts. Take a look at [[Emacs.org][Emacs.org]] for details.
+In my ZShell config, I set =$GNUPGHOME= to =$XDG_DATA_HOME/gnupg= which defaults to =$HOME/.local/share/gnupg= in my case. Now I need to set up the GPG agent to work with my setup. Unfortunately, its configuration only accepts hardcoded paths.
+
+#+begin_src sh :noweb-ref env-exports
+export GNUPGHOME="${XDG_DATA_HOME}"/gnupg
+#+end_src
+
+In order to default to the new =$GNUPGHOME=, we have to define an alias to use.
+
+#+begin_src sh :noweb-ref env-aliases
+alias gpg="gpg --homedir ${GNUPGHOME}"
+#+end_src
+
+#+begin_src conf :tangle ~/.local/share/gnupg/gpg-agent.conf :mkdirp yes
+pinentry-program /home/db/.guix-extra-profiles/desktop/desktop/bin/pinentry-emacs
+enable-ssh-support
+allow-emacs-pinentry
+allow-loopback-pinentry
+#+end_src
+
+The GPG agent can also take care of authentication through =ssh=. We just need a =sshcontrol= file in the same place with our authentication keygrip.
+
+#+begin_src conf :tangle ~/.local/share/gnupg/sshcontrol :mkdirp yes
+E3FFA5A1B444A4F099E594758008C1D8845EC7C0
+#+end_src
+
+In order for this to work, we need a GPG keychain (obviously). I have my keychain saved on a USB drive. Together with the management of my password store, this is the only thing about my setup I do not try to automate. So what I would do at this point is copy my keychain from the USB drive to =$GNUPGHOME=.
+
+#+begin_src scheme :noweb-ref packages
+"pinentry-emacs"
+"gnupg"
+#+end_src
+
+** OpenSSH
+Tell SSH to use the gpg-agent for authentication
+
+#+begin_src sh :noweb-ref env-exports
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+#+end_src
+
+#+begin_src scheme :noweb-ref packages
+"openssh"
+#+end_src
 
 ** ZShell
 :PROPERTIES:
@@ -231,6 +284,21 @@ alias ...="cd ../../"
 alias ....="cd ../../../"
 #+end_src
 
+**** Application specific aliases
+
+This is a list containing generic aliases I need. However, each application may define its own aliases using the =env-aliases= reference.
+
+#+begin_src sh :noweb yes
+alias dall="d-stp; d-rmc; d-rmv; d-rmi"
+alias drmc="docker rm $(docker ps -aq)"
+alias drmi="docker rmi $(docker images -q)"
+alias drmv="docker volume rm $(docker volume ls -q)"
+alias dstp="docker stop $(docker ps -aq)"
+alias mbsync="mbsync -c ${XDG_CONFIG_HOME}/isync/mbsyncrc"
+alias next="next --session nil"
+alias qutebrowser="qutebrowser -R"
+<<env-aliases>>
+#+end_src
 *** Plugins
 ZShell has the ability to install plugins quite easily. This section covers all the various plugins I use for my setup.
 
@@ -271,53 +339,6 @@ fi
 
 #+begin_src scheme :noweb-ref packages
 "zsh-syntax-highlighting"
-#+end_src
-
-** GnuPG
-I use [[https://gnupg.org/][GnuPG]] to manage my key chain. I also configure it to work well with Emacs. Because I work from within Emacs most of the time I use =pinentry-emacs= to control passphrase prompts. Take a look at [[Emacs.org][Emacs.org]] for details.
-
-In my ZShell config, I set =$GNUPGHOME= to =$XDG_DATA_HOME/gnupg= which defaults to =$HOME/.local/share/gnupg= in my case. Now I need to set up the GPG agent to work with my setup. Unfortunately, its configuration only accepts hardcoded paths.
-
-#+begin_src conf :tangle ~/.local/share/gnupg/gpg-agent.conf :mkdirp yes
-pinentry-program /home/db/.guix-extra-profiles/desktop/desktop/bin/pinentry-emacs
-enable-ssh-support
-allow-emacs-pinentry
-allow-loopback-pinentry
-#+end_src
-
-The GPG agent can also take care of authentication through =ssh=. We just need a =sshcontrol= file in the same place with our authentication keygrip.
-
-#+begin_src conf :tangle ~/.local/share/gnupg/sshcontrol :mkdirp yes
-E3FFA5A1B444A4F099E594758008C1D8845EC7C0
-#+end_src
-
-In order for this to work, we need a GPG keychain (obviously). I have my keychain saved on a USB drive. Together with the management of my password store, this is the only thing about my setup I do not try to automate. So what I would do at this point is copy my keychain from the USB drive to =$GNUPGHOME=. 
-
-#+begin_src scheme :noweb-ref packages
-"pinentry-emacs"
-"gnupg"
-#+end_src
-
-** Git
-This is how I globally configure git. At this point, this is just a basic configuration that sets my user as well as my signing key. *Note*: I set my editor to emacs. That way, If I ever wanted to commit something from the terminal, emacs opens in a new frame.
-
-#+begin_src conf :tangle ~/.config/git/config :mkdirp yes
-[user]
-name = Demis Balbach
-email = db@minikn.xyz
-signingKey = F17DDB98CC3C405C
-[core]
-editor = emacsclient -c
-[commit]
-gpgSign = true
-[gpg]
-program = gpg
-#+end_src
-
-** OpenSSH
-
-#+begin_src scheme :noweb-ref packages
-"openssh"
 #+end_src
 
 * Local Variables
