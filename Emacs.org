@@ -450,7 +450,7 @@ Vertico is a
 performant and minimalistic vertical completion UI, which is based on the default completion system
 #+END_QUOTE
 
-similar to [[https://github.com/abo-abo/swiper][ivy]] or [[https://github.com/emacs-helm/helm][helm]]. However, I like the minimalism in the vertico completion stack. So let's get to town.
+similar to [[https://github.com/abo-abo/swiper][ivy]] or [[https://github.com/emacs-helm/helm][helm]]. However, I like the minimalist in the vertico completion stack. So let's get to town.
 
 #+begin_src emacs-lisp :noweb-ref config
 (use-package! vertico
