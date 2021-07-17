@@ -454,6 +454,12 @@ similar to [[https://github.com/abo-abo/swiper][ivy]] or [[https://github.com/em
 
 #+begin_src emacs-lisp :noweb-ref config
 (use-package! vertico
+  :bind (:map vertico-map
+         ("C-j" . vertico-next)
+         ("C-k" . vertico-previous)
+         ("C-f" . vertico-exit)
+         :map minibuffer-local-map
+         ("M-h" . db/completion/minibuffer-backward-kill))
   :init
   (vertico-mode)
   (setq vertico-cycle t))
@@ -461,6 +467,54 @@ similar to [[https://github.com/abo-abo/swiper][ivy]] or [[https://github.com/em
 
 #+begin_src emacs-lisp :noweb-ref packages
 (package! vertico)
+#+end_src
+
+Emacs offers a built-in system for saving history of chosen items throughout the application. Vertico makes proper use of it instead of adding another layer of code.
+
+#+begin_src emacs-lisp :noweb-ref config
+(use-package savehist
+  :config
+  (setq history-length 25)
+  (savehist-mode 1))
+#+end_src
+
+David Wilson implemented a neat [[https://github.com/daviwil/dotfiles/blob/master/Emacs.org#completions-with-vertico][function]] to help with backward deleting units (words, file names, ...) in the mini buffer. I'll add my own prefix for the sake of tidiness, but all credit goes to him.
+
+#+begin_src emacs-lisp :noweb-ref config
+(defun db/completion/minibuffer-backward-kill (arg)
+  "When minibuffer is completing a file name delete up to parent
+folder, otherwise delete a word"
+  (interactive "p")
+  (if minibuffer-completing-file-name
+      ;; Borrowed from https://github.com/raxod502/selectrum/issues/498#issuecomment-803283608
+      (if (string-match-p "/." (minibuffer-contents))
+          (zap-up-to-char (- arg) ?/)
+        (delete-minibuffer-contents))
+      (backward-kill-word arg)))
+#+end_src
+
+[[https://github.com/minad/corfu][Corfu]] offers a minimalist =completion-in-region= enhancement.
+
+#+begin_src emacs-lisp :noweb-ref config
+(use-package! corfu
+  :bind (:map corfu-map
+         ("C-j" . corfu-next)
+         ("C-k" . corfu-previous)
+         ("C-f" . corfu-insert))
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+
+  :init
+  (corfu-global-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref packages
+(package! corfu)
 #+end_src
 
 ** Launching External Applications
