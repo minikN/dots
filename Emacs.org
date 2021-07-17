@@ -22,10 +22,6 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
 
 * Table Of Contents :TOC:
 - [[#things-to-do][Things to do]]
-  - [[#in-general][In general]]
-  - [[#packages][Packages]]
-  - [[#add-marginaliavertico-to-theme][Add Marginalia/Vertico to theme]]
-  - [[#make-temp-buffers-for-compilation-doom-reload-work][Make temp buffers for compilation (doom-reload) work]]
 - [[#modules][Modules]]
   - [[#user-interface][User Interface]]
   - [[#editor][Editor]]
@@ -48,15 +44,11 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
   - [[#pinentry][Pinentry]]
 - [[#local-variables][Local Variables]]
 
-* Things to do
-** TODO In general
+* TODO Things to do
 - popper key bindings via =general=
-
-** TODO Packages
-=move-text=
-
-** TODO Add Marginalia/Vertico to theme
-** TODO Make temp buffers for compilation (doom-reload) work
+- =move-text=
+- Add Marginalia/Vertico to theme
+- Make temp buffers for compilation (doom-reload) work
 * Modules
 First, let's define the modules doom should use. These go into =$DOOMDIR/init.el=. Note that you can also declare your own modules, there's a [[https://github.com/hlissner/doom-emacs/blob/develop/docs/getting_started.org#writing-your-own-modules][section]] about it in the documentation. Please note that this list is shortened, I excluded module sections I will never use.
 
