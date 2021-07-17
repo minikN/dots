@@ -547,6 +547,18 @@ Marginalia adds additional minibuffer completions.
 #+begin_src emacs-lisp :noweb-ref packages
 (package! marginalia)
 #+end_src
+
+Consult is a lightweight alternative to something like counsel for ivy.
+
+#+begin_src emacs-lisp :noweb-ref packages
+(package! consult)
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref external-packages
+"fd"
+"ripgrep"
+#+end_src
+
 ** Launching External Applications
 I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch external applications
 
