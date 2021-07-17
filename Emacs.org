@@ -509,10 +509,6 @@ folder, otherwise delete a word"
   (corfu-global-mode))
 #+end_src
 
-#+begin_src emacs-lisp
-
-#+end_src
-
 #+begin_src emacs-lisp :noweb-ref packages
 (package! corfu)
 #+end_src
