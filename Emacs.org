@@ -534,6 +534,19 @@ Emacs offers [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dynamic
   :bind (("M-/" . dabbrev-completion)
          ("C-M-/" . dabbrev-expand)))
 #+end_src
+
+Marginalia adds additional minibuffer completions.
+
+#+begin_src emacs-lisp :noweb-ref config
+(use-package! marginalia
+  :after vertico
+  :init
+  (marginalia-mode))
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref packages
+(package! marginalia)
+#+end_src
 ** Launching External Applications
 I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch external applications
 
