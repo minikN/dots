@@ -527,9 +527,9 @@ I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch e
 * Applications
 ** Pinentry
 
-I use [[https://gnupg.org][GnuPG]] to manage my keys. More information about the system setup of GnuPG can be found [[file:Desktop.org::*GnuPG][here]]. This all is fine, but I want to be prompted for my passphrase in the mini buffer when working with git or similar tools. We can use the =pinentry= package for that, it needs some additional configuration to work. After that, we need to start it with =pinentry-start=.
+I use [[https://gnupg.org][GnuPG]] to manage my keys. More information about the system setup of GnuPG can be found [[file:Desktop.org::*GnuPG][here]]. This all is fine, but I want to be prompted for my pass phrase in the mini buffer when working with git or similar tools. We can use the =pinentry= package for that, it needs some additional configuration to work. After that, we need to start it with =pinentry-start=.
 
-With that configuration (together with the configuration in [[Desktop.org][Desktop.org]]) I'll be prompted for my passphrase when encrypting, signing or authenticating. Neat!
+With that configuration (together with the configuration in [[Desktop.org][Desktop.org]]) I'll be prompted for my pass phrase when encrypting, signing or authenticating. Neat!
 
 #+begin_src emacs-lisp :noweb-ref config
 (use-package! pinentry
