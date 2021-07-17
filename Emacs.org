@@ -322,7 +322,11 @@ Some sensible defaults for working with emacs.
  tab-with 4                                     ; 4 spaces = 1 tab
  scroll-margin 2                                ; Margin when scrolling vertically
  enable-local-variables t                       ; Automaticall enable safe local variables
- select-enable-clipboard t)                     ; Merge emacs' and system' clipboard.
+ select-enable-clipboard t                      ; Merge emacs' and system' clipboard.
+ completion-cycle-threshold 3                   ; TAB cycle if there are only few candidates
+ read-extended-command-predicate                ; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  #'command-completion-default-include-p        ; Corfu commands are hidden, since they are not supposed to be used via M-x.
+ tab-always-indent 'complete)                   ; Enable indentation+completion using the TAB key.
 
 (global-auto-revert-mode 1)                     ; Automatically revert file buffers
 (global-subword-mode 1)                         ; Iterate through camelCase
@@ -476,7 +480,7 @@ similar to [[https://github.com/abo-abo/swiper][ivy]] or [[https://github.com/em
 Emacs offers a built-in system for saving history of chosen items throughout the application. Vertico makes proper use of it instead of adding another layer of code.
 
 #+begin_src emacs-lisp :noweb-ref config
-(use-package savehist
+(use-package! savehist
   :config
   (setq history-length 25)
   (savehist-mode 1))
@@ -497,26 +501,39 @@ folder, otherwise delete a word"
       (backward-kill-word arg)))
 #+end_src
 
-[[https://github.com/minad/corfu][Corfu]] offers a minimalist =completion-in-region= enhancement.
+Corfu offers a minimalist =completion-in-region= enhancement.
 
 #+begin_src emacs-lisp :noweb-ref config
 (use-package! corfu
   :bind (:map corfu-map
          ("C-j" . corfu-next)
-         ("C-k" . corfu-previous)
-         ("C-f" . corfu-insert))
+         ("C-k" . corfu-previous))
   :custom
   (corfu-cycle t)
   (corfu-auto t)
 
   :init
-  (corfu-global-mode))
+  (corfu-global-mode)
+
+  :config
+  ;; https://github.com/minad/corfu/issues/12#issuecomment-869037519
+  (advice-add 'corfu--setup :after 'evil-normalize-keymaps)
+  (advice-add 'corfu--teardown :after 'evil-normalize-keymaps)
+  (evil-make-overriding-map corfu-map))
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref packages
 (package! corfu)
 #+end_src
 
+Emacs offers [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dynamic-Abbrevs.html][dynamic abbreviations]], simply called =dabbrev=. Corfu works well with them.
+
+#+begin_src emacs-lisp :noweb-ref config
+(use-package! dabbrev
+  ;; Swap M-/ and C-M-/
+  :bind (("M-/" . dabbrev-completion)
+         ("C-M-/" . dabbrev-expand)))
+#+end_src
 ** Launching External Applications
 I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch external applications
 
