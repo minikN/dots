@@ -408,6 +408,7 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
     ("^\\*Warnings\\*$"                 :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
     ("^\\*Messages\\*$"                 :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
     ("^\\*Local Variables\\*$"          :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
+    ("^\\*Shell Command Output\\*$"     :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
     ))
 #+end_src
 
@@ -423,6 +424,7 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
           "^\\*Warnings\\*$"
           "^\\*Messages\\*$"
           "^\\*Local Variables\\*$"
+          "^\\*Shell Command Output\\*$"
           help-mode
           helpful-mode))
   (popper-mode +1)
