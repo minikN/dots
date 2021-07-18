@@ -111,6 +111,7 @@
 	      (simple-service 'zshrc etc-service-type
 			      `(("zprofile" ,(plain-file "zprofile" "\
 							       emulate sh -c '. /etc/profile'
+							       emulate sh -c '. $HOME/.config/profile'
 							       emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'"))))
 	      (remove (lambda (service)
 			(eq? (service-kind service) gdm-service-type))
