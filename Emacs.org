@@ -43,7 +43,9 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
   - [[#pinentry][Pinentry]]
 - [[#local-variables][Local Variables]]
 
-* TODO :noexport:
+* TODO Current problems :noexport:
+
+This is a simple list containing general problems / TODOs that I'll tackle in future commits.
 
 - key bindings via =general=
 - org-mode navigation key bindings
