@@ -45,10 +45,13 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
 
 * TODO :noexport:
 
-- popper key bindings via =general=
+- key bindings via =general=
+- org-mode navigation key bindings
+- truncate in help buffers
 - =move-text=
 - Add Marginalia/Vertico to theme
 - Make temp buffers for compilation (doom-reload) work
+- =hungry-delete=
 
 * Modules
 
