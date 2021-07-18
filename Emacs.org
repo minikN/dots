@@ -333,8 +333,7 @@ Some sensible defaults for working with emacs.
  select-enable-clipboard t                      ; Merge emacs' and system' clipboard.
  completion-cycle-threshold 3                   ; TAB cycle if there are only few candidates
  read-extended-command-predicate                ; Emacs 28: Hide commands in M-x which do not work in the current mode.
-  #'command-completion-default-include-p        ; Corfu commands are hidden, since they are not supposed to be used via M-x.
- tab-always-indent 'complete)                   ; Enable indentation+completion using the TAB key.
+ #'command-completion-default-include-p)        ; Corfu commands are hidden, since they are not supposed to be used via M-x.
 
 (global-auto-revert-mode 1)                     ; Automatically revert file buffers
 (global-subword-mode 1)                         ; Iterate through camelCase
