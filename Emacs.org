@@ -50,7 +50,6 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
 - truncate in help buffers
 - =move-text=
 - Add Marginalia/Vertico to theme
-- Make temp buffers for compilation (doom-reload) work
 - =hungry-delete=
 
 * Modules
@@ -424,12 +423,17 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
 #+begin_src emacs-lisp :noweb-ref config
 (set-popup-rules!
   '(
-    ("^\\*\\([Hh]elp\\|Apropos\\)"      :side right :slot 0 :vslot 0 :width 0.25 :select t :quit 'current :modeline nil)
-    ("^\\*Buffer List\\*$"              :side right :slot 0 :vslot 0 :width 0.25 :select t :quit 'current :modeline nil)
-    ("^\\*Warnings\\*$"                 :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
-    ("^\\*Messages\\*$"                 :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
-    ("^\\*Local Variables\\*$"          :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
-    ("^\\*Shell Command Output\\*$"     :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
+    ("^\\*\\([Hh]elp\\|Apropos\\)"                              :side right :slot 0 :vslot 0 :width 0.25 :select t :quit 'current :modeline nil)
+    ("^\\*Buffer List\\*$"                                      :side right :slot 0 :vslot 0 :width 0.25 :select t :quit 'current :modeline nil)
+    ("^\\*Warnings\\*$"                                         :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
+    ("^\\*Messages\\*$"                                         :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
+    ("^\\*Local Variables\\*$"                                  :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
+    ("^\\*Shell Command Output\\*$"                             :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
+    ("^\\*Async Shell Command\\*$"                              :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
+    ("^\\*doom:"                                                :vslot -4 :size 0.35 :autosave t :select t :modeline t :quit nil :ttl t)
+    ("^\\*doom:\\(?:v?term\\|e?shell\\)-popup"                  :vslot -5 :size 0.35 :select t :modeline nil :quit nil :ttl nil)
+    ("^\\*\\(?:doom \\|Pp E\\)"                                 :vslot -3 :size +popup-shrink-to-fit :autosave t :select ignore :quit t :ttl 0)
+    ("^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\)"    :vslot -2 :size 0.3  :autosave t :quit t :ttl nil)
     ))
 #+end_src
 
@@ -446,6 +450,7 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
           "^\\*Messages\\*$"
           "^\\*Local Variables\\*$"
           "^\\*Shell Command Output\\*$"
+          "^\\*Async Shell Command\\*$"
           help-mode
           helpful-mode))
   (popper-mode +1)
@@ -455,6 +460,7 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
 
 #+begin_src emacs-lisp :noweb-ref packages
 (package! popper)
+(package! lv)
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref config
@@ -601,7 +607,7 @@ With that configuration (together with the configuration in [[Desktop.org][Deskt
 
 * Local Variables
 # Local Variables:
-# eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload Emacs profile?") (message (shell-command-to-string "update-manifest emacs")))) nil t)
 # eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload DOOM?") (doom/reload))) nil t)
+# eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload Emacs profile?") (async-shell-command "update-manifest emacs"))) nil t)
 # eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Tangle the file?") (org-babel-tangle))) nil t)
 # End:
