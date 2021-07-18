@@ -38,20 +38,24 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
   - [[#user-interface-1][User Interface]]
   - [[#window-management][Window Management]]
   - [[#completion-system][Completion System]]
-  - [[#launching-external-applications][Launching External Applications]]
 - [[#applications-1][Applications]]
+  - [[#app-launcher][App launcher]]
   - [[#pinentry][Pinentry]]
 - [[#local-variables][Local Variables]]
 
 * TODO :noexport:
+
 - popper key bindings via =general=
 - =move-text=
 - Add Marginalia/Vertico to theme
 - Make temp buffers for compilation (doom-reload) work
+
 * Modules
+
 First, let's define the modules doom should use. These go into =$DOOMDIR/init.el=. Note that you can also declare your own modules, there's a [[https://github.com/hlissner/doom-emacs/blob/develop/docs/getting_started.org#writing-your-own-modules][section]] about it in the documentation. Please note that this list is shortened, I excluded module sections I will never use.
 
 *Note*: I removed the =:completion= block entirely. I don't use any of the completion solutions provided by doom. Instead, I use my own set of packages centered around [[https://github.com/minad/vertico][vertico]].
+
 #+begin_src emacs-lisp :tangle (concat (cadr (assoc "DOOMDIR" (org-collect-keywords '("DOOMDIR")))) "init.el") :noweb yes
 ;;; init.el -*- lexical-binding: t; -*-
 ;; This file is auto-generated. Do not make changes manually.
@@ -88,6 +92,7 @@ First, let's define the modules doom should use. These go into =$DOOMDIR/init.el
 #+end_src
 
 ** User Interface
+
 #+begin_src emacs-lisp :noweb-ref doom-ui
 ;;(emoji +unicode)      ; 🙂
 ;;deft                  ; notational velocity for Emacs
@@ -116,6 +121,7 @@ workspaces              ; tab emulation, persistence & separate workspaces
 #+end_src
 
 ** Editor
+
 #+begin_src emacs-lisp :noweb-ref doom-editor
 (evil +everywhere)      ; come to the dark side, we have cookies
 ;;(format +onsave)      ; automated prettiness
@@ -132,6 +138,7 @@ snippets                ; my elves. They type so I don't have to
 #+end_src
 
 ** Emacs
+
 #+begin_src emacs-lisp :noweb-ref doom-emacs
 ;;ibuffer               ; interactive buffer management
 dired                   ; making dired pretty [functional]
@@ -141,6 +148,7 @@ vc                      ; version-control and Emacs, sitting in a tree
 #+end_src
 
 ** Terminal
+
 #+begin_src emacs-lisp :noweb-ref doom-term
 ;;eshell                ; the elisp shell that works everywhere
 ;;shell                 ; simple shell REPL for Emacs
@@ -149,6 +157,7 @@ vc                      ; version-control and Emacs, sitting in a tree
 #+end_src
 
 ** Checkers
+
 #+begin_src emacs-lisp :noweb-ref doom-checkers
 (spell +flyspell)       ; tasing you for misspelling mispelling
 syntax                  ; tasing you for every semicolon you forget
@@ -161,6 +170,7 @@ grammar                 ; tasing grammar mistake every you make
 #+end_src
 
 ** Tools
+
 #+begin_src emacs-lisp :noweb-ref doom-tools
 (eval +overlay)         ; run code, run (also, repls)
 ;;ansible
@@ -185,6 +195,7 @@ magit                   ; a git porcelain for Emacs
 #+end_src
 
 ** Languages
+
 #+begin_src emacs-lisp :noweb-ref doom-lang
 ;;(dart +flutter)       ; paint ui and not much else
 ;;(go +lsp)             ; the hipster dialect
@@ -248,6 +259,7 @@ sh                      ; she sells {ba,z,fi}sh shells on the C xor
 #+end_src
 
 ** Email
+
 #+begin_src emacs-lisp :noweb-ref doom-email
 ;;(mu4e +gmail)
 ;;notmuch
@@ -255,6 +267,7 @@ sh                      ; she sells {ba,z,fi}sh shells on the C xor
 #+end_src
 
 ** Applications
+
 #+begin_src emacs-lisp :noweb-ref doom-app
 ;;(rss +org)            ; emacs as an RSS reader
 ;;calendar
@@ -263,7 +276,9 @@ sh                      ; she sells {ba,z,fi}sh shells on the C xor
 ;;irc                   ; how neckbeards socialize
 ;;twitter               ; twitter client https://twitter.com/vnought
 #+end_src
+
 * Basic Settings
+
 This chapter covers the essential configuration. While I do enjoy GNU/Guix, I currently don't use it to manage my emacs packages (Exceptions to this will be clarified as such). The reason for this is that doom comes with its own package manager built on top of [[https://github.com/raxod502/straight.el][straight.el]], which is (in my opinion) superior to Guix. Doom looks for package definitions in =$DOOMDIR/packages.el=, therefore, I'll create the file and add package definitions to it wherever needed.
 
 #+begin_src emacs-lisp :tangle (concat (cadr (assoc "DOOMDIR" (org-collect-keywords '("DOOMDIR")))) "packages.el") :noweb yes
@@ -347,7 +362,8 @@ By default, pasting from the system clipboard does not work with DOOM. It works 
 
 ** Default Applications
 
-Open links the proper browser
+Open links the proper browser.
+
 #+begin_src emacs-lisp :noweb-ref config
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "chromium")
@@ -356,6 +372,7 @@ Open links the proper browser
 ** User Interface
 
 Set the theme. I use my own fork of [[https://github.com/minikN/emacs-doom-themes][doom-themes]] and I need to configure it separately to make use of my changes, namely =doom-colors-extended= as the treemacs theme.
+
 #+begin_src emacs-lisp :noweb-ref config
 (use-package! doom-themes
   :defer t
@@ -381,6 +398,7 @@ Set the theme. I use my own fork of [[https://github.com/minikN/emacs-doom-theme
 #+end_src
 
 Set the font and line spacing.
+
 #+begin_src emacs-lisp :noweb-ref config
 (setq line-spacing 0.2
       doom-font (font-spec :family "Fira Code Retina" :size 17))
@@ -393,6 +411,7 @@ Set the font and line spacing.
 ** Window Management
 
 Emacs has the ability to spawn windows on demand. However, controlling their placement is as close to rocket science as it gets. Here is a quote from the DOOM manual:
+
 #+begin_quote
 Not all windows are created equally. Some are less important. Some I want gone once they have served their purpose, like code out or a help buffer. Others I want to stick around, like a scratch buffer or org-capture popup.
 #+end_quote
@@ -550,14 +569,16 @@ Consult is a lightweight alternative to something like counsel for ivy.
 "ripgrep"
 #+end_src
 
-** Launching External Applications
+* Applications
+
+** App launcher
 I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch external applications
 
 #+begin_src emacs-lisp :noweb-ref packages
 (package! app-launcher
   :recipe (:host github :repo "SebastienWae/app-launcher"))
 #+end_src
-* Applications
+
 ** Pinentry
 
 I use [[https://gnupg.org][GnuPG]] to manage my keys. More information about the system setup of GnuPG can be found [[file:Desktop.org::*GnuPG][here]]. This all is fine, but I want to be prompted for my pass phrase in the mini buffer when working with git or similar tools. We can use the =pinentry= package for that, it needs some additional configuration to work. After that, we need to start it with =pinentry-start=.
