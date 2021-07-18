@@ -516,7 +516,7 @@ folder, otherwise delete a word"
       (if (string-match-p "/." (minibuffer-contents))
           (zap-up-to-char (- arg) ?/)
         (delete-minibuffer-contents))
-      (backward-kill-word arg)))
+    (backward-kill-word arg)))
 #+end_src
 
 Corfu offers a minimalist =completion-in-region= enhancement.
