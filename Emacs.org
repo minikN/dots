@@ -9,7 +9,7 @@ This file includes the complete configuration for my Emacs setup. Although I hav
 
 I like to have *one* ORG file to configure emacs. Doom on the other hand expects three files to be present: =$DOOMDIR/init.el= for its active modules, =$DOOMDIR/config.el= as a main configuration and =$DOOMDIR/packages.el= for package declarations. Well, what is ORG mode good for if not tangling files? Just kidding. Generally speaking, the source blocks of this file will be tangled to =config.el= while I'll tangle bits and pieces to =init.el= and =packages.el= where needed. I also create =emacs.scm= in =~/.config/guix/manifests= for external packages (binaries, fonts, ...) I need.
 
-#+begin_src emacs-lisp :tangle (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) :noweb yes
+#+begin_src scheme :tangle (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) :noweb yes
 ;; This file is auto-generated. Do not make changes manually.
 ;; Exported from Emacs.org
 
