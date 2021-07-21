@@ -56,6 +56,8 @@ This is a simple list containing general problems / TODOs that I'll tackle in fu
 - =move-text=
 - Add Marginalia/Vertico to theme
 - =hungry-delete=
+- configure vterm popup rules
+- recreate rekahsoft packages
 
 * Modules
 
