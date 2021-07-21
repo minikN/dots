@@ -4,6 +4,7 @@
 #+PROPERTY: header-args :tangle-mode (identity #o444)
 #+DOOMDIR: ~/.config/doom/
 #+MANIFEST: ~/.config/guix/manifests/emacs.scm
+#+MANIFEST-DEV: ~/.config/guix/manifests/development.scm
 
 This file includes the complete configuration for my Emacs setup. Although I have started an emacs config from scratch when I first got into emacs, I soon realized that there are great [[https://github.com/caisah/emacs.dz][pre-built configurations]] out there that save you a lot of time and head-scratching when delving into the rabbit hole that is emacs. However, pre-built configurations themselves can be a rabbit hole as the linked table hopefully shows. Personally, I settled with [[https://github.com/hlissner/doom-emacs][Doom Emacs]], it's a popular configuration and for good reason. I can't imagine going back to anything else at this point.
 
@@ -41,6 +42,8 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
 - [[#applications-1][Applications]]
   - [[#app-launcher][App launcher]]
   - [[#pinentry][Pinentry]]
+- [[#development-environment][Development Environment]]
+  - [[#generic-build-tools][Generic build tools]]
 - [[#local-variables][Local Variables]]
 
 * TODO Current problems :noexport:
@@ -604,6 +607,32 @@ With that configuration (together with the configuration in [[Desktop.org][Deskt
 
 #+begin_src emacs-lisp :noweb-ref packages
 (package! pinentry)
+#+end_src
+
+* Development Environment
+
+I spend most of my time in emacs. This (obviously) programming. This section covers my configuration for turning emacs into an IDE. I use [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] as my foundation for this. In addition to that, I also need external tools (linters, build tools, ...). I create a dedicated guix profile called =development= for that purpose.
+
+#+begin_src emacs-lisp :tangle (cadr (assoc "MANIFEST-DEV" (org-collect-keywords '("MANIFEST-DEV")))) :noweb yes
+;; This file is auto-generated. Do not make changes manually.
+;; Exported from Emacs.org
+
+(specifications->manifest
+ '(
+   <<dev-packages>>
+   ))
+#+end_src
+
+** Generic build tools
+
+These are some build tools, so generic they didn't fit anywhere else.
+
+#+begin_src scheme :noweb-ref dev-packages
+"cmake"
+"make"
+"gcc-toolchain"
+"pkg-config"
+"libtool"
 #+end_src
 
 * Local Variables
