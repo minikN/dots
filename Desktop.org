@@ -139,16 +139,23 @@ This scripts installs or updates a given manifest. It's [[https://en.wikipedia.o
 
 #+begin_src sh :tangle ~/.local/share/bin/update-manifest :tangle-mode (identity #o755) :shebang "#!/bin/sh"
 if [ -n "$1" ]; then
-    DEST="${GUIX_EXTRA_PROFILES}"/"$1"/"$1"
+    DEST="${GUIX_EXTRA_PROFILES}"/"$1"
+    PROFILE_DEST="${DEST}"/"$1"
     if [ ! -d "${DEST}" ]; then
 	    mkdir -p "${DEST}"
     fi
     guix package \
 	    -m "${XDG_CONFIG_HOME}"/guix/manifests/"$1".scm \
-	    -p "${DEST}"
+	    -p "${PROFILE_DEST}"
+
+    # Recreate env file if doom is present
+    if command -v doom &> /dev/null; then
+        doom env
+    fi
 else
     echo "Manifest name missing."
 fi
+
 #+end_src
 
 ** Fonts
