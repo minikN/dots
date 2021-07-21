@@ -350,6 +350,6 @@ fi
 
 * Local Variables
 # Local Variables:
-# eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload Desktop profile?") (message (shell-command-to-string "update-manifest desktop")))) nil t)
+# eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload Desktop profile?") (async-shell-command "update-manifest desktop"))) nil t)
 # eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Tangle the file?") (org-babel-tangle))) nil t)
 # End:
