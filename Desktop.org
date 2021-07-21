@@ -310,7 +310,7 @@ autoload -Uz compinit && compinit
 autoload -U colors && colors
 #+end_src
 
-**** TODO Prompt
+**** Prompt
 This covers my prompt. I recently switched to [[https://github.com/spaceship-prompt/spaceship-prompt][starship]]. However, in order for it to work properly, I need to symlink the installed packaged to =$FPATH_FUNCTION_DIR=.
 
 *Note*: This will not work if the profile =starship-prompt= has been installed with is not called =desktop=. This needs some further tweaking.
