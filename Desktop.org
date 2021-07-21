@@ -49,8 +49,8 @@ This section covers all the global variables I define in my =profile=. This incl
 *** Guix profile
 I use GNU/Guix as my operating system of choice (it's great, you should too!). The very first thing I need to do is to export =$GUIX_PROFILE= so Guix knows where to find my profile. 
 #+begin_src sh
-export GUIX_PROFILE="${HOME}"/.guix-profile
-. "/etc/profile"
+GUIX_PROFILE="${HOME}"/.guix-profile
+. "${GUIX_PROFILE}"/etc/profile
 #+end_src
 
 Apart from the default profile, Guix allows me to add custom profile which group certain packages into separate files. This code block activates all available profiles. That means, after you installed them, their packages get usable.
