@@ -163,6 +163,10 @@ eshell                ; the elisp shell that works everywhere
 vterm                 ; the best terminal emulation in Emacs
 #+end_src
 
+#+begin_src scheme :noweb-ref external-packages
+"libvterm"
+#+end_src
+
 ** Checkers
 
 #+begin_src emacs-lisp :noweb-ref doom-checkers
