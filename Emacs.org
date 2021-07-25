@@ -55,7 +55,6 @@ This is a simple list containing general problems / TODOs that I'll tackle in fu
 - truncate in help buffers
 - =move-text=
 - Add Marginalia/Vertico to theme
-- =hungry-delete=
 - configure vterm popup rules
 - recreate rekahsoft packages
 
@@ -349,6 +348,18 @@ Some sensible defaults for working with emacs.
 (global-auto-revert-mode 1)                     ; Automatically revert file buffers
 (global-subword-mode 1)                         ; Iterate through camelCase
 (set-default-coding-systems 'utf-8)             ; Default utf-8 encoding
+#+end_src
+
+I use [[https://github.com/nflath/hungry-delete][hungry-delete]] to delete up/back to the next non-whitespace character. However, I don't want to use this globally, I only bind it to =S-<backspace>= and =S-<delete>=
+
+#+begin_src emacs-lisp :noweb-ref config
+(use-package! hungry-delete
+  :bind (("S-<backspace>" . hungry-delete-backward)
+         ("S-<delete>" . hungry-delete-forward)))
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref packages
+(package! hungry-delete)
 #+end_src
 
 ** Wayland
