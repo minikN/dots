@@ -56,7 +56,7 @@ This is a simple list containing general problems / TODOs that I'll tackle in fu
 - =move-text=
 - Add Marginalia/Vertico to theme
 - configure vterm popup rules
-- recreate rekahsoft packages
+- Sway layouts?
 
 * Modules
 
