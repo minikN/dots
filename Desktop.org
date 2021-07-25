@@ -164,7 +164,7 @@ fi
 #+end_src
 
 *** Run Emacs
-#+begin_src sh :tangle ~/.local/share/bin/run-emacs :tangle-mode (identity #o755) :sheband "#!/bin/sh"
+#+begin_src sh :tangle ~/.local/share/bin/run-emacs :tangle-mode (identity #o755) :shebang "#!/bin/sh"
 if ! emacsclient -e 0 >&/dev/null; then
     emacsclient -a '' -c "$@"
 elif [ $(emacsclient -n -e "(length (frame-list))") == 1 ]; then
