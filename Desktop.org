@@ -26,6 +26,7 @@ This file will tangle various files. One of which is =desktop.scm=, which is use
   - [[#gnupg][GnuPG]]
   - [[#openssh][OpenSSH]]
   - [[#zshell][ZShell]]
+  - [[#sway][Sway]]
 - [[#local-variables][Local Variables]]
 
 * Environment
@@ -176,6 +177,9 @@ In terms of configuration, I don't pack all the fonts I install together. I rath
 This is how I globally configure git. At this point, this is just a basic configuration that sets my user as well as my signing key. *Note*: I set my editor to emacs. That way, If I ever wanted to commit something from the terminal, emacs opens in a new frame.
 
 #+begin_src conf :tangle ~/.config/git/config :mkdirp yes
+## This file is auto-generated. Do not make changes manually.
+## Exported from Desktop.org
+
 [user]
 name = Demis Balbach
 email = db@minikn.xyz
@@ -274,6 +278,7 @@ bindkey -e
 # Add to $fpath so that we can install plugins
 fpath=( "${GUIX_EXTRA_PROFILES}/desktop/desktop/share/zsh/site-functions" $fpath )
 #+end_src
+
 *** Aliases
 This section covers all of my aliases. To some extend, this also includes aliases to applications which offer a =--config= (or similar) parameter for its config directory. There is an argument to be made whether one should rather keep this somewhere else (maybe a section of each application with =export=\s and =alias=\es bundled together). However, I decided to split it like this.
 
@@ -302,6 +307,7 @@ alias next="next --session nil"
 alias qutebrowser="qutebrowser -R"
 <<env-aliases>>
 #+end_src
+
 *** Plugins
 ZShell has the ability to install plugins quite easily. This section covers all the various plugins I use for my setup.
 
@@ -338,6 +344,212 @@ fi
 
 #+begin_src scheme :noweb-ref packages
 "zsh-syntax-highlighting"
+#+end_src
+
+** Sway
+:PROPERTIES:
+:header-args:conf: :tangle ~/.config/sway/config
+:header-args:conf: :mkdirp yes
+:END:
+This chapter covers my configuration for [[https://github.com/swaywm/sway][sway]], my window manager.
+
+#+begin_src conf
+## This file is auto-generated. Do not make changes manually.
+## Exported from Desktop.org
+#+end_src
+
+*** General
+#+begin_src conf
+default_border none
+#+end_src
+
+*** Variables
+#+begin_src conf
+# Logo key. Use Mod1 for Alt
+set $mod Mod4
+
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+
+# Your preferred terminal emulator
+set $term run-emacs -c -e "(eshell)"
+
+# Your preferred application launcher
+# Note: pass the final command to swaymsg so that the resulting window can be opened
+# on the original workspace that the command was run on.
+#set $menu bemenu-run | xargs swaymsg exec --
+set $menu run-emacs -e "(app-launcher-run-app)"
+#+end_src
+
+*** Outputs
+#+begin_src conf
+# Outputs
+output DP-2 pos 0 0
+output HDMI-A-1 pos 2560 0
+#+end_src
+
+*** Bindings
+**** Basics
+#+begin_src conf
+# Start a terminal
+bindsym $mod+Return exec $term
+
+# Kill focused window
+bindsym $mod+Shift+q kill
+
+# Start your launcher
+bindsym $mod+d exec $menu
+
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# Change normal to inverse to use left mouse button for resizing and right
+# mouse button for dragging.
+floating_modifier $mod normal
+
+# Reload the configuration file
+bindsym $mod+Shift+c reload
+
+# Exit sway (logs you out of your Wayland session)
+bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+#+end_src
+
+**** Movement
+#+begin_src conf
+# Move your focus around
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+# Or use $mod+[up|down|left|right]
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Move the focused window with the same, but add Shift
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+# Ditto, with arrow keys
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+#+end_src
+
+**** Workspaces
+#+begin_src conf
+# Switch to workspace
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+# Move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+#+end_src
+
+**** Layout
+#+begin_src conf
+# You can "split" the current object of your focus with
+# $mod+b or $mod+v, for horizontal and vertical splits
+# respectively.
+bindsym $mod+b splith
+bindsym $mod+v splitv
+
+# Switch the current container between different layout styles
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# Make the current focus fullscreen
+bindsym $mod+f fullscreen
+
+# Toggle the current focus between tiling and floating mode
+bindsym $mod+Shift+space floating toggle
+
+# Swap focus between the tiling area and the floating area
+bindsym $mod+space focus mode_toggle
+
+# Move focus to the parent container
+bindsym $mod+a focus parent
+#+end_src
+
+**** Scratch pad
+#+begin_src conf
+# Sway has a "scratchpad", which is a bag of holding for windows.
+# You can send windows there and get them back later.
+
+# Move the currently focused window to the scratchpad
+bindsym $mod+Shift+minus move scratchpad
+
+# Show the next scratchpad window or hide the focused scratchpad window.
+# If there are multiple scratchpad windows, this command cycles through them.
+bindsym $mod+minus scratchpad show
+#+end_src
+
+**** Resize
+#+begin_src conf
+mode "resize" {
+    # left will shrink the containers width
+    # right will grow the containers width
+    # up will shrink the containers height
+    # down will grow the containers height
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+
+    # Ditto, with arrow keys
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+#+end_src
+
+*** Bar
+#+begin_src conf
+bar {
+    position top
+
+    # When the status_command prints a new line to stdout, swaybar updates.
+    # The default just shows the current date and time.
+    status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
+
+    colors {
+        statusline #ffffff
+        background #323232
+        inactive_workspace #32323200 #32323200 #5c5c5c
+    }
+}
 #+end_src
 
 * Local Variables
