@@ -272,11 +272,7 @@ unsetopt beep
 bindkey -e
 
 # Add to $fpath so that we can install plugins
-FPATH_FUNCTION_DIR="${ZDOTDIR}"/functions
-if [ ! -d ${FPATH_FUNCTION_DIR} ]; then
-    mkdir -p ${FPATH_FUNCTION_DIR}
-fi
-fpath=( ${FPATH_FUNCTION_DIR} $fpath )
+fpath=( "${GUIX_EXTRA_PROFILES}/desktop/desktop/share/zsh/site-functions" $fpath )
 #+end_src
 *** Aliases
 This section covers all of my aliases. To some extend, this also includes aliases to applications which offer a =--config= (or similar) parameter for its config directory. There is an argument to be made whether one should rather keep this somewhere else (maybe a section of each application with =export=\s and =alias=\es bundled together). However, I decided to split it like this.
@@ -318,14 +314,10 @@ autoload -U colors && colors
 #+end_src
 
 **** Prompt
-This covers my prompt. I recently switched to [[https://github.com/spaceship-prompt/spaceship-prompt][starship]]. However, in order for it to work properly, I need to symlink the installed packaged to =$FPATH_FUNCTION_DIR=.
+This covers my prompt. I recently switched to [[https://github.com/spaceship-prompt/spaceship-prompt][starship]].
 
-*Note*: This will not work if the profile =starship-prompt= has been installed with is not called =desktop=. This needs some further tweaking.
 #+begin_src sh
-if [ ! -d "${FPATH_FUNCTION_DIR}"/prompt_spaceship_setup ]; then
-    ln -sf "${GUIX_EXTRA_PROFILES}"/desktop/desktop/lib/spaceship-prompt/spaceship.zsh "${FPATH_FUNCTION_DIR}"/prompt_spaceship_setup
-fi
-autoload -U promptinit && promptinit
+autoload -U promptinit; promptinit
 prompt spaceship
 #+end_src
 
