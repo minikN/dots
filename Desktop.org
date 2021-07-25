@@ -80,9 +80,9 @@ export XDG_CACHE_HOME="${HOME}"/.cache
 export XDG_DATA_HOME="${HOME}"/.local/share
 
 # Add profile's share dirs to XDG_DATA_DIRS
-# export XDG_DATA_DIRS="${XDG_DATA_DIRS}:${GUIX_EXTRA_PROFILES}"/desktop/desktop/share
-# export XDG_DATA_DIRS="${XDG_DATA_DIRS}:${GUIX_EXTRA_PROFILES}"/emacs/emacs/share
-# export XDG_DATA_DIRS="${XDG_DATA_DIRS}:${GUIX_EXTRA_PROFILES}"/development/development/share
+export XDG_DATA_DIRS="${XDG_DATA_DIRS}:${GUIX_EXTRA_PROFILES}"/desktop/desktop/share
+export XDG_DATA_DIRS="${XDG_DATA_DIRS}:${GUIX_EXTRA_PROFILES}"/emacs/emacs/share
+export XDG_DATA_DIRS="${XDG_DATA_DIRS}:${GUIX_EXTRA_PROFILES}"/development/development/share
 # export XDG_CONFIG_DIRS="/etc/xdg"
 
 # Setting $XDG_RUNTIME_DIR
