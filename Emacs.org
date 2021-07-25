@@ -381,6 +381,14 @@ Open links the proper browser.
       browse-url-generic-program "chromium")
 #+end_src
 
+Automatically use =zsh= when using =ansi-term=
+
+#+begin_src emacs-lisp :noweb-ref config
+(defadvice ansi-term (before force-bash)
+  (interactive (list (getenv "SHELL"))))
+(ad-activate 'ansi-term)
+#+end_src
+
 ** User Interface
 
 Set the theme. I use my own fork of [[https://github.com/minikN/emacs-doom-themes][doom-themes]] and I need to configure it separately to make use of my changes, namely =doom-colors-extended= as the treemacs theme.
