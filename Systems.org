@@ -4,10 +4,10 @@
 #+PROPERTY: header-args :tangle-mode (identity #o444)
 #+MANIFEST: ~/.config/guix/manifests/systems
 
-This file outlines the system configuration of all of my systems. This mainly involves creating Guix system manifest files as well as initialising systems with them.
+This file outlines the system configuration of all of my systems. This mainly involves creating Guix system manifest files as well as initializing systems with them.
 
 * Channels
-I use some custom channels for my guix systems.
+I use some custom channels for my Guix systems.
 
 #+begin_src scheme :noweb-ref guix-channels :tangle ~/.config/guix/channels.scm
 (cons* (channel
@@ -199,8 +199,9 @@ base-operating-system
 * TODO Geekcave
 
 * WSL
+
 This is the configuration for running my Guix setup on the Windows Subsystem for Linux. This will only work if WSL2 is installed and configured [[https://docs.microsoft.com/en-us/windows/wsl/install-win10][properly]].
-I based this set up on [[https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4][this]] and [[https://gist.github.com/vldn-dev/de379bf81a80ff0a53cd851bcc3bbff2][this]] gist I found online. Running GuixSD as a WSL distribution requires special configuration because it is not offered as a builtin distribution on the Windows store.
+I based this set up on [[https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4][this]] and [[https://gist.github.com/vldn-dev/de379bf81a80ff0a53cd851bcc3bbff2][this]] gist I found online. Running GuixSD as a WSL distribution requires special configuration because it is not offered as a built in distribution on the Windows store.
 
 Tangling this file will create the files necessary to install Guix. To tangle them however, I recommend using a (temporary) WSL distribution like Ubuntu or Debian with Emacs installed. One can then tangle the necessary files with emacs using
 
@@ -216,7 +217,7 @@ First, I need to download the minimal WSL distribution based on =busybox= by [[h
 wsl --import guix /guix rootfs.tgz --version 2
 #+end_src
 
-In case a mistake was made, I can run =wsl -d guix= and start again.
+In case a mistake was made, I can run =wsl --unregister guix= and start again.
 
 ** Installation
 
@@ -288,11 +289,11 @@ This can be run like so
 wsl -d guix /bin/busybox sh -c "/mnt/c/path/to/guix-wsl-install.sh /mnt/c/path/to/wsl.scm"
 #+end_src
 
-The paths are relative to =/=, so because the files are located on your host system, they must be preceeded with =/mnt/c/=. Let's say the files are located in =C:\Users\<user>\Desktop\guix=, then the path would be =/mnt/c/Users/<user>/Desktop/guix=.
+The paths are relative to =/=, so because the files are located on your host system, they must be preceded with =/mnt/c/=. Let's say the files are located in =C:\Users\<user>\Desktop\guix=, then the path would be =/mnt/c/Users/<user>/Desktop/guix=.
 
  **Note**: The install script and the manifest file don't have to be in the same folder. The script also sets the load path to the folder containing the manifest file, this means =wsl.scm= may inherit from other modules located in the same load path (like =base-system.scm=!).
 
-** Initialisation
+** Initialization
 After the script has finished. Now start the distribution by running =wsl -d guix=. This may result in
 
 #+begin_src sh :tangle no
@@ -426,5 +427,6 @@ To make all of this work, I use the following manifest file inheriting from =bas
                                    emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'"))))))))
 wsl-operating-system
 #+end_src
+
 ** TODO GUI Applications
 ** TODO Desktop Icon
