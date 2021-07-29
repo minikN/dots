@@ -17,6 +17,7 @@ This file will tangle various files. One of which is =desktop.scm=, which is use
 
 * Table Of Contents :TOC:
 - [[#environment][Environment]]
+  - [[#channels][Channels]]
   - [[#exports][Exports]]
   - [[#scripts][Scripts]]
   - [[#fonts][Fonts]]
@@ -42,6 +43,44 @@ Let's create the file.
 #+begin_src sh :tangle-mode (identity #o755)
 ## This file is auto-generated. Do not make changes manually.
 ## Exported from Desktop.org
+#+end_src
+
+** Channels
+
+These are the guix channels I currently use. Flatwhatson's guix [[https://github.com/flatwhatson/guix-channel][channel]] offers some interesting packages, for example different Emacs variants like a =pgtk= or =native-comp= build.
+
+#+begin_src scheme :tangle ~/.config/guix/channels.scm :mkdirp yes
+(cons* (channel
+(name 'flat)
+(url "https://github.com/flatwhatson/guix-channel.git")
+(introduction
+ (make-channel-introduction
+  "33f86a4b48205c0dc19d7c036c85393f0766f806"
+  (openpgp-fingerprint
+   "736A C00E 1254 378B A982  7AF6 9DBE 8265 81B6 4490"))))
+#+end_src
+
+The [[https://gitlab.com/nonguix/nonguix][nonguix]] channel is essential for using the full linux kernel. It offers packages, that do not get merged in the main guix channel because they violate their open source policies.
+
+#+begin_src scheme :tangle ~/.config/guix/channels.scm :mkdirp yes
+(channel
+ (name 'nonguix)
+ (url "https://gitlab.com/nonguix/nonguix")
+ ;; Enable signature verification:
+ (introduction
+  (make-channel-introduction
+   "46c1d8bcca674d3a71cd077c52dde9552a89873d"
+   (openpgp-fingerprint
+    "2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5"))))
+#+end_src
+
+This is just my own personal [[https://github.com/minikN/minikn-guix][channel]]. This is a fork of the [[https://git.rekahsoft.ca/rekahsoft/guix][rekahsoft-guix]] channel because it's not available anymore.
+
+#+begin_src scheme :tangle ~/.config/guix/channels.scm :mkdirp yes
+(channel
+ (name 'minikn-guix)
+ (url "https://github.com/minikN/minikn-guix.git"))
+%default-channels)
 #+end_src
 
 ** Exports
@@ -135,7 +174,7 @@ export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}"/npm/npmrc
 export PASSWORD_STORE_DIR="${XDG_DATA_HOME}"/pass
 <<env-exports>>
 #+end_src
-    
+
 ** Scripts
 This section houses all my shell scripts. They will all be tangled to =$BINDIR=. That way, I have access to them when I need to.
 
