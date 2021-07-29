@@ -202,7 +202,13 @@ base-operating-system
 This is the configuration for running my Guix setup on the Windows Subsystem for Linux. This will only work if WSL2 is installed and configured [[https://docs.microsoft.com/en-us/windows/wsl/install-win10][properly]].
 I based this set up on [[https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4][this]] and [[https://gist.github.com/vldn-dev/de379bf81a80ff0a53cd851bcc3bbff2][this]] gist I found online. Running GuixSD as a WSL distribution requires special configuration because it is not offered as a builtin distribution on the Windows store.
 
-Tangling this file will create the files necessary to install Guix. To tangle them however, I recommend using a (temporary) WSL distribution like Ubuntu or Debian with Emacs installed. One can then tangle the necessary files with emacs using =emacsclient -e "(org-babel-tangle-file \"/path/to/Systems.org\")"= . After that copy all the files that will be created in =~/.config/guix/manifests/systems= to a location where Windows can access them.
+Tangling this file will create the files necessary to install Guix. To tangle them however, I recommend using a (temporary) WSL distribution like Ubuntu or Debian with Emacs installed. One can then tangle the necessary files with emacs using
+
+#+begin_src sh :tangle no
+emacsclient -e "(org-babel-tangle-file \"/path/to/Systems.org\")"
+#+end_src
+
+After that copy all the files that will be created in =~/.config/guix/manifests/systems= to a location where Windows can access them.
 
 First, I need to download the minimal WSL distribution based on =busybox= by [[https://github.com/0xbadfca11/miniwsl][0xbadfca11]]. Download the latest release. Then, open up =PowerShell=, navigate to the folder with the downloaded file and type
 
