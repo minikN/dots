@@ -142,7 +142,7 @@ This section houses all my shell scripts. They will all be tangled to =$BINDIR=.
 *** Install/Update manifests
 This scripts installs or updates a given manifest. It's [[https://en.wikipedia.org/wiki/KISS_principle][KISS]]. If I need to extend it, I will. Same goes for everything I do.
 
-#+begin_src sh :tangle ~/.local/share/bin/update-manifest :tangle-mode (identity #o755) :shebang "#!/bin/sh"
+#+begin_src sh :tangle ~/.local/share/bin/update-manifest :tangle-mode (identity #o755) :shebang "#!/bin/sh" :mkdirp yes
 if [ -n "$1" ]; then
     DEST="${GUIX_EXTRA_PROFILES}"/"$1"
     PROFILE_DEST="${DEST}"/"$1"
@@ -164,7 +164,7 @@ fi
 #+end_src
 
 *** Run Emacs
-#+begin_src sh :tangle ~/.local/share/bin/run-emacs :tangle-mode (identity #o755) :shebang "#!/bin/sh"
+#+begin_src sh :tangle ~/.local/share/bin/run-emacs :tangle-mode (identity #o755) :shebang "#!/bin/sh" :mkdirp yes
 if ! emacsclient -e 0 >&/dev/null; then
     emacsclient -a '' -c "$@"
 elif [ $(emacsclient -n -e "(length (frame-list))") == 1 ]; then
@@ -177,7 +177,7 @@ fi
 ** Fonts
 In terms of configuration, I don't pack all the fonts I install together. I rather install and describe them in the context where they are needed. However, for fonts to work in general, I need to add the proper path to =fontconfig=. This needs to be done for every profile that installs fonts. Fortunately, =fontconfig= supports the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables][XDG directory specification]]. This means I can use =${XDG_CONFIG_HOME}/fontconfig= to configure it.
 
-#+begin_src xml :tangle ~/.config/fontconfig/fonts.conf
+#+begin_src xml :tangle ~/.config/fontconfig/fonts.conf :mkdirp yes
 <?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
@@ -363,7 +363,7 @@ fi
 
 ** Sway
 :PROPERTIES:
-:header-args:conf: :tangle ~/.config/sway/config
+:header-args:conf: :tangle ~/.config/sway/config :mkdirp yes
 :header-args:conf: :mkdirp yes
 :END:
 This chapter covers my configuration for [[https://github.com/swaywm/sway][sway]], my window manager.
