@@ -276,7 +276,7 @@ guix archive --authorize < /var/guix/profiles/per-user/root/current-guix/share/g
 guix system reconfigure --no-bootloader --no-grafts -L $(dirname $(readlink -f $1)) $1
 #+end_src
 
-This can be run like so =wsl -d guix /bin/busybox sh -c "/mnt/c/path/to/guix-wsl-install.sh /mnt/c/path/to/wsl.scm"= . The paths are relative to =/=, so because the files are located on your host system, they must be preceeded with =/mnt/c/=. Let's say the files are located in =C:\Users\<user>\Desktop\guix=, then the path would be =/mnt/c/Users/<user>/Desktop/guix= .
+This can be run like so =wsl -d guix /bin/busybox sh -c "/mnt/c/path/to/guix-wsl-install.sh /mnt/c/path/to/wsl.scm"= The paths are relative to =/=, so because the files are located on your host system, they must be preceeded with =/mnt/c/=. Let's say the files are located in =C:\Users\<user>\Desktop\guix=, then the path would be =/mnt/c/Users/<user>/Desktop/guix= .
 
  **Note**: The install script and the manifest file don't have to be in the same folder. The script also sets the load path to the folder containing the manifest file, this means =wsl.scm= may inherit from other modules located in the same load path (like =base-system.scm=!).
 
