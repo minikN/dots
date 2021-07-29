@@ -225,7 +225,7 @@ This script is used to install the base GuixSD.
 ## This file is auto-generated. Do not make changes manually.
 ## Exported from Systems.org
 
-mkdir -p /root /etc /tmp /var/run /run /home
+mkdir -p /root /etc/guix /tmp /var/run /run /home
 chmod 1777 /tmp
 rm /etc/passwd
 cat <<EOM >> /etc/passwd
