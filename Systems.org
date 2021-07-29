@@ -208,7 +208,7 @@ emacsclient -a '' -e "(org-babel-tangle-file \"/path/to/Systems.org\")"
 
 After that copy all the files that will be created in =~/.config/guix/manifests/systems= to a location where Windows can access them.
 
-First, I need to download the minimal WSL distribution based on =busybox= by [[https://github.com/0xbadfca11/miniwsl][0xbadfca11]]. Download the latest release. Then, open up =PowerShell=, navigate to the folder with the downloaded file and type
+First, I need to download the minimal WSL distribution based on =busybox= by [[https://github.com/0xbadfca11/miniwsl][0xbadfca11]]. Download the =rootfs.tgz= of the latest release. If you wish, then you could also [[https://github.com/giuliano108/guix-packages/blob/master/notes/Guix-on-WSL2.md#minimal-rootfs-archive][create]] your own rootfs. Then, open up =PowerShell=, navigate to the folder with the downloaded file and type
 
 #+begin_src sh :tangle no
 wsl --import guix /guix rootfs.tgz --version 2
@@ -320,7 +320,8 @@ export GUIX_PROFILE=/run/current-system
 source "$GUIX_PROFILE/etc/profile"
 #+end_src
 
-Once access to the distribution has been successful. Create a file called =boot.sh= in the roots home folder with
+After running this, try running the distribution again. Once access to the distribution has been successful, create a file called =boot.sh= in the roots home folder with
+
 #+begin_src sh :tangle no
 touch /root/boot.sh && chmod +x /root/boot.sh && vim /root/boot.sh
 #+end_src
@@ -361,7 +362,7 @@ After that's done. =exit= the distribution and try starting it again with
 wsl -d guix /bin/busybox sh -c "/root/boot.sh"
 #+end_src
 
-You should be logged in with your user. For every subsequent start use the same command.
+You should be logged in with your user. For every subsequent start use the same command. You can now delete the =guix-wsl-init.sh= script. However, I'd recommend leaving the other files as is in case you want to reconfigure your system.
 
 ** Updating the system
 Updating the system is done the regular way using
