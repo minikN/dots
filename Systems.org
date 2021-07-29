@@ -91,6 +91,14 @@ I use an additional server for substitutes, that way Guix doesn't need to build 
      ))"))
 #+end_src
 
+#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes
+(define %sddm-hidpi
+  (plain-file
+   "hidpi.conf"
+   "[Wayland]
+    EnableHiDPI=true"))
+#+end_src
+
 Default machine and user settings
 
 #+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes
@@ -206,7 +214,7 @@ I based this set up on [[https://gist.github.com/giuliano108/49ec5bd0a9339db9853
 Tangling this file will create the files necessary to install Guix. To tangle them however, I recommend using a (temporary) WSL distribution like Ubuntu or Debian with Emacs installed. One can then tangle the necessary files with emacs using
 
 #+begin_src sh :tangle no
-emacsclient -e "(org-babel-tangle-file \"/path/to/Systems.org\")"
+emacsclient -a '' -e "(org-babel-tangle-file \"/path/to/Systems.org\")"
 #+end_src
 
 After that copy all the files that will be created in =~/.config/guix/manifests/systems= to a location where Windows can access them.
@@ -297,7 +305,7 @@ The paths are relative to =/=, so because the files are located on your host sys
 After the script has finished. Now start the distribution by running =wsl -d guix=. This may result in
 
 #+begin_src sh :tangle no
--bash: /run/current-system/profile/etc/profile: No such file or directory
+guix system: warning: while talking to shepherd: No such file or directory
 #+end_src
 
 If it does, alter the command, instead running
