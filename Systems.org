@@ -196,7 +196,7 @@ The default packages to install. This is a bare minimum. System-specific configu
 base-operating-system
 #+end_src
 
-* Geekcave
+* TODO Geekcave
 
 * WSL
 This is the configuration for running my Guix setup on the Windows Subsystem for Linux. This will only work if WSL2 is installed and configured [[https://docs.microsoft.com/en-us/windows/wsl/install-win10][properly]].
