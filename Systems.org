@@ -222,7 +222,7 @@ In case a mistake was made, I can run =wsl -d guix= and start again.
 
 This script is used to install the base GuixSD.
 
-#+begin_src sh :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/guix-wsl-install.sh") :mkdirp yes
+#+begin_src sh :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/guix-wsl-install.sh") :mkdirp yes :noweb yes
 #!/bin/sh
 ## This file is auto-generated. Do not make changes manually.
 ## Exported from Systems.org
