@@ -302,44 +302,15 @@ The paths are relative to =/=, so because the files are located on your host sys
  **Note**: The install script and the manifest file don't have to be in the same folder. The script also sets the load path to the folder containing the manifest file, this means =wsl.scm= may inherit from other modules located in the same load path (like =base-system.scm=!).
 
 ** Initialization
-After the script has finished. Now start the distribution by running =wsl -d guix=. This may result in
+After the script has finished. It'll most likely say something like
 
 #+begin_src sh :tangle no
 guix system: warning: while talking to shepherd: No such file or directory
 #+end_src
 
-If it does, alter the command, instead running
-
-#+begin_src sh :tangle no
-wsl -d guix /bin/busybox sh -c "/mnt/c/path/to/guix-wsl-init.sh"
-#+end_src
-
-One needs to run this script only once:
+This is to be expected. The following script initializes Guix and starts all the necessary services. This usually only needs to be run once per session (after a restart).
 
 #+begin_src sh :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/guix-wsl-init.sh") :mkdirp yes
-#!/bin/sh
-DIR="/run/current-system"
-if [ ! -d "$DIR" ]; then
-
-ln -s none /run/current-system &>/dev/null
-export GUIX_NEW_SYSTEM=$(readlink -f /var/guix/profiles/system)
-setsid /var/guix/profiles/system/profile/bin/guile  --no-auto-compile  $GUIX_NEW_SYSTEM/boot &>/dev/null &
-sleep 1
-fi
-
-export GUIX_PROFILE=/run/current-system
-source "$GUIX_PROFILE/etc/profile"
-#+end_src
-
-After running this, try running the distribution again. Once access to the distribution has been successful, create a file called =boot.sh= in the roots home folder with
-
-#+begin_src sh :tangle no
-touch /root/boot.sh && chmod +x /root/boot.sh && vim /root/boot.sh
-#+end_src
-
-and add the following
-
-#+begin_src sh :tangle no
 #!/bin/sh
 DIR="/run/current-system"
 if [ ! -d "$DIR" ]; then
@@ -356,24 +327,28 @@ source "$GUIX_PROFILE/etc/profile"
 for f in ping su sudo; do
         chmod 4755 $(readlink -f $(which $f))
 done
-
-su -l <user> # <-- Change this!
 #+end_src
 
-This is more or less the init script again, but it will also set some permission properly and logs your =<user>= in. Before you log back out, don't forget setting some passwords:
+Run the script like so:
+
+#+begin_src sh :tangle no
+wsl -d guix /bin/busybox sh -c "/mnt/c/path/to/guix-wsl-init.sh"
+#+end_src
+
+The command doesn't produce any output. One may now log into the distribution by running =wsl -d guix=. Once logged in, set some passwords.
 
 #+begin_src sh :tangle no
 passwd
-passwd <user>
+passwd db
 #+end_src
 
 After that's done. =exit= the distribution and try starting it again with
 
 #+begin_src sh :tangle no
-wsl -d guix /bin/busybox sh -c "/root/boot.sh"
+wsl -u db -d guix
 #+end_src
 
-You should be logged in with your user. For every subsequent start use the same command. You can now delete the =guix-wsl-init.sh= script. However, I'd recommend leaving the other files as is in case you want to reconfigure your system.
+For every subsequent start use the same command.
 
 ** Updating the system
 Updating the system is done the regular way using
