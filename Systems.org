@@ -185,7 +185,6 @@ The default packages to install. This is a bare minimum. System-specific configu
   (list git
         curl
         vim
-        emacs
         nss-certs)
   %base-packages))
 
