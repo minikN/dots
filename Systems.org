@@ -425,5 +425,17 @@ To make all of this work, I use the following manifest file inheriting from =bas
 wsl-operating-system
 #+end_src
 
-** TODO GUI Applications
-** TODO Desktop Icon
+** GUI Applications
+
+In order to run GUI applications, the =DISPLAY= variable and some other stuff needs to be set properly. For that reason, I tangle a wrapper script in my [[file:Desktop.org#Scripts][Desktop configuration]].
+See the next section for information on how to use it.
+
+** Desktop Icons
+
+In order to start individual applications from desktop shortcuts, we need a launcher. I create a file called =launcher.vbs= somewhere on my host where I can access it with the following content (edit the user and path to script):
+
+#+begin_src vbs :tangle no
+WScript.CreateObject("WScript.Shell").Run "wsl ~ -u db -d guix /home/db/.local/share/bin/run-wsl " & WScript.Arguments(0), 0, false
+#+end_src
+
+Then I can create a new shortcut on my desktop to that file. After that I right click on it an select =Properties=. In the =target= field I append the name of the application I want to execute, =emacs= for example. Like this: =C:\Users\deb\Desktop\launcher.vbs emacs=. I can even assign a dedicated icon if I wanted to.
