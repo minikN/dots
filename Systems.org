@@ -6,6 +6,18 @@
 
 This file outlines the system configuration of all of my systems. This mainly involves creating Guix system manifest files as well as initializing systems with them.
 
+* Table Of Contents :TOC:
+- [[#channels][Channels]]
+- [[#base-system][Base System]]
+- [[#geekcave][Geekcave]]
+- [[#wsl][WSL]]
+  - [[#installation][Installation]]
+  - [[#initialization][Initialization]]
+  - [[#updating-the-system][Updating the system]]
+  - [[#manifest][Manifest]]
+  - [[#gui-applications][GUI Applications]]
+  - [[#desktop-icons][Desktop Icons]]
+
 * Channels
 I use some custom channels for my Guix systems.
 
