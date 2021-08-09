@@ -44,6 +44,7 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
   - [[#pinentry][Pinentry]]
 - [[#development-environment][Development Environment]]
   - [[#generic-build-tools][Generic build tools]]
+  - [[#node][Node]]
 - [[#local-variables][Local Variables]]
 
 * TODO Current problems :noexport:
@@ -658,6 +659,33 @@ These are some build tools, so generic they didn't fit anywhere else.
 "gcc-toolchain"
 "pkg-config"
 "libtool"
+"perl"
+#+end_src
+
+** Node
+
+I frequently develop using [[https://nodejs.org/en/][node]]. It comes with [[https://www.npmjs.com/][npm]], its package manager. Installing npm packages globally requires =sudo= permissions (which Guix doesn't like). To make this work, I set the =$NPM_PACKAGES= environment variable manually.
+
+#+begin_src sh :tangle ~/.config/profile.d/npm :tangle-mode (identity #o755)
+NPM_PACKAGES="${XDG_DATA_HOME}"/npm
+export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}"/npm/npmrc
+export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
+export PATH="$PATH:$NPM_PACKAGES/bin"
+
+if [ ! -d $NPM_PACKAGES ]; then
+    mkdir -p $NPM_PACKAGES
+fi
+#+end_src
+
+#+begin_src sh :tangle ~/.config/npm/npmrc :mkdirp yes
+prefix=${XDG_DATA_HOME}/npm
+cache=${XDG_CACHE_HOME}/npm
+tmp=${XDG_RUNTIME_DIR}/npm
+init-module=${XDG_CONFIG_HOME}/npm/config/npm-init.js
+#+end_src
+
+#+begin_src scheme :noweb-ref dev-packages
+"node"
 #+end_src
 
 * Local Variables
