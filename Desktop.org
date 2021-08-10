@@ -65,14 +65,14 @@ I use GNU/Guix as my operating system of choice (it's great, you should too!). I
    <<packages>>
    ))
 #+end_src
+
 * Environment
 :PROPERTIES:
-:header-args:sh: :tangle ~/.config/profile :mkdirp yes
+:header-args:sh: :tangle (concat (cdr (assoc 'xdg-config-home file-paths)) "/profile") :mkdirp yes
 :END:
 
-There are many ways to configure the user environment. This is Linux after all. I decided to have my system source one file inside my user directory, which will then set up the environment to my liking. The file to be source is located in =$HOME/.config/profile=. It is suppose to be what is usually referred to as =~/.profile=. However, because I like to keep my home folder as clean as possible I moved it to =~/.config=. But how does it get sourced? Please take a look at my system level =zsh= setup at [[System.org][System.org]]. It's explained there. The purpose of this file is to setup my user environment, not my shell (Prompt, aliases, ...). Everything that goes in here should be available ASAP.
-
-Let's create the file.
+There are many ways to configure the user environment. This is Linux after all. I decided to have my system source one file inside my =xdg-config-home= called =profile=, which will then set up the environment to my liking. It is suppose to be what is usually referred to as =~/.profile=. However, because I like to keep my home folder as clean as possible I moved it.
+But how does it get sourced? Please take a look at my system level =zsh= setup at [[System.org][System.org]]. It's explained there. The purpose of this file is to setup my login shell, not my interactive shell (Prompt, aliases, ...). Let's create the file.
 
 #+begin_src sh :tangle-mode (identity #o755)
 ## This file is auto-generated. Do not make changes manually.
@@ -81,9 +81,9 @@ Let's create the file.
 
 ** Channels
 
-These are the guix channels I currently use. Flatwhatson's guix [[https://github.com/flatwhatson/guix-channel][channel]] offers some interesting packages, for example different Emacs variants like a =pgtk= or =native-comp= build.
+These are the guix channels I currently use. The channels are going to be tangled to =guix-config-home/channels.scm= Flatwhatson's guix [[https://github.com/flatwhatson/guix-channel][channel]] offers some interesting packages, for example different Emacs variants like a =pgtk= or =native-comp= build.
 
-#+begin_src scheme :tangle ~/.config/guix/channels.scm :mkdirp yes
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-config-home file-paths)) "/channels.scm") :mkdirp yes
 (cons* (channel
 (name 'flat)
 (url "https://github.com/flatwhatson/guix-channel.git")
@@ -96,7 +96,7 @@ These are the guix channels I currently use. Flatwhatson's guix [[https://github
 
 The [[https://gitlab.com/nonguix/nonguix][nonguix]] channel is essential for using the full linux kernel. It offers packages, that do not get merged in the main guix channel because they violate their open source policies.
 
-#+begin_src scheme :tangle ~/.config/guix/channels.scm :mkdirp yes
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-config-home file-paths)) "/channels.scm") :mkdirp yes
 (channel
  (name 'nonguix)
  (url "https://gitlab.com/nonguix/nonguix")
@@ -110,7 +110,7 @@ The [[https://gitlab.com/nonguix/nonguix][nonguix]] channel is essential for usi
 
 This is just my own personal [[https://github.com/minikN/minikn-guix][channel]]. This is a fork of the [[https://git.rekahsoft.ca/rekahsoft/guix][rekahsoft-guix]] channel because it's not available anymore.
 
-#+begin_src scheme :tangle ~/.config/guix/channels.scm :mkdirp yes
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-config-home file-paths)) "/channels.scm") :mkdirp yes
 (channel
  (name 'minikn-guix)
  (url "https://github.com/minikN/minikn-guix.git"))
@@ -118,16 +118,20 @@ This is just my own personal [[https://github.com/minikN/minikn-guix][channel]].
 #+end_src
 
 ** Exports
+
 This section covers all the global variables I define in my =profile=. This includes all =export= statements.
   
 *** Guix profile
-I use GNU/Guix as my operating system of choice (it's great, you should too!). The very first thing I need to do is to export =$GUIX_PROFILE= so Guix knows where to find my profile. 
+
+The very first thing I need to do is to export =$GUIX_PROFILE= so Guix knows where to find my profile.
+
 #+begin_src sh
 GUIX_PROFILE="${HOME}"/.guix-profile
 . "${GUIX_PROFILE}"/etc/profile
 #+end_src
 
 Apart from the default profile, Guix allows me to add custom profile which group certain packages into separate files. This code block activates all available profiles. That means, after you installed them, their packages get usable.
+
 #+begin_src sh
 export GUIX_EXTRA_PROFILES="${HOME}"/.guix-extra-profiles
 for i in ${GUIX_EXTRA_PROFILES}/*; do
@@ -141,12 +145,15 @@ done
 #+end_src
 
 You can install (or update) a profile like so
+
 #+begin_src sh :tangle no
 guix package --manifest=/path/to/guix-my-project-manifest.scm --profile="$GUIX_EXTRA_PROFILES"/my-project/my-project
 #+end_src
     
 *** XDG base directories
+
 After setting =$GUIX_PROFILE=, the most important thing for me is to properly set my base directories following the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables][XDG specification]]. With Guix, I do not need to set =$XDG_DATA_DIRS= and =$XDG_CONFIG_DIRS= (you could of course add to them with =export XDG_CONFIG_DIRS=<your path>:$XDG_CONFIG_DIRS=) because it is already set by default. I'm fine with the default so I commented the section out.
+
 #+begin_src sh
 export XDG_CONFIG_HOME="${HOME}"/.config
 export XDG_CACHE_HOME="${HOME}"/.cache
@@ -169,6 +176,7 @@ fi
 #+end_src
 
 *** Custom directories
+
 I need a couple of custom directories. For now, =$GITDIR= is where I store all my cloned git repositories, this includes projects I'm working on. I should probably derive a =$WORKDIR= variable from it to house my work related projects, but for now this is good. =$BINDIR= is the path to my local binaries, this would include shell scripts I need system wide access to. Hence why I add it to the =$PATH=.
 
 #+begin_src sh
@@ -177,12 +185,14 @@ export BINDIR="${XDG_DATA_HOME}"/bin
 export PATH="${BINDIR}:$PATH"
 #+end_src
 
-I used to use =doom-emacs= (and maybe I will again). It places its CLI binary into a =bin= folder inside your emacs configuration. It's probably useful to add this to the path as well.
+I use [[https://github.com/hlissner/doom-emacs][DOOM Emacs]]. It places its CLI binary into a =bin= folder inside your emacs configuration at =xdg-config-home/emacs=. It's probably useful to add this to the path as well.
+
 #+begin_src sh
 export PATH="${XDG_CONFIG_HOME}/emacs/bin:${PATH}"
 #+end_src
 
 *** Default applications
+
 Next are variables to declare default applications. Stuff like =$BROWSER= and =$EDITOR= goes in here. Again, there is no need to set =$SHELL= manually. Guix sets it by default.
 
 #+begin_src sh
@@ -192,10 +202,10 @@ export BROWSER="next"
 #+end_src
 
 *** Application specific variables
-This section covers application-specific exports. This, for the most part, is an effort in keeping my home directory clean. I set my =$XDG_CONFIG_HOME= to =$HOME/.config=, and many applications respect that, which is great. However, there still is a plethora of applications that are not aware of it and have default config file paths in =$HOME=.
-However, many, but not all (looking at you, [[https://bugzilla.mindrot.org/show_bug.cgi?id=2050][ssh]]) of them can be configured to be aware of where I want them to put their config files.
-The Arch-Wiki offers a good [[https://wiki.archlinux.org/title/XDG_Base_Directory][list]] of applications that can be configured that way.
 
+This section covers application-specific exports. This, for the most part, is an effort in keeping my home directory clean. I set my =$XDG_CONFIG_HOME= to =$HOME/.config=, and many applications respect that, which is great. However, there still is a plethora of applications that are not aware of it and have default config file paths in =$HOME=.
+
+However, many, but not all (looking at you, [[https://bugzilla.mindrot.org/show_bug.cgi?id=2050][ssh]]) of them can be configured to be aware of where I want them to put their config files. The Arch-Wiki offers a good [[https://wiki.archlinux.org/title/XDG_Base_Directory][list]] of applications that can be configured that way.
 This is a list containing generic exports I need. However, each application may export its own environment variables using the =env-exports= reference.
 
 #+begin_src sh :noweb yes
@@ -210,12 +220,14 @@ export PASSWORD_STORE_DIR="${XDG_DATA_HOME}"/pass
 #+end_src
 
 ** Scripts
+
 This section houses all my shell scripts. They will all be tangled to =$BINDIR=. That way, I have access to them when I need to.
 
 *** Install/Update manifests
+
 This scripts installs or updates a given manifest. It's [[https://en.wikipedia.org/wiki/KISS_principle][KISS]]. If I need to extend it, I will. Same goes for everything I do.
 
-#+begin_src sh :tangle ~/.local/share/bin/update-manifest :tangle-mode (identity #o755) :shebang "#!/bin/sh" :mkdirp yes
+#+begin_src sh :tangle (concat (cdr (assoc 'bindir file-paths)) "/update-manifest") :tangle-mode (identity #o755) :shebang "#!/bin/sh" :mkdirp yes
 if [ -n "$1" ]; then
     DEST="${GUIX_EXTRA_PROFILES}"/"$1"
     PROFILE_DEST="${DEST}"/"$1"
@@ -237,7 +249,10 @@ fi
 #+end_src
 
 *** Run Emacs
-#+begin_src sh :tangle ~/.local/share/bin/run-emacs :tangle-mode (identity #o755) :shebang "#!/bin/sh" :mkdirp yes
+
+This is a small wrapper around starting Emacs efficiently. If the Emacs server hasn't been started yet, it will attempt to start one and open an client connection to it. If the server has been started it will open a new frame if no frame is visible, otherwise it will use the last selected frame.
+
+#+begin_src sh :tangle (concat (cdr (assoc 'bindir file-paths)) "/run-emacs") :tangle-mode (identity #o755) :shebang "#!/bin/sh" :mkdirp yes
 if ! emacsclient -e 0 >&/dev/null; then
     emacsclient -a '' -c "$@"
 elif [ $(emacsclient -n -e "(length (frame-list))") == 1 ]; then
@@ -248,7 +263,10 @@ fi
 #+end_src
 
 *** Run WSL
-#+begin_src sh :tangle ~/.local/share/bin/run-wsl :tangle-mode (identity #o755) :shebang "#!/bin/sh" :mkdirp yes
+
+A wrapper script around starting GUI applications from the Windows Subsystem for Linux.
+
+#+begin_src sh :tangle (concat (cdr (assoc 'bindir file-paths)) "/run-wsl") :tangle-mode (identity #o755) :shebang "#!/bin/sh" :mkdirp yes
 if uname -r | grep -q 'microsoft'; then
     . $HOME/.config/profile
     export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
@@ -259,9 +277,10 @@ fi
 #+end_src
 
 ** Fonts
+
 In terms of configuration, I don't pack all the fonts I install together. I rather install and describe them in the context where they are needed. However, for fonts to work in general, I need to add the proper path to =fontconfig=. This needs to be done for every profile that installs fonts. Fortunately, =fontconfig= supports the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables][XDG directory specification]]. This means I can use =${XDG_CONFIG_HOME}/fontconfig= to configure it.
 
-#+begin_src xml :tangle ~/.config/fontconfig/fonts.conf :mkdirp yes
+#+begin_src xml :tangle (concat (cdr (assoc 'xdg-config-home file-paths)) "/fontconfig/fonts.conf") :mkdirp yes
 <?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
@@ -272,7 +291,7 @@ In terms of configuration, I don't pack all the fonts I install together. I rath
 
 ** Additional Configuration
 
-I want to configure some applications in other files (for example development tools like [[https://www.npmjs.com/][npm]]). In order for this to work I need to source their configuration files through my =profile=. Therefore, I create =$XDG_CONFIG_HOME/profile.d= and source every file in it.
+I want to configure some applications somehwere else (for example development tools like [[https://www.npmjs.com/][npm]] inside my [[file:Emacs.org][Emacs configuration]]). In order for this to work I need to source their configuration files through my =profile=. Therefore, I create =xdg-config-home/profile.d= and source every file in it.
 
 #+begin_src sh
 if [ ! -d "${XDG_CONFIG_HOME}"/profile.d ]; then
@@ -287,9 +306,10 @@ done
 * Applications
 
 ** Git
+
 This is how I globally configure git. At this point, this is just a basic configuration that sets my user as well as my signing key. *Note*: I set my editor to emacs. That way, If I ever wanted to commit something from the terminal, emacs opens in a new frame.
 
-#+begin_src conf :tangle ~/.config/git/config :mkdirp yes
+#+begin_src conf :tangle (concat (cdr (assoc 'git-config-home file-paths)) "/config") :mkdirp yes
 ## This file is auto-generated. Do not make changes manually.
 ## Exported from Desktop.org
 
@@ -306,7 +326,6 @@ program = gpg
 #+end_src
 
 ** Browsers
-
 *** Chromium
 
 GNU/Guix offers an [[https://git.savannah.gnu.org/cgit/guix.git/tree/gnu/packages/chromium.scm#n476][ungoogled]] version of the chromium browser which I like to use. However, because I use wayland, I have to explicitly instruct chromium to use it.
@@ -316,8 +335,10 @@ GNU/Guix offers an [[https://git.savannah.gnu.org/cgit/guix.git/tree/gnu/package
 #+end_src
 
 ** GnuPG
-I use [[https://gnupg.org/][GnuPG]] to manage my key chain. I also configure it to work well with Emacs. Because I work from within Emacs most of the time I use =pinentry-emacs= to control passphrase prompts. Take a look at [[Emacs.org][Emacs.org]] for details.
-In my ZShell config, I set =$GNUPGHOME= to =$XDG_DATA_HOME/gnupg= which defaults to =$HOME/.local/share/gnupg= in my case. Now I need to set up the GPG agent to work with my setup. Unfortunately, its configuration only accepts hardcoded paths.
+
+I use [[https://gnupg.org/][GnuPG]] to manage my key chain. I also configure it to work well with Emacs. Because I work from within Emacs most of the time I use =pinentry-emacs= to control passphrase prompts. Take a look at my [[Emacs.org][Emacs configuration]] for details.
+
+In my zsh configuration, I set =$GNUPGHOME= to =$XDG_DATA_HOME/gnupg=. Now I need to set up the GPG agent to work with my setup. Unfortunately, its configuration only accepts hardcoded paths.
 
 #+begin_src sh :noweb-ref env-exports
 export GNUPGHOME="${XDG_DATA_HOME}"/gnupg
@@ -350,7 +371,8 @@ In order for this to work, we need a GPG keychain (obviously). I have my keychai
 #+end_src
 
 ** OpenSSH
-Tell SSH to use the gpg-agent for authentication
+
+Tell SSH to use the gpg-agent for authentication.
 
 #+begin_src sh :noweb-ref env-exports
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
@@ -360,11 +382,12 @@ export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 "openssh"
 #+end_src
 
-** ZShell
+** Zsh
 :PROPERTIES:
-:header-args:sh: :tangle ~/.config/zsh/.zshrc :mkdirp yes
+:header-args:sh: :tangle (concat (cdr (assoc 'zsh-config-home file-paths)) "/.zshrc") :mkdirp yes
 :END:
-I use =zsh= as my main shell. I have configured my [[System.org][system]] in a way so that =$ZDOTDIR= is automatically set to =$HOME/.config/zsh=. This is the entry for my shell  configuration.
+
+I use [[https://www.zsh.org/][Zsh]] as my main shell. I have configured my [[System.org][system]] in a way so that =$ZDOTDIR= is automatically set to =xdg-config-home/zsh=. This is the entry for my shell configuration.
 By default, =zsh= will look for a =.zshrc= inside =$ZDOTDIR=. Let's do it.
 
 #+begin_src sh
@@ -377,6 +400,7 @@ By default, =zsh= will look for a =.zshrc= inside =$ZDOTDIR=. Let's do it.
 #+end_src
 
 *** Basic settings
+
 This covers the basic settings, like =HISTSIZE=, I configured my =zsh= with. Plugins, like syntax-highlighting have add to the file's tail. They therefore appear last in this chapter.
 
 #+begin_src sh
@@ -392,9 +416,11 @@ fpath=( "${GUIX_EXTRA_PROFILES}/desktop/desktop/share/zsh/site-functions" $fpath
 #+end_src
 
 *** Aliases
-This section covers all of my aliases. To some extend, this also includes aliases to applications which offer a =--config= (or similar) parameter for its config directory. There is an argument to be made whether one should rather keep this somewhere else (maybe a section of each application with =export=\s and =alias=\es bundled together). However, I decided to split it like this.
+
+This section covers all of my aliases. To some extend, this also includes aliases to applications which offer a =--config= (or similar) parameter for their configuration directory. There is an argument to be made whether one should rather keep this somewhere else (maybe a section of each application with =export=\s and =alias=\es bundled together). However, I decided to split it like this.
 
 **** Navigation helpers
+
 First some handy aliases to navigate the shell.
 
 #+begin_src sh
@@ -421,10 +447,12 @@ alias qutebrowser="qutebrowser -R"
 #+end_src
 
 *** Plugins
-ZShell has the ability to install plugins quite easily. This section covers all the various plugins I use for my setup.
+Zsh has the ability to install plugins quite easily. This section covers all the various plugins I use for my setup.
 
 **** Basic plugins
+
 Some basic plugins like =colors= and =compinit=
+
 #+begin_src sh
 zstyle :compinstall filename '${ZDOTDIR}/.zshrc'
 autoload -Uz compinit && compinit
@@ -432,6 +460,7 @@ autoload -U colors && colors
 #+end_src
 
 **** Prompt
+
 This covers my prompt. I recently switched to [[https://github.com/spaceship-prompt/spaceship-prompt][starship]].
 
 #+begin_src sh
@@ -445,9 +474,11 @@ prompt spaceship
 #+end_src
 
 **** TODO Syntax highlighting
+
 The plugin for syntax highlighting must be sourced at the end of the tangled =.zshrc=. Therefore nothing should follow this plugin. More information can be found [[https://github.com/zsh-users/zsh-syntax-highlighting#why-must-zsh-syntax-highlightingzsh-be-sourced-at-the-end-of-the-zshrc-file][here]].
 
 *Note*: This will not work if the profile =zsh-syntax-highlighting= has been installed with is not called =desktop=. This needs some further tweaking.
+
 #+begin_src sh
 if [ -d "${GUIX_EXTRA_PROFILES}"/desktop/desktop/share/zsh-syntax-highlighting ]; then
     . "${GUIX_EXTRA_PROFILES}"/desktop/desktop/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -460,8 +491,9 @@ fi
 
 ** Sway
 :PROPERTIES:
-:header-args:conf: :tangle ~/.config/sway/config :mkdirp yes
+:header-args:conf: :tangle (concat (cdr (assoc 'sway-config-home file-paths)) "/config") :mkdirp yes
 :END:
+
 This chapter covers my configuration for [[https://github.com/swaywm/sway][sway]], my window manager.
 
 #+begin_src conf
@@ -470,11 +502,13 @@ This chapter covers my configuration for [[https://github.com/swaywm/sway][sway]
 #+end_src
 
 *** General
+
 #+begin_src conf
 default_border none
 #+end_src
 
 *** Variables
+
 #+begin_src conf
 # Logo key. Use Mod1 for Alt
 set $mod Mod4
@@ -496,6 +530,7 @@ set $menu run-emacs -e "(app-launcher-run-app)"
 #+end_src
 
 *** Outputs
+
 #+begin_src conf
 # Outputs
 output DP-2 pos 0 0
@@ -504,6 +539,7 @@ output HDMI-A-1 pos 2560 0
 
 *** Bindings
 **** Basics
+
 #+begin_src conf
 # Start a terminal
 bindsym $mod+Return exec $term
@@ -529,6 +565,7 @@ bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. 
 #+end_src
 
 **** Movement
+
 #+begin_src conf
 # Move your focus around
 bindsym $mod+$left focus left
@@ -556,6 +593,7 @@ bindsym $mod+Shift+Right move right
 #+end_src
 
 **** Workspaces
+
 #+begin_src conf
 # Switch to workspace
 bindsym $mod+1 workspace number 1
@@ -583,6 +621,7 @@ bindsym $mod+Shift+0 move container to workspace number 10
 #+end_src
 
 **** Layout
+
 #+begin_src conf
 # You can "split" the current object of your focus with
 # $mod+b or $mod+v, for horizontal and vertical splits
@@ -609,6 +648,7 @@ bindsym $mod+a focus parent
 #+end_src
 
 **** Scratch pad
+
 #+begin_src conf
 # Sway has a "scratchpad", which is a bag of holding for windows.
 # You can send windows there and get them back later.
@@ -622,6 +662,7 @@ bindsym $mod+minus scratchpad show
 #+end_src
 
 **** Resize
+
 #+begin_src conf
 mode "resize" {
     # left will shrink the containers width
@@ -647,6 +688,7 @@ bindsym $mod+r mode "resize"
 #+end_src
 
 *** Bar
+
 #+begin_src conf
 bar {
     position top
@@ -665,6 +707,16 @@ bar {
 
 * Local Variables
 # Local Variables:
+# eval: (setq-local file-paths '())
+# eval: (map-put file-paths 'xdg-config-home (or (getenv "XDG_CONFIG_HOME") "~/.config"))
+# eval: (map-put file-paths 'xdg-data-home (or (getenv "XDG_DATA_HOME") "~/.local/share"))
+# eval: (map-put file-paths 'git-config-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/git"))
+# eval: (map-put file-paths 'guix-config-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/guix"))
+# eval: (map-put file-paths 'guix-manifest-home (concat (cdr (assoc 'guix-config-home file-paths)) "/manifests"))
+# eval: (map-put file-paths 'sway-config-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/sway"))
+# eval: (map-put file-paths 'zsh-config-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/zsh"))
+# eval: (map-put file-paths 'bindir (concat (cdr (assoc 'xdg-data-home file-paths)) "/bin"))
+# eval: (add-hook 'before-save-hook (lambda () (org-babel-ref-resolve "filelist")) nil t)
 # eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload Desktop profile?") (async-shell-command "update-manifest desktop"))) nil t)
 # eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Tangle the file?") (org-babel-tangle))) nil t)
 # End:
