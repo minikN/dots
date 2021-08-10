@@ -23,6 +23,7 @@ I like to have *one* ORG file to configure emacs. Doom on the other hand expects
 
 * Table Of Contents :TOC:
 - [[#modules][Modules]]
+  - [[#completion][Completion]]
   - [[#user-interface][User Interface]]
   - [[#editor][Editor]]
   - [[#emacs][Emacs]]
@@ -63,14 +64,15 @@ This is a simple list containing general problems / TODOs that I'll tackle in fu
 
 First, let's define the modules doom should use. These go into =$DOOMDIR/init.el=. Note that you can also declare your own modules, there's a [[https://github.com/hlissner/doom-emacs/blob/develop/docs/getting_started.org#writing-your-own-modules][section]] about it in the documentation. Please note that this list is shortened, I excluded module sections I will never use.
 
-*Note*: I removed the =:completion= block entirely. I don't use any of the completion solutions provided by doom. Instead, I use my own set of packages centered around [[https://github.com/minad/vertico][vertico]].
-
 #+begin_src emacs-lisp :tangle (concat (cadr (assoc "DOOMDIR" (org-collect-keywords '("DOOMDIR")))) "init.el") :noweb yes
 ;;; init.el -*- lexical-binding: t; -*-
 ;; This file is auto-generated. Do not make changes manually.
 ;; Exported from Emacs.org
 
-(doom! :ui
+(doom! :completion
+       <<doom-completion>>
+
+       :ui
        <<doom-ui>>
 
        :editor
@@ -98,6 +100,17 @@ First, let's define the modules doom should use. These go into =$DOOMDIR/init.el
        <<doom-app>>
 
        (default +smartparens))
+#+end_src
+
+** Completion
+
+#+begin_src emacs-lisp :noweb-ref doom-completion
+:completion
+;company            ; the ultimate code completion backend
+;;helm              ; the *other* search engine for love and life
+;;ido               ; the other *other* search engine...
+;;ivy               ; a search engine for love and life
+(vertico +icons)    ; the search engine of the future
 #+end_src
 
 ** User Interface
@@ -507,48 +520,7 @@ Vertico is a
 performant and minimalistic vertical completion UI, which is based on the default completion system
 #+END_QUOTE
 
-similar to [[https://github.com/abo-abo/swiper][ivy]] or [[https://github.com/emacs-helm/helm][helm]]. However, I like the minimalist in the vertico completion stack. So let's get to town.
-
-#+begin_src emacs-lisp :noweb-ref config
-(use-package! vertico
-  :bind (:map vertico-map
-         ("C-j" . vertico-next)
-         ("C-k" . vertico-previous)
-         ("C-f" . vertico-exit)
-         :map minibuffer-local-map
-         ("M-h" . db/completion/minibuffer-backward-kill))
-  :init
-  (vertico-mode)
-  (setq vertico-cycle t))
-#+end_src
-
-#+begin_src emacs-lisp :noweb-ref packages
-(package! vertico)
-#+end_src
-
-Emacs offers a built-in system for saving history of chosen items throughout the application. Vertico makes proper use of it instead of adding another layer of code.
-
-#+begin_src emacs-lisp :noweb-ref config
-(use-package! savehist
-  :config
-  (setq history-length 25)
-  (savehist-mode 1))
-#+end_src
-
-David Wilson implemented a neat [[https://github.com/daviwil/dotfiles/blob/master/Emacs.org#completions-with-vertico][function]] to help with backward deleting units (words, file names, ...) in the mini buffer. I'll add my own prefix for the sake of tidiness, but all credit goes to him.
-
-#+begin_src emacs-lisp :noweb-ref config
-(defun db/completion/minibuffer-backward-kill (arg)
-  "When minibuffer is completing a file name delete up to parent
-folder, otherwise delete a word"
-  (interactive "p")
-  (if minibuffer-completing-file-name
-      ;; Borrowed from https://github.com/raxod502/selectrum/issues/498#issuecomment-803283608
-      (if (string-match-p "/." (minibuffer-contents))
-          (zap-up-to-char (- arg) ?/)
-        (delete-minibuffer-contents))
-    (backward-kill-word arg)))
-#+end_src
+similar to [[https://github.com/abo-abo/swiper][ivy]] or [[https://github.com/emacs-helm/helm][helm]]. However, I like the minimalist in the vertico completion stack. DOOM [[https://github.com/hlissner/doom-emacs/commit/34f8e1fdec8f8b2e334f8e12a271303b3eddd262#diff-38218dc5c71b15e7d754cb90217cfd037bf6d98b2fd9fb9298e049443ee713dc][recently]] added vertico as a completion module, this saves me the trouble of configuring it myself. However, they are yet to add corfu to the mix.
 
 Corfu offers a minimalist =completion-in-region= enhancement.
 
@@ -584,32 +556,12 @@ Emacs offers [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dynamic
          ("C-M-/" . dabbrev-expand)))
 #+end_src
 
-Marginalia adds additional minibuffer completions.
-
-#+begin_src emacs-lisp :noweb-ref config
-(use-package! marginalia
-  :after vertico
-  :init
-  (marginalia-mode))
-#+end_src
-
-#+begin_src emacs-lisp :noweb-ref packages
-(package! marginalia)
-#+end_src
-
-Consult is a lightweight alternative to something like counsel for ivy.
-
-#+begin_src emacs-lisp :noweb-ref packages
-(package! consult)
-#+end_src
-
 #+begin_src emacs-lisp :noweb-ref external-packages
 "fd"
 "ripgrep"
 #+end_src
 
 * Applications
-
 ** App launcher
 I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch external applications
 
