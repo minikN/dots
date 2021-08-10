@@ -99,6 +99,7 @@ First, let's define the modules doom should use. These go into =$DOOMDIR/init.el
        :app
        <<doom-app>>
 
+       :config
        (default +smartparens))
 #+end_src
 
@@ -517,7 +518,7 @@ I am using the [[https://github.com/minad/vertico][vertico]] stack for completio
 Vertico is a
 
 #+BEGIN_QUOTE
-performant and minimalistic vertical completion UI, which is based on the default completion system
+performant and minimalistic vertical completion AI, which is based on the default completion system
 #+END_QUOTE
 
 similar to [[https://github.com/abo-abo/swiper][ivy]] or [[https://github.com/emacs-helm/helm][helm]]. However, I like the minimalist in the vertico completion stack. DOOM [[https://github.com/hlissner/doom-emacs/commit/34f8e1fdec8f8b2e334f8e12a271303b3eddd262#diff-38218dc5c71b15e7d754cb90217cfd037bf6d98b2fd9fb9298e049443ee713dc][recently]] added vertico as a completion module, this saves me the trouble of configuring it myself. However, they are yet to add corfu to the mix.
