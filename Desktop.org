@@ -17,6 +17,7 @@ This file will tangle various files. One of which is =desktop.scm=, which is use
 #+end_src
 
 * Table Of Contents :TOC:
+- [[#exported-files][Exported Files]]
 - [[#environment][Environment]]
   - [[#channels][Channels]]
   - [[#exports][Exports]]
@@ -32,6 +33,32 @@ This file will tangle various files. One of which is =desktop.scm=, which is use
   - [[#sway][Sway]]
 - [[#local-variables][Local Variables]]
 
+* Exported Files
+
+Tangling this file will create various directories and files in the users home directory. However, I don't specify the target file for every source block individually, I rather declare file-local variables containing the target directories (I like [[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself][DRY]]). Because I like the XDG directory specification, I'll use the preferred defaults. I set all local variables in the [[#Local Variables][Local Variables]] footer of this file (View the raw file in order to see it).
+
+The following tables shows all the defined target directories. All exports are based on these.
+
+#+name: filelist
+#+begin_src emacs-lisp :results value :exports results :tangle no
+(append
+ `(("Variable" "Path") hline)
+ (cl-loop for (e) on file-paths collect
+          (list (car e)
+                (concat "=" (prin1-to-string (cdr e) t) "="))))
+#+end_src
+
+#+RESULTS: filelist
+| Variable           | Path                              |
+|--------------------+-----------------------------------|
+| bindir             | =/home/db/.local/share/bin=       |
+| zsh-config-home    | =/home/db/.config/zsh=            |
+| sway-config-home   | =/home/db/.config/sway=           |
+| guix-manifest-home | =/home/db/.config/guix/manifests= |
+| guix-config-home   | =/home/db/.config/guix=           |
+| git-config-home    | =/home/db/.config/git=            |
+| xdg-data-home      | =/home/db/.local/share=           |
+| xdg-config-home    | =/home/db/.config=                |
 * Environment
 :PROPERTIES:
 :header-args:sh: :tangle ~/.config/profile :mkdirp yes
