@@ -4,20 +4,12 @@
 #+PROPERTY: header-args :mkdirp yes
 #+PROPERTY: header-args :tangle-mode (identity #o444)
 
-This file contains the configuration for my desktop system. This includes my configuration- or dotfiles. Please note however, that it does not include my emacs configuration. It is separated into its own ORG file.
-This file will tangle various files. One of which is =desktop.scm=, which is used to install the desktop profile in Guix. It's path is =~/.config/guix/manifests/desktop.scm=.
-#+begin_src scheme :tangle ~/.config/guix/manifests/desktop.scm :noweb yes :mkdirp yes
-;; This file is auto-generated. Do not make changes manually.
-;; Exported from Desktop.org
-
-(specifications->manifest
- '(
-   <<packages>>
-   ))
-#+end_src
+This file contains the configuration for my user space. Please note however, that it does not include my Emacs configuration. I maintain a separate [[file:Emacs.org][file]] to configure it.
+You are reading a [[https://leanpub.com/lit-config/read][literate]] configuration, meaning this file not only documents my configuration, it /is/ my configuration. It will tangle all of my configuration- or dotfiles on every save.
 
 * Table Of Contents :TOC:
 - [[#exported-files][Exported Files]]
+- [[#desktop-manifest][Desktop Manifest]]
 - [[#environment][Environment]]
   - [[#channels][Channels]]
   - [[#exports][Exports]]
@@ -29,7 +21,7 @@ This file will tangle various files. One of which is =desktop.scm=, which is use
   - [[#browsers][Browsers]]
   - [[#gnupg][GnuPG]]
   - [[#openssh][OpenSSH]]
-  - [[#zshell][ZShell]]
+  - [[#zsh][Zsh]]
   - [[#sway][Sway]]
 - [[#local-variables][Local Variables]]
 
@@ -59,6 +51,20 @@ The following tables shows all the defined target directories. All exports are b
 | git-config-home    | =/home/db/.config/git=            |
 | xdg-data-home      | =/home/db/.local/share=           |
 | xdg-config-home    | =/home/db/.config=                |
+
+* Desktop Manifest
+
+I use GNU/Guix as my operating system of choice (it's great, you should too!). In addition to that, I use [[https://guix.gnu.org/cookbook/en/html_node/Guix-Profiles-in-Practice.html][profiles]] to install needed packages. Throughout this file I will need to install various packages into my desktop profile. For this to work, I need to create its manifest file =desktop.scm= at =guix-manifest-home=.
+
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/desktop.scm") :noweb yes :mkdirp yes
+;; This file is auto-generated. Do not make changes manually.
+;; Exported from Desktop.org
+
+(specifications->manifest
+ '(
+   <<packages>>
+   ))
+#+end_src
 * Environment
 :PROPERTIES:
 :header-args:sh: :tangle ~/.config/profile :mkdirp yes
