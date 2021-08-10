@@ -23,7 +23,6 @@ You are reading a [[https://leanpub.com/lit-config/read][literate]] configuratio
   - [[#openssh][OpenSSH]]
   - [[#zsh][Zsh]]
   - [[#sway][Sway]]
-- [[#local-variables][Local Variables]]
 
 * Exported Files
 
@@ -705,7 +704,7 @@ bar {
 }
 #+end_src
 
-* Local Variables
+* Local Variables :noexport:
 # Local Variables:
 # eval: (setq-local file-paths '())
 # eval: (map-put file-paths 'xdg-config-home (or (getenv "XDG_CONFIG_HOME") "~/.config"))
