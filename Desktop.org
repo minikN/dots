@@ -431,6 +431,7 @@ alias lss="ls --group-directories-first --color=always -laAh"
 alias ..="cd .."
 alias ...="cd ../../"
 alias ....="cd ../../../"
+alias cls="printf \"\033c\""
 #+end_src
 
 **** Application specific aliases
@@ -450,6 +451,7 @@ alias qutebrowser="qutebrowser -R"
 #+end_src
 
 *** Plugins
+
 Zsh has the ability to install plugins quite easily. This section covers all the various plugins I use for my setup.
 
 **** Basic plugins
