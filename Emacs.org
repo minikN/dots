@@ -371,6 +371,16 @@ Set global user information.
       user-mail-address "db@minikn.xyz")
 #+end_src
 
+Lets make some default directories available to Emacs.
+
+#+begin_src emacs-lisp :noweb-ref config
+(setq db-git-dir (or (getenv "GITDIR") "~/.local/share/git")
+      db-bin-dir (or (getenv "BINDIR") "~/.local/share/bin")
+      db-literate-config-dir (concat db-git-dir "/guix/")
+      xdg-config-home (or (getenv "XDG_CONFIG_HOME") "~/.config")
+      xdg-data-home (or (getenv "XDG_DATA_HOME") "~/.local/share"))
+#+end_src
+
 ** Key Bindings
 
 I would like to use =C-SPC= as my leader and =C-SPC C-SPC= as my localleader key in both normal and insert state. To do that, I first need to unbind =C-SPC= completely. Fortunately, DOOM provides the handy =map!= macro.
