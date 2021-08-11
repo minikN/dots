@@ -405,7 +405,6 @@ Files
       :desc "Delete this file"            "d"   #'doom/delete-this-file
       :desc "Open directory"              "D"   #'+default/dired
       :desc "Find file in emacs.d"        "e"   #'doom/find-file-in-emacsd
-      :desc "Browse emacs.d"              "E"   #'doom/browse-in-emacsd
       :desc "Find file"                   "f"   #'find-file
       :desc "Locate file"                 "l"   #'locate
       :desc "Open literate config"        "p"   (cmd! (doom-project-browse db-literate-config-dir))
