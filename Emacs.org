@@ -77,6 +77,7 @@ This is a simple list containing general problems / TODOs that I'll tackle in fu
 - Add Marginalia/Vertico to theme
 - configure vterm popup rules
 - Sway layouts?
+- WSL: super key
 
 * DOOM
 
@@ -416,6 +417,7 @@ Files
       :desc "Yank file path"              "y"   #'+default/yank-buffer-path
       :desc "Yank file path from project" "Y"   #'+default/yank-buffer-path-relative-to-project)
 #+end_src
+
 ** Editor
 
 Some sensible defaults for working with emacs.
