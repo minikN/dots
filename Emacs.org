@@ -59,6 +59,8 @@ The following tables shows all the defined target directories. All exports are b
 | guix-manifest-home | =/home/db/.config/guix/manifests= |
 | guix-config-home   | =/home/db/.config/guix=           |
 | doomdir            | =/home/db/.config/doom=           |
+| npm-config-home    | =/home/db/.config/npm=            |
+| profiled-home      | =/home/db/.config/profile.d=      |
 | xdg-config-home    | =/home/db/.config=                |
 
 I may refer to these directories throughout the configuration, e.g. like that: =doomdir/config.el=.
