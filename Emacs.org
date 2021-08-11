@@ -438,12 +438,12 @@ Some sensible defaults for working with emacs.
 (set-default-coding-systems 'utf-8)             ; Default utf-8 encoding
 #+end_src
 
-I use [[https://github.com/nflath/hungry-delete][hungry-delete]] to delete up/back to the next non-whitespace character. However, I don't want to use this globally, I only bind it to =S-<backspace>= and =S-<delete>=
+I use [[https://github.com/nflath/hungry-delete][hungry-delete]] to delete up/back to the next non-whitespace character. However, I don't want to use this globally, I only bind it to =M-<backspace>= and =M-<delete>=
 
 #+begin_src emacs-lisp :noweb-ref config
 (use-package! hungry-delete
-  :bind (("S-<backspace>" . hungry-delete-backward)
-         ("S-<delete>" . hungry-delete-forward)))
+  :bind (("M-<backspace>" . hungry-delete-backward)
+         ("M-<delete>" . hungry-delete-forward)))
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref packages
