@@ -249,7 +249,7 @@ fi
 
 *** Run Emacs
 
-This is a small wrapper around starting Emacs efficiently. If the Emacs server hasn't been started yet, it will attempt to start one and open an client connection to it. If the server has been started it will open a new frame if no frame is visible, otherwise it will use the last selected frame.
+This is a small wrapper around starting Emacs efficiently. If the Emacs server hasn't been started yet, it will attempt to start one and open a client connection to it. If the server has been started it will open a new frame if no frame is visible, otherwise it will use the last selected frame.
 
 #+begin_src sh :tangle (concat (cdr (assoc 'bindir file-paths)) "/run-emacs") :tangle-mode (identity #o755) :shebang "#!/bin/sh" :mkdirp yes
 if ! emacsclient -e 0 >&/dev/null; then
