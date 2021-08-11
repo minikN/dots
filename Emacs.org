@@ -155,11 +155,11 @@ First, let's define the modules doom should use. These go into =$DOOMDIR/init.el
 
 #+begin_src emacs-lisp :noweb-ref doom-completion
 :completion
-;company            ; the ultimate code completion backend
-;;helm              ; the *other* search engine for love and life
-;;ido               ; the other *other* search engine...
-;;ivy               ; a search engine for love and life
-(vertico +icons)    ; the search engine of the future
+;company                ; the ultimate code completion backend
+;;helm                  ; the *other* search engine for love and life
+;;ido                   ; the other *other* search engine...
+;;ivy                   ; a search engine for love and life
+(vertico +icons)        ; the search engine of the future
 #+end_src
 
 ** User Interface
@@ -223,9 +223,11 @@ vc                      ; version-control and Emacs, sitting in a tree
 #+begin_src emacs-lisp :noweb-ref doom-term
 ;;shell                 ; simple shell REPL for Emacs
 ;;term                  ; basic terminal emulator for Emacs
-eshell                ; the elisp shell that works everywhere
-vterm                 ; the best terminal emulation in Emacs
+eshell                  ; the elisp shell that works everywhere
+vterm                   ; the best terminal emulation in Emacs
 #+end_src
+
+I need the =libvterm= dependency in order to build =vterm=.
 
 #+begin_src scheme :noweb-ref external-packages
 "libvterm"
