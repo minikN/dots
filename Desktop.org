@@ -87,13 +87,13 @@ These are the guix channels I currently use. The channels are going to be tangle
 
 #+begin_src scheme :tangle (concat (cdr (assoc 'guix-config-home file-paths)) "/channels.scm") :mkdirp yes
 (cons* (channel
-(name 'flat)
-(url "https://github.com/flatwhatson/guix-channel.git")
-(introduction
- (make-channel-introduction
-  "33f86a4b48205c0dc19d7c036c85393f0766f806"
-  (openpgp-fingerprint
-   "736A C00E 1254 378B A982  7AF6 9DBE 8265 81B6 4490"))))
+        (name 'flat)
+        (url "https://github.com/flatwhatson/guix-channel.git")
+        (introduction
+         (make-channel-introduction
+          "33f86a4b48205c0dc19d7c036c85393f0766f806"
+          (openpgp-fingerprint
+           "736A C00E 1254 378B A982  7AF6 9DBE 8265 81B6 4490"))))
 #+end_src
 
 The [[https://gitlab.com/nonguix/nonguix][nonguix]] channel is essential for using the full linux kernel. It offers packages, that do not get merged in the main guix channel because they violate their open source policies.
