@@ -110,9 +110,9 @@ Well, what is org-mode good for if not tangling files? Just kidding. Generally s
 
 ** Modules
 
-First, let's define the modules doom should use. These go into =$DOOMDIR/init.el=. Note that you can also declare your own modules, there's a [[https://github.com/hlissner/doom-emacs/blob/develop/docs/getting_started.org#writing-your-own-modules][section]] about it in the documentation. Please note that this list is shortened, I excluded module sections I will never use.
+First, let's define the modules doom should use. These go into =doomdir/init.el=. Note that you can also declare your own modules, there's a [[https://github.com/hlissner/doom-emacs/blob/develop/docs/getting_started.org#writing-your-own-modules][section]] about it in the documentation. Please note that this list is shortened, I excluded module sections I will never use.
 
-#+begin_src emacs-lisp :tangle (concat (cadr (assoc "DOOMDIR" (org-collect-keywords '("DOOMDIR")))) "init.el") :noweb yes
+#+begin_src emacs-lisp :tangle (concat (cdr (assoc 'doomdir file-paths)) "/init.el") :noweb yes
 ;;; init.el -*- lexical-binding: t; -*-
 ;; This file is auto-generated. Do not make changes manually.
 ;; Exported from Emacs.org
@@ -242,6 +242,7 @@ grammar                 ; tasing grammar mistake every you make
 #+end_src
 
 =flyspell= requires =ispell=. Let's install it.
+
 #+begin_src emacs-lisp :tangle no :noweb-ref external-packages
 "ispell"
 #+end_src
@@ -598,7 +599,8 @@ Emacs offers [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dynamic
 
 * Applications
 ** App launcher
-I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch external applications
+
+I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch external applications.
 
 #+begin_src emacs-lisp :noweb-ref packages
 (package! app-launcher
@@ -626,7 +628,7 @@ With that configuration (together with the configuration in [[Desktop.org][Deskt
 
 I spend most of my time in emacs. This (obviously) programming. This section covers my configuration for turning emacs into an IDE. I use [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] as my foundation for this. In addition to that, I also need external tools (linters, build tools, ...). I create a dedicated guix profile called =development= for that purpose.
 
-#+begin_src emacs-lisp :tangle (cadr (assoc "MANIFESTDEV" (org-collect-keywords '("MANIFESTDEV")))) :noweb yes
+#+begin_src emacs-lisp :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/development.scm") :noweb yes
 ;; This file is auto-generated. Do not make changes manually.
 ;; Exported from Emacs.org
 
@@ -653,7 +655,7 @@ These are some build tools, so generic they didn't fit anywhere else.
 
 I frequently develop using [[https://nodejs.org/en/][node]]. It comes with [[https://www.npmjs.com/][npm]], its package manager. Installing npm packages globally requires =sudo= permissions (which Guix doesn't like). To make this work, I set the =$NPM_PACKAGES= environment variable manually.
 
-#+begin_src sh :tangle ~/.config/profile.d/npm :tangle-mode (identity #o755)
+#+begin_src sh :tangle (concat (cdr (assoc 'profiled-home file-paths)) "/npm") :tangle-mode (identity #o755)
 NPM_PACKAGES="${XDG_DATA_HOME}"/npm
 export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}"/npm/npmrc
 export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
@@ -664,7 +666,7 @@ if [ ! -d $NPM_PACKAGES ]; then
 fi
 #+end_src
 
-#+begin_src sh :tangle ~/.config/npm/npmrc :mkdirp yes
+#+begin_src sh :tangle (concat (cdr (assoc 'xdg-config-home file-paths)) "/npm/npmrc") :mkdirp yes
 prefix=${XDG_DATA_HOME}/npm
 cache=${XDG_CACHE_HOME}/npm
 tmp=${XDG_RUNTIME_DIR}/npm
