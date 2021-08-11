@@ -6,21 +6,10 @@
 
 This file includes the complete configuration for my Emacs setup. Although I have started an emacs config from scratch when I first got into emacs, I soon realized that there are great [[https://github.com/caisah/emacs.dz][pre-built configurations]] out there that save you a lot of time and head-scratching when delving into the rabbit hole that is emacs. However, pre-built configurations themselves can be a rabbit hole as the linked table hopefully shows. Personally, I settled with [[https://github.com/hlissner/doom-emacs][Doom Emacs]], it's a popular configuration and for good reason. I can't imagine going back to anything else at this point.
 
-I like to have *one* ORG file to configure emacs. Doom on the other hand expects three files to be present: =$DOOMDIR/init.el= for its active modules, =$DOOMDIR/config.el= as a main configuration and =$DOOMDIR/packages.el= for package declarations. Well, what is ORG mode good for if not tangling files? Just kidding. Generally speaking, the source blocks of this file will be tangled to =config.el= while I'll tangle bits and pieces to =init.el= and =packages.el= where needed. I also create =emacs.scm= in =~/.config/guix/manifests= for external packages (binaries, fonts, ...) I need.
-
-#+begin_src scheme :tangle (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) :noweb yes
-;; This file is auto-generated. Do not make changes manually.
-;; Exported from Emacs.org
-
-(specifications->manifest
- '(
-   "emacs-pgtk-native-comp"
-   <<external-packages>>
-   ))
-#+end_src
 
 * Table Of Contents :TOC:
-- [[#modules][Modules]]
+- [[#doom][DOOM]]
+  - [[#modules][Modules]]
   - [[#completion][Completion]]
   - [[#user-interface][User Interface]]
   - [[#editor][Editor]]
@@ -57,7 +46,40 @@ This is a simple list containing general problems / TODOs that I'll tackle in fu
 - configure vterm popup rules
 - Sway layouts?
 
-* Modules
+* DOOM
+
+DOOM expects three files to be present: =doomdir/init.el= for its active modules, =doomdir/config.el= as a main configuration and =doomdir/packages.el= for package declarations.
+Well, what is org-mode good for if not tangling files? Just kidding. Generally speaking, the source blocks of this file will be tangled to =config.el= while I'll tangle bits and pieces to =init.el= and =packages.el= where needed. I also create =guix-manifest-home/emacs.scm= for external packages (binaries, fonts, ...) I need.
+
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/emacs.scm") :noweb yes :mkdir yes
+;; This file is auto-generated. Do not make changes manually.
+;; Exported from Emacs.org
+
+(specifications->manifest
+ '(
+   "emacs-pgtk-native-comp"
+   <<external-packages>>
+   ))
+#+end_src
+
+#+begin_src emacs-lisp :tangle (concat (cdr (assoc 'doomdir file-paths)) "/packages.el") :noweb yes
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
+;;; This file is auto-generated. Do not make changes manually.
+;;; Exported from Emacs.org
+
+<<packages>>
+#+end_src
+
+#+begin_src emacs-lisp :tangle (concat (cdr (assoc 'doomdir file-paths)) "/config.el") :noweb yes
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+;;; This file is auto-generated. Do not make changes manually.
+;;; Exported from Emacs.org
+
+<<config>>
+#+end_src
+
+** Modules
 
 First, let's define the modules doom should use. These go into =$DOOMDIR/init.el=. Note that you can also declare your own modules, there's a [[https://github.com/hlissner/doom-emacs/blob/develop/docs/getting_started.org#writing-your-own-modules][section]] about it in the documentation. Please note that this list is shortened, I excluded module sections I will never use.
 
