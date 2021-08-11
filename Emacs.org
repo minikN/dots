@@ -8,6 +8,7 @@ This file includes the complete configuration for my Emacs setup. Although I hav
 
 
 * Table Of Contents :TOC:
+- [[#exported-files][Exported Files]]
 - [[#doom][DOOM]]
   - [[#modules][Modules]]
   - [[#completion][Completion]]
@@ -33,6 +34,32 @@ This file includes the complete configuration for my Emacs setup. Although I hav
 - [[#development-environment][Development Environment]]
   - [[#generic-build-tools][Generic build tools]]
   - [[#node][Node]]
+
+* Exported Files
+
+Tangling this file will create various directories and files in the home directory. However, I don't specify the target file for every source block individually, I rather declare file-local variables containing the target directories (I like [[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself][DRY]]). Because I follow the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html][XDG]] directory specification, I'll use the preferred defaults.
+I set all local variables in the [[#Local Variables][Local Variables]] footer of this file (View the raw file in order to see it).
+
+The following tables shows all the defined target directories. All exports are based on these. This table is auto-generated.
+
+#+name: filelist
+#+begin_src emacs-lisp :results value :exports results :tangle no
+(append
+ `(("Variable" "Path") hline)
+ (cl-loop for (e) on file-paths collect
+          (list (car e)
+                (concat "=" (prin1-to-string (cdr e) t) "="))))
+#+end_src
+
+#+RESULTS: filelist
+| Variable           | Path                              |
+|--------------------+-----------------------------------|
+| guix-manifest-home | =/home/db/.config/guix/manifests= |
+| guix-config-home   | =/home/db/.config/guix=           |
+| doomdir            | =/home/db/.config/doom=           |
+| xdg-config-home    | =/home/db/.config=                |
+
+I may refer to these directories throughout the configuration, e.g. like that: =doomdir/config.el=.
 
 * TODO Current problems :noexport:
 
