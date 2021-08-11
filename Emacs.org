@@ -408,7 +408,7 @@ Files
       :desc "Find file"                   "f"   #'find-file
       :desc "Locate file"                 "l"   #'locate
       :desc "Open literate config"        "p"   (cmd! (doom-project-browse db-literate-config-dir))
-      :desc "Rename/move file"            "R"   #'doom/move-this-file
+      :desc "Rename/move file"            "r"   #'doom/move-this-file
       :desc "Save file"                   "s"   #'save-buffer
       :desc "Save file as..."             "S"   #'write-file
       :desc "Sudo find file"              "u"   #'doom/sudo-find-file
