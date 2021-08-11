@@ -4,8 +4,10 @@
 #+PROPERTY: header-args :mkdirp yes
 #+PROPERTY: header-args :tangle-mode (identity #o444)
 
-This file includes the complete configuration for my Emacs setup. Although I have started an emacs config from scratch when I first got into emacs, I soon realized that there are great [[https://github.com/caisah/emacs.dz][pre-built configurations]] out there that save you a lot of time and head-scratching when delving into the rabbit hole that is emacs. However, pre-built configurations themselves can be a rabbit hole as the linked table hopefully shows. Personally, I settled with [[https://github.com/hlissner/doom-emacs][Doom Emacs]], it's a popular configuration and for good reason. I can't imagine going back to anything else at this point.
+This file includes the complete configuration for my Emacs setup. Although I have started an emacs config from scratch when I first got into emacs, I soon realized that there are great [[https://github.com/caisah/emacs.dz][pre-built configurations]] out there that save you a lot of time and head-scratching when delving into the rabbit hole that is Emacs.
+However, pre-built configurations themselves can be a rabbit hole as the linked table hopefully shows. Personally, I settled with [[https://github.com/hlissner/doom-emacs][DOOM Emacs]] - it's a popular configuration and for good reason. I can't imagine going back to anything else at this point (This is a good thing?).
 
+I like to have *one* file to configure Emacs. Hence why you  are reading a [[https://leanpub.com/lit-config/read][literate]] configuration. Not only documents it my configuration, it /is/ my configuration. It will tangle all of my configuration- or dotfiles on every save.
 
 * Table Of Contents :TOC:
 - [[#exported-files][Exported Files]]
