@@ -403,6 +403,10 @@ By default, =zsh= will look for a =.zshrc= inside =$ZDOTDIR=. Let's do it.
 This covers the basic settings, like =HISTSIZE=, I configured my =zsh= with. Plugins, like syntax-highlighting have add to the file's tail. They therefore appear last in this chapter.
 
 #+begin_src sh
+if [ ! -d "${XDG_DATA_HOME}"/zsh ]; then
+    mkdir -p "${XDG_DATA_HOME}"/zsh
+fi
+
 HISTFILE="${XDG_DATA_HOME}"/zsh/history
 HISTSIZE=1000
 SAVEHIST=1000
