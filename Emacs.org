@@ -356,24 +356,8 @@ sh                      ; she sells {ba,z,fi}sh shells on the C xor
 
 * Basic Settings
 
-This chapter covers the essential configuration. While I do enjoy GNU/Guix, I currently don't use it to manage my emacs packages (Exceptions to this will be clarified as such). The reason for this is that doom comes with its own package manager built on top of [[https://github.com/raxod502/straight.el][straight.el]], which is (in my opinion) superior to Guix. Doom looks for package definitions in =$DOOMDIR/packages.el=, therefore, I'll create the file and add package definitions to it wherever needed.
-
-#+begin_src emacs-lisp :tangle (concat (cadr (assoc "DOOMDIR" (org-collect-keywords '("DOOMDIR")))) "packages.el") :noweb yes
-;; -*- no-byte-compile: t; -*-
-;;; $DOOMDIR/packages.el
-;;; This file is auto-generated. Do not make changes manually.
-;;; Exported from Emacs.org
-
-<<packages>>
-#+end_src
-
-#+begin_src emacs-lisp :tangle (concat (cadr (assoc "DOOMDIR" (org-collect-keywords '("DOOMDIR")))) "config.el") :noweb yes
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-;;; This file is auto-generated. Do not make changes manually.
-;;; Exported from Emacs.org
-
-<<config>>
-#+end_src
+This chapter covers the essential configuration. While I do enjoy GNU/Guix, I currently don't use it to manage my emacs packages. The reason for this is that DOOM comes with its own package manager built on top of [[https://github.com/raxod502/straight.el][straight.el]], which is (in my opinion) superior to Guix.
+DOOM comes with a the =use-package!= macro, which is a thin wrapper around =straight-use-package=. This is used to install packages into =doomdir/packages.el=.
 
 Set global user information.
 
