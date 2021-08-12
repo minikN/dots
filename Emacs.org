@@ -395,7 +395,9 @@ It can be beneficial to gather some information about the environment we're runn
 
 ** Key Bindings
 
-I would like to use =C-SPC= as my leader and =C-SPC C-SPC= as my localleader key in both normal and insert state. To do that, I first need to unbind =C-SPC= completely. Fortunately, DOOM provides the handy =map!= macro.
+This section will only cover global, or mode-independent key bindings. All mode-specific bindings will be declared in their respective package configuration.
+
+I would like to use =C-SPC= as my leader and =C-SPC C-SPC= as my local leader in both normal and insert state. To do that, I first need to unbind =C-SPC= completely. Fortunately, DOOM provides the handy =map!= macro.
 
 #+begin_src emacs-lisp :noweb-ref config
 (map! "C-SPC" nil)
@@ -406,26 +408,85 @@ I would like to use =C-SPC= as my leader and =C-SPC C-SPC= as my localleader key
       doom-localleader-alt-key "C-SPC C-SPC")
 #+end_src
 
-Files
+DOOM comes with a handful of predefined key bindings. However, I decided to deactivate them completely. I do so by removing the =+keybindings= flag from the its config module. Instead of using them, I define my own set of bindings that I really need and want.
+
+That being said, I copy a lot of the DOOM bindings, so why not simply keep the original bindings and override the ones I want? I don't do that because that way, the bindings that I don't override would still be present, which would not decrease the total amount of key bindings available (in lets say =which-key=). I want to start from a clean state and only add what I want.
+
+*** Conventions
+
+My key bindings revolve around =C-SPC= being my leader. Mode-specific bindings can be accessed with =C-SPC C-SPC=. In practice, this means I only have to tap =SPC= twice to access them. The ctrl key is pretty bad positioned in terms of ergonomics. To remedy that, I swapped it with capslock. It takes some time getting used to, but it's worth it!
+
+I like the concept of having keys prefixing certain key maps (=f= for files, =b= for buffers, ...). In addition to that, I assign the most used function to =C-<prefix>=. For files that would be =find-file=. By binding it to =C-f= I can quickly access it by pressing =C-SPC C-f=, if I need more file-related functions I can always access its key map with =C-SPC f=.
+
+In summary:
+
+- swap capslock with ctrl
+- =C-SPC= as leader, =C-SPC C-SPC= as local leader
+- prefix-keys for certain key maps
+- most used function for every key map bound to =C-<prefix>=
+
+*** Common
 
 #+begin_src emacs-lisp :noweb-ref config
 (map! :leader
-      :desc "Find file"                   "C-f" #'find-file
+      :desc "Eval expression"                   "."     #'eval-expression
+
+      (:when IS-GERMAN-LAYOUT
+      :desc "Toggle last buffer"                "#"     #'evil-switch-to-windows-last-buffer
+      :desc "Search project"                    "-"     #'+default/search-project
+      :desc "Search symbol in project"          "_"     #'+default/search-project-for-symbol-at-point)
+
+      (:when IS-ENGLISH-LAYOUT
+      :desc "Toggle last buffer"                "'"     #'evil-switch-to-windows-last-buffer
+      :desc "Search project"                    "/"     #'+default/search-project
+      :desc "Search symbol in project"          "?"     #'+default/search-project-for-symbol-at-point))
+#+end_src
+
+*** Files
+
+#+begin_src emacs-lisp :noweb-ref config
+(map! :leader
+      :desc "Find file"                         "C-f"   #'find-file
       :prefix ("f" . "File")
-      :desc "Copy this file"              "c"   #'doom/copy-this-file
-      :desc "Delete this file"            "d"   #'doom/delete-this-file
-      :desc "Open directory"              "D"   #'+default/dired
-      :desc "Find file in emacs.d"        "e"   #'doom/find-file-in-emacsd
-      :desc "Find file"                   "f"   #'find-file
-      :desc "Locate file"                 "l"   #'locate
-      :desc "Open literate config"        "p"   (cmd! (doom-project-browse db-literate-config-dir))
-      :desc "Rename/move file"            "r"   #'doom/move-this-file
-      :desc "Save file"                   "s"   #'save-buffer
-      :desc "Save file as..."             "S"   #'write-file
-      :desc "Sudo find file"              "u"   #'doom/sudo-find-file
-      :desc "Sudo this file"              "U"   #'doom/sudo-this-file
-      :desc "Yank file path"              "y"   #'+default/yank-buffer-path
-      :desc "Yank file path from project" "Y"   #'+default/yank-buffer-path-relative-to-project)
+      :desc "Copy this file"                    "c"     #'doom/copy-this-file
+      :desc "Delete this file"                  "d"     #'doom/delete-this-file
+      :desc "Open directory"                    "D"     #'+default/dired
+      :desc "Find file in emacs.d"              "e"     #'doom/find-file-in-emacsd
+      :desc "Find file"                         "f"     #'find-file
+      :desc "Locate file"                       "l"     #'locate
+      :desc "Open literate config"              "p"     (cmd! (doom-project-browse db-literate-config-dir))
+      :desc "Rename/move file"                  "r"     #'doom/move-this-file
+      :desc "Save file"                         "s"     #'save-buffer
+      :desc "Save file as..."                   "S"     #'write-file
+      :desc "Sudo find file"                    "u"     #'doom/sudo-find-file
+      :desc "Sudo this file"                    "U"     #'doom/sudo-this-file
+      :desc "Yank file path"                    "y"     #'+default/yank-buffer-path
+      :desc "Yank file path from project"       "Y"     #'+default/yank-buffer-path-relative-to-project)
+#+end_src
+
+*** Buffer
+
+#+begin_src emacs-lisp :noweb-ref config
+(map!                                           "C-M-j" #'persp-switch-to-buffer
+      :leader
+      (:when (featurep! :completion vertico)
+       (:map minibuffer-local-map               "C-e"   #'embark-act))
+
+      :desc "Switch to buffer"                  "C-b"   #'switch-to-buffer
+      :prefix ("b" . "Buffer")
+      :desc "Kill buffer"                       "k"     #'kill-current-buffer
+      :desc "Kill all buffers"                  "K"     #'doom/kill-all-buffers
+      :desc "Set bookmark"                      "m"     #'bookmark-set
+      :desc "Delete bookmark"                   "M"     #'bookmark-delete
+      :desc "Kill other buffers"                "O"     #'doom/kill-other-buffers
+      :desc "Revert buffer"                     "r"     #'revert-buffer
+      :desc "Save buffer"                       "s"     #'basic-save-buffer
+      :desc "Save all buffers"                  "S"     #'evil-write-all
+      :desc "Save buffer as root"               "u"     #'doom/sudo-save-buffer
+      :desc "Pop up scratch buffer"             "x"     #'doom/open-scratch-buffer
+      :desc "Switch to scratch buffer"          "X"     #'doom/switch-to-scratch-buffer
+      :desc "Bury buffer"                       "z"     #'bury-buffer
+      :desc "Kill buried buffers"               "Z"     #'doom/kill-buried-buffers)
 #+end_src
 
 ** Editor
