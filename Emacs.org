@@ -393,6 +393,10 @@ It can be beneficial to gather some information about the environment we're runn
 (defconst IS-WSL (string-match "-[Mm]icrosoft" operating-system-release))
 #+end_src
 
+#+begin_src conf :tangle no :noweb-ref external-packages
+"setxkbmap"
+#+end_src
+
 ** Key Bindings
 
 This section will only cover global, or mode-independent key bindings. All mode-specific bindings will be declared in their respective package configuration.
