@@ -679,6 +679,15 @@ performant and minimalistic vertical completion AI, which is based on the defaul
 
 similar to [[https://github.com/abo-abo/swiper][ivy]] or [[https://github.com/emacs-helm/helm][helm]]. However, I like the minimalist in the vertico completion stack. DOOM [[https://github.com/hlissner/doom-emacs/commit/34f8e1fdec8f8b2e334f8e12a271303b3eddd262#diff-38218dc5c71b15e7d754cb90217cfd037bf6d98b2fd9fb9298e049443ee713dc][recently]] added vertico as a completion module, this saves me the trouble of configuring it myself. However, they are yet to add corfu to the mix.
 
+However, there are still some values I'd like to tweak to my liking.
+
+#+begin_src emacs-lisp :noweb-ref config
+(use-package! vertico
+  :config
+  (setq vertico-count 10
+        vertico-resize nil))
+#+end_src
+
 Corfu offers a minimalist =completion-in-region= enhancement.
 
 #+begin_src emacs-lisp :noweb-ref config
