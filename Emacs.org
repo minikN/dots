@@ -643,9 +643,10 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
 
 #+begin_src emacs-lisp :noweb-ref config
 (use-package! popper
-  :bind (("C-<escape>" . popper-toggle-latest)
-         ("M-<escape>" . popper-cycle)
-         ("C-M-<escape>" . popper-toggle-type))
+  :bind (
+         ("C-1" . popper-toggle-latest)
+         ("M-1" . popper-cycle)
+         ("C-M-1" . popper-toggle-type))
   :init
   (setq popper-reference-buffers
         '("^\\*\\([Hh]elp\\|Apropos\\)"
