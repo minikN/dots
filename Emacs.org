@@ -432,17 +432,88 @@ In summary:
 
 #+begin_src emacs-lisp :noweb-ref config
 (map! :leader
-      :desc "Eval expression"                   "."     #'eval-expression
+      :desc "Eval expression"                           "."       #'eval-expression
 
       (:when IS-GERMAN-LAYOUT
-      :desc "Toggle last buffer"                "#"     #'evil-switch-to-windows-last-buffer
-      :desc "Search project"                    "-"     #'+default/search-project
-      :desc "Search symbol in project"          "_"     #'+default/search-project-for-symbol-at-point)
+       :desc "Toggle last buffer"                       "#"       #'evil-switch-to-windows-last-buffer
+       :desc "Search project"                           "-"       #'+default/search-project
+       :desc "Search symbol in project"                 "_"       #'+default/search-project-for-symbol-at-point)
 
       (:when IS-ENGLISH-LAYOUT
-      :desc "Toggle last buffer"                "'"     #'evil-switch-to-windows-last-buffer
-      :desc "Search project"                    "/"     #'+default/search-project
-      :desc "Search symbol in project"          "?"     #'+default/search-project-for-symbol-at-point))
+       :desc "Toggle last buffer"                       "'"       #'evil-switch-to-windows-last-buffer
+       :desc "Search project"                           "/"       #'+default/search-project
+       :desc "Search symbol in project"                 "?"       #'+default/search-project-for-symbol-at-point))
+
+(map! (:after help      :map help-mode-map :n           "o"       #'link-hint-open-link)
+      (:after helpful   :map helpful-mode-map :n        "o"       #'link-hint-open-link)
+      (:after info      :map Info-mode-map :n           "o"       #'link-hint-open-link)
+      (:after apropos   :map apropos-mode-map :n        "o"       #'link-hint-open-link
+       :n                                               "TAB"     #'forward-button
+       :n                                               [tab]     #'forward-button
+       :n                                               [backtab] #'backward-button)
+      (:after view      :map view-mode-map              [escape]  #'View-quit-all)
+      (:after man       :map Man-mode-map :n            "q"       #'kill-current-buffer)
+      (:after geiser-doc :map geiser-doc-mode-map :n    "o"       #'link-hint-open-link)
+      (:after (evil-org evil-easymotion)
+                        :map evil-org-mode-map :m       "gsh"     #'+org/goto-visible)
+
+      (:when (featurep! :editor multiple-cursors)
+       :prefix "gz"
+       :nv                                              "d"       #'evil-mc-make-and-goto-next-match
+       :nv                                              "D"       #'evil-mc-make-and-goto-prev-match
+       :nv                                              "j"       #'evil-mc-make-cursor-move-next-line
+       :nv                                              "k"       #'evil-mc-make-cursor-move-prev-line
+       :nv                                              "m"       #'evil-mc-make-all-cursors
+       :nv                                              "n"       #'evil-mc-make-and-goto-next-cursor
+       :nv                                              "N"       #'evil-mc-make-and-goto-last-cursor
+       :nv                                              "p"       #'evil-mc-make-and-goto-prev-cursor
+       :nv                                              "P"       #'evil-mc-make-and-goto-first-cursor
+       :nv                                              "q"       #'evil-mc-undo-all-cursors
+       :nv                                              "t"       #'+multiple-cursors/evil-mc-toggle-cursors
+       :nv                                              "u"       #'+multiple-cursors/evil-mc-undo-cursor
+       :nv                                              "z"       #'+multiple-cursors/evil-mc-toggle-cursor-here
+       :v                                               "I"       #'evil-mc-make-cursor-in-visual-selection-beg
+       :v                                               "A"       #'evil-mc-make-cursor-in-visual-selection-end)
+
+      ;; misc
+      :n                                                "C-S-f"   #'toggle-frame-fullscreen
+      :n                                                "C-+"    #'doom/reset-font-size
+      ;; Buffer-local font resizing
+      :n                                                "C-="    #'text-scale-increase
+      :n                                                "C--"    #'text-scale-decrease
+      ;; Frame-local font resizing
+      :n                                                "M-C-="  #'doom/increase-font-size
+      :n                                                "M-C--"  #'doom/decrease-font-size
+
+      :i [tab] (cmds! (and (featurep! :editor snippets)
+                           (yas-maybe-expand-abbrev-key-filter 'yas-expand))
+                      #'yas-expand
+                      (and (bound-and-true-p company-mode)
+                           (featurep! :completion company +tng))
+                      #'company-indent-or-complete-common)
+      :m [tab] (cmds! (and (featurep! :editor snippets)
+                           (evil-visual-state-p)
+                           (or (eq evil-visual-selection 'line)
+                               (not (memq (char-after) (list ?\( ?\[ ?\{ ?\} ?\] ?\))))))
+                      #'yas-insert-snippet
+                      (and (featurep! :editor fold)
+                           (save-excursion (end-of-line) (invisible-p (point))))
+                      #'+fold/toggle
+                      ;; Fixes #4548: without this, this tab keybind overrides
+                      ;; mode-local ones for modes that don't have an evil
+                      ;; keybinding scheme or users who don't have :editor (evil
+                      ;; +everywhere) enabled.
+                      (or (doom-lookup-key
+                           [tab]
+                           (list (evil-get-auxiliary-keymap (current-local-map) evil-state)
+                                 (current-local-map)))
+                          (doom-lookup-key
+                           (kbd "TAB")
+                           (list (evil-get-auxiliary-keymap (current-local-map) evil-state)))
+                          (doom-lookup-key (kbd "TAB") (list (current-local-map))))
+                      it
+                      (fboundp 'evil-jump-item)
+                      #'evil-jump-item))
 #+end_src
 
 *** Files
@@ -471,10 +542,16 @@ In summary:
 
 #+begin_src emacs-lisp :noweb-ref config
 (map!                                           "C-M-j" #'persp-switch-to-buffer
-      :leader
       (:when (featurep! :completion vertico)
+       (:after vertico :map vertico-map         "M-RET" #'vertico-exit-input
+                                                "C-SPC" #'+vertico/embark-preview
+                                                "C-j"   #'vertico-next
+                                                "C-S-j" #'vertico-next-group
+                                                "C-k"   #'vertico-previous
+                                                "C-S-k" #'vertico-previous-group)
        (:map minibuffer-local-map               "C-e"   #'embark-act))
 
+      :leader
       :desc "Switch to buffer"                  "C-b"   #'switch-to-buffer
       :prefix ("b" . "Buffer")
       :desc "Kill buffer"                       "k"     #'kill-current-buffer
@@ -490,6 +567,57 @@ In summary:
       :desc "Switch to scratch buffer"          "X"     #'doom/switch-to-scratch-buffer
       :desc "Bury buffer"                       "z"     #'bury-buffer
       :desc "Kill buried buffers"               "Z"     #'doom/kill-buried-buffers)
+#+end_src
+
+*** Help
+
+#+begin_src emacs-lisp :noweb-ref config
+(map! :leader
+      :prefix ("h" . "Help")
+      :desc "Emacs manual"                      "RET"    #'info-emacs-manual
+      :desc "Apropos"                           "a"      #'apropos
+      :desc "Apropos manual"                    "A"      #'apropos-documentation
+      :desc "Bindings"                          "b"      #'describe-bindings
+      :desc "Emacs version"                     "v"      #'version
+      :desc "Describe key"                      "K"      #'describe-key
+      :desc "Describe key briefly"              "k"      #'describe-key-briefly
+      :desc "Describe keymap"                   "C-k"    #'describe-keymap
+      :desc "Describe function"                 "f"      #'describe-function
+      :desc "Describe variable"                 "v"      #'describe-variable
+      :desc "Describe face"                     "F"      #'describe-face
+      :desc "Describe font"                     "o"      #'describe-font
+      :desc "Describe mode"                     "m"      #'describe-mode
+      :desc "Describe minor mode"               "M"      #'doom/describe-active-minor-mode
+      :desc "Describe theme"                    "t"      #'describe-theme
+      :desc "Describe symbol"                   "s"      #'describe-symbol
+      :desc "Describe syntax"                   "S"      #'describe-syntax
+
+      :prefix ("hd" . "DOOM")
+      :desc "Report bug"                        "b"      #'doom/report-bug
+      :desc "Debug mode"                        "d"      #'doom-debug-mode
+      :desc "FAQ"                               "f"      #'doom/help-faq
+      :desc "Help"                              "h"      #'doom/help
+      :desc "Search load path"                  "l"      #'doom/help-search-load-path
+      :desc "Search loaded files"               "L"      #'doom/help-search-loaded-files
+      :desc "Modules"                           "m"      #'doom/help-modules
+      :desc "Package Configuration"             "c"      #'doom/help-package-config
+      :desc "Custom Variables"                  "C"      #'doom/help-custom-variable
+      :desc "Visit package homepage"            "P"      #'doom/help-package-homepage
+      :desc "Packages"                          "p"      #'doom/help-packages
+      :desc "Search headings"                   "S"      #'doom/help-search-headings
+      :desc "Search"                            "s"      #'doom/help-search
+      :desc "Toggle profiler"                   "t"      #'doom/toggle-profiler
+      :desc "Autodefinitions"                   "u"      #'doom/help-autodefs
+      :desc "Version"                           "v"      #'doom/version
+      :desc "Sandbox"                           "x"      #'doom/sandbox
+
+      :prefix ("hr" . "Reload")
+      :desc "All"                               "r"      #'doom/reload
+      :desc "Theme"                             "t"      #'doom/reload-theme
+      :desc "Packages"                          "p"      #'doom/reload-packages
+      :desc "Font"                              "f"      #'doom/reload-font
+      :desc "Environtment"                      "e"      #'doom/reload-env
+      )
 #+end_src
 
 ** Editor
