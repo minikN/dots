@@ -94,7 +94,7 @@ Well, what is org-mode good for if not tangling files? Just kidding. Generally s
    ))
 #+end_src
 
-#+begin_src emacs-lisp :tangle (concat (cdr (assoc 'doomdir file-paths)) "/packages.el") :noweb yes
+#+begin_src emacs-lisp :tangle (concat (cdr (assoc 'doomdir file-paths)) "/packages.el") :noweb yes :mkdirp yes
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 ;;; This file is auto-generated. Do not make changes manually.
@@ -937,7 +937,7 @@ These are some build tools, so generic they didn't fit anywhere else.
 
 I frequently develop using [[https://nodejs.org/en/][node]]. It comes with [[https://www.npmjs.com/][npm]], its package manager. Installing npm packages globally requires =sudo= permissions (which Guix doesn't like). To make this work, I set the =$NPM_PACKAGES= environment variable manually.
 
-#+begin_src sh :tangle (concat (cdr (assoc 'profiled-home file-paths)) "/npm") :tangle-mode (identity #o755)
+#+begin_src sh :tangle (concat (cdr (assoc 'profiled-home file-paths)) "/npm") :tangle-mode (identity #o755) :mkdirp yes
 NPM_PACKAGES="${XDG_DATA_HOME}"/npm
 export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}"/npm/npmrc
 export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
