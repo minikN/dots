@@ -77,7 +77,6 @@ This is a simple list containing general problems / TODOs that I'll tackle in fu
 - Add Marginalia/Vertico to theme
 - configure vterm popup rules
 - Sway layouts?
-- WSL: super key
 
 * DOOM
 
@@ -560,11 +559,31 @@ By default, pasting from the system clipboard does not work with DOOM. It works 
 
 ** Default Applications
 
+Lets set the browser depending on what environment we are running in.
+
+- WSL
+  1. =brave= if present
+  2. =chrome= if present
+  3. =nil=
+- LINUX
+  1. =$BROWSER= if set
+  2. =nil=
+
+#+begin_src emacs-lisp :noweb-ref config
+(setq db-browser (if IS-WSL
+                     (progn (let* ((brave-path "/mnt/c/Program Files (x86)/Brave/Chrome/Application")
+                                   (chrome-path "/mnt/c/Program Files (x86)/Google/Chrome/Application"))
+                              (cond ((when (file-directory-p brave-path) (concat brave-path "/brave.exe")))
+                                    ((when (file-directory-p chrome-path) (concat chrome-path "/chrome.exe")))
+                                    (t nil))))
+                   (or (getenv "BROWSER") nil)))
+#+end_src
+
 Open links the proper browser.
 
 #+begin_src emacs-lisp :noweb-ref config
 (setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "chromium")
+      browse-url-generic-program db-browser)
 #+end_src
 
 Automatically use =zsh= when using =ansi-term=
