@@ -381,14 +381,21 @@ Lets make some default directories available to Emacs.
       xdg-data-home (or (getenv "XDG_DATA_HOME") "~/.local/share"))
 #+end_src
 
-It can be beneficial to gather some information about the environment we're running on.
+It can be beneficial to gather some information about the environment we're running on. Sway is a bit picky here. In order to get the current keyboard layout, I need a JSON processor called =jq=, luckily, Guix has it.
+
+#+begin_src scheme :noweb-ref external-packages
+"jq"
+#+end_src
 
 #+begin_src emacs-lisp :noweb-ref config
 (setq db-keyboard-layout
-      (shell-command-to-string
-       "printf %s \"$(setxkbmap -print | awk -F\"+\" '/xkb_symbols/ {print $2}')\""))
-(defconst IS-GERMAN-LAYOUT (string= db-keyboard-layout "de"))
-(defconst IS-ENGLISH-LAYOUT (string= db-keyboard-layout "en"))
+      (shell-command-to-string (if (getenv "WAYLAND_DISPLAY")
+                                   "swaymsg -t get_inputs | jq 'map(select(has(\"xkb_active_layout_name\")))[0].xkb_active_layout_name'"
+                                 "printf %s \"$(setxkbmap -print | awk -F\"+\" '/xkb_symbols/ {print $2}')\"")))
+(defconst IS-GERMAN-LAYOUT (or (string-match "de" db-keyboard-layout)
+                               (string-match "German" db-keyboard-layout)))
+(defconst IS-ENGLISH-LAYOUT (or (string-match "en" db-keyboard-layout)
+                                (string-match "English" db-keyboard-layout)))
 (defconst IS-WSL (string-match "-[Mm]icrosoft" operating-system-release))
 #+end_src
 
