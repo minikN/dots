@@ -723,6 +723,15 @@ bar {
 }
 #+end_src
 
+*** Input
+
+#+Begin_src conf
+input * {
+    xkb_layout "us"
+    xkb_options "ctrl:nocaps"
+}
+#+end_src
+
 * Local Variables :noexport:
 # Local Variables:
 # eval: (setq-local file-paths '())
