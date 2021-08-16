@@ -504,6 +504,16 @@ fi
 
 This chapter covers my configuration for [[https://github.com/swaywm/sway][sway]], my window manager.
 
+I need to set the socket sway is using manually, so that I can use =swaymsg= properly.
+
+#+begin_src sh :noweb-ref env-exports
+if [ -z ${WAYLAND_DISPLAY} ]; then
+    export SWAYSOCK=$(sway --get-socketpath)
+fi
+#+end_src
+
+This is my sway config.
+
 #+begin_src conf
 ## This file is auto-generated. Do not make changes manually.
 ## Exported from Desktop.org
@@ -710,6 +720,15 @@ bar {
         background #323232
         inactive_workspace #32323200 #32323200 #5c5c5c
     }
+}
+#+end_src
+
+*** Input
+
+#+Begin_src conf
+input * {
+    xkb_layout "us"
+    xkb_options "ctrl:nocaps"
 }
 #+end_src
 

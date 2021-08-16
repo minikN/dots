@@ -21,7 +21,7 @@ This file outlines the system configuration of all of my systems. This mainly in
 * Channels
 I use some custom channels for my Guix systems.
 
-#+begin_src scheme :noweb-ref guix-channels :tangle ~/.config/guix/channels.scm
+#+begin_src scheme :noweb-ref guix-channels :tangle ~/.config/guix/channels.scm :mkdirp yes
 (cons* (channel
         (name 'nonguix)
         (url "https://gitlab.com/nonguix/nonguix")
