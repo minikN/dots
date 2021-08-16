@@ -899,6 +899,7 @@ With that configuration (together with the configuration in [[Desktop.org][Deskt
 (use-package! pinentry
   :config
   (setq epa-pinentry-mode 'loopback)
+  (shell-command "gpg-connect-agent /bye")
   (pinentry-start))
 #+end_src
 
