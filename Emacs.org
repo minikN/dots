@@ -37,6 +37,7 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
 - [[#development-environment][Development Environment]]
   - [[#generic-build-tools][Generic build tools]]
   - [[#node][Node]]
+  - [[#org][ORG]]
 
 * Exported Files
 
@@ -184,7 +185,6 @@ First, let's define the modules doom should use. These go into =doomdir/init.el=
 ;;vc-gutter             ; vcs diff in the fringe
 ;;vi-tilde-fringe       ; fringe tildes to mark beyond EOB
 ;;window-select         ; visually switch windows
-;;zen                   ; distraction-free coding or writing
 doom                    ; what makes DOOM look the way it does
 doom-dashboard          ; a nifty splash screen for Emacs
 hl-todo                 ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
@@ -192,6 +192,7 @@ modeline                ; snazzy, Atom-inspired modeline, plus API
 ophints                 ; highlight the region an operation acts on
 popup                   ; tame sudden yet inevitable temporary windows
 workspaces              ; tab emulation, persistence & separate workspaces
+zen                   ; distraction-free coding or writing
 #+end_src
 
 ** Editor
@@ -673,6 +674,17 @@ I use [[https://github.com/nflath/hungry-delete][hungry-delete]] to delete up/ba
 (package! hungry-delete)
 #+end_src
 
+*** Writing environment
+
+DOOM offers a [[https://github.com/hlissner/doom-emacs/tree/develop/modules/ui/zen][zen]] module which has some nice features for writing text. I just tweak its appearance a bit.
+
+#+begin_src emacs-lisp :noweb-ref config
+(use-package! writeroom-mode
+  :config
+  (setq writeroom-width 0.5
+        +zen-text-scale 0))
+#+end_src
+
 ** Wayland
 
 By default, pasting from the system clipboard does not work with DOOM. It works on vanilla, but DOOM needs a little extra help. More information can be found [[https://github.com/hlissner/doom-emacs/issues/5219][here]].
@@ -763,7 +775,9 @@ Set the font and line spacing.
 
 #+begin_src emacs-lisp :noweb-ref config
 (setq line-spacing 0.2
-      doom-font (font-spec :family "Fira Code Retina" :size 17))
+      doom-font (font-spec :family "Fira Code Retina" :size 17)
+      doom-big-font (font-spec :family "Fira Code Retina" :size 20)
+      doom-variable-pitch-font (font-spec :family "Fira Code Retina" :size 17))
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref external-packages
@@ -967,6 +981,15 @@ init-module=${XDG_CONFIG_HOME}/npm/config/npm-init.js
 
 #+begin_src scheme :noweb-ref dev-packages
 "node"
+** ORG
+
+*** Key bindings
+
+#+begin_src emacs-lisp :noweb-ref config
+(map! :map org-mode-map
+      :localleader
+      (:when (featurep! :ui zen)
+       :desc "Toggle reader mode"      "r"     #'+zen/toggle))
 #+end_src
 
 * Local Variables :noexport:
