@@ -779,7 +779,8 @@ Set the theme. I use my own fork of [[https://github.com/minikN/emacs-doom-theme
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref packages
-(package! emacs-doom-themes
+(unpin! doom-themes)
+(package! doom-themes
   :recipe (:host github
            :repo "minikN/emacs-doom-themes"
            :files ("*.el" "themes/*.el")))
