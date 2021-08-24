@@ -741,6 +741,7 @@ input * {
 # eval: (map-put file-paths 'guix-manifest-home (concat (cdr (assoc 'guix-config-home file-paths)) "/manifests"))
 # eval: (map-put file-paths 'sway-config-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/sway"))
 # eval: (map-put file-paths 'zsh-config-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/zsh"))
+# eval: (map-put file-paths 'profiled-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/profile.d"))
 # eval: (map-put file-paths 'bindir (concat (cdr (assoc 'xdg-data-home file-paths)) "/bin"))
 # eval: (add-hook 'before-save-hook (lambda () (org-babel-ref-resolve "filelist")) nil t)
 # eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload Desktop profile?") (async-shell-command "update-manifest desktop"))) nil t)
