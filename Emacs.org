@@ -35,9 +35,8 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
   - [[#app-launcher][App launcher]]
   - [[#pinentry][Pinentry]]
 - [[#development-environment][Development Environment]]
-  - [[#generic-build-tools][Generic build tools]]
-  - [[#node][Node]]
-  - [[#org][ORG]]
+  - [[#ide][IDE]]
+  - [[#languages-1][Languages]]
 
 * Exported Files
 
@@ -58,11 +57,13 @@ The following tables shows all the defined target directories. All exports are b
 #+RESULTS: filelist
 | Variable           | Path                              |
 |--------------------+-----------------------------------|
+| bindir             | =/home/db/.local/share/bin=       |
 | guix-manifest-home | =/home/db/.config/guix/manifests= |
 | guix-config-home   | =/home/db/.config/guix=           |
 | doomdir            | =/home/db/.config/doom=           |
 | npm-config-home    | =/home/db/.config/npm=            |
 | profiled-home      | =/home/db/.config/profile.d=      |
+| xdg-data-home      | =/home/db/.local/share=           |
 | xdg-config-home    | =/home/db/.config=                |
 
 I may refer to these directories throughout the configuration, e.g. like that: =doomdir/config.el=.
@@ -241,7 +242,7 @@ I need the =libvterm= dependency in order to build =vterm=.
 
 #+begin_src emacs-lisp :noweb-ref doom-checkers
 (spell +flyspell)       ; tasing you for misspelling mispelling
-syntax                  ; tasing you for every semicolon you forget
+(syntax +childframe)    ; tasing you for every semicolon you forget
 grammar                 ; tasing grammar mistake every you make
 #+end_src
 
@@ -336,12 +337,12 @@ magit                   ; a git porcelain for Emacs
 ;;solidity              ; do you need a blockchain? No.
 ;;swift                 ; who asked for emoji variables?
 ;;terra                 ; Earth and Moon in alignment for performance.
-;;web                   ; the tubes
 ;;yaml                  ; JSON, but readable
 ;;zig                   ; C, but simpler
 emacs-lisp              ; drown in parentheses
 org                     ; organize your plain life in plain text
 sh                      ; she sells {ba,z,fi}sh shells on the C xor
+web                     ; the tubes
 #+end_src
 
 ** Email
@@ -628,8 +629,17 @@ In summary:
       :desc "Theme"                             "t"      #'doom/reload-theme
       :desc "Packages"                          "p"      #'doom/reload-packages
       :desc "Font"                              "f"      #'doom/reload-font
-      :desc "Environtment"                      "e"      #'doom/reload-env
-      )
+      :desc "Environtment"                      "e"      #'doom/reload-env)
+#+end_src
+
+*** Code
+
+#+begin_src emacs-lisp :noweb-ref config
+(map! (:after lsp-mode :map lsp-mode-map        "<M-return>" #'lsp-execute-code-action)
+      :leader
+      :prefix ("c" . "Code")
+      :desc "Show documentation"                "K"   #'lsp-ui-doc-show
+      :desc "Toggle Symbols"                    "S"   #'db/lsp-treemacs-symbols-toggle)
 #+end_src
 
 ** Editor
@@ -936,32 +946,79 @@ With that configuration (together with the configuration in [[Desktop.org][Deskt
 
 * Development Environment
 
-I spend most of my time in emacs. This (obviously) programming. This section covers my configuration for turning emacs into an IDE. I use [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] as my foundation for this. In addition to that, I also need external tools (linters, build tools, ...). I create a dedicated guix profile called =development= for that purpose.
+I spend most of my time in emacs. This (obviously) programming. This section covers my configuration for turning emacs into an IDE. I use [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] as my foundation for this. In addition to that, I also need external tools (linters, build tools, ...).
 
-#+begin_src emacs-lisp :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/development.scm") :noweb yes
-;; This file is auto-generated. Do not make changes manually.
-;; Exported from Emacs.org
+I use [[https://guix.gnu.org/manual/en/html_node/Invoking-guix-environment.html][guix environment]] to set up my development environments. I separate my environments based on languages where it makes sense. In an isolated environment, Guix can load packages //ad hoc// and provide a shell to interact with it. For example
 
-(specifications->manifest
- '(
-   <<dev-packages>>
-   ))
+#+begin_src sh :tangle no
+guix environment --ad-hoc node -- npm -v
 #+end_src
 
-** Generic build tools
+executes =npm -v= in an isolated node environment. Great, isn't it? There is much more to this, refer to the docs if needed.
 
-These are some build tools, so generic they didn't fit anywhere else.
+However, what about packages (like certain npm packages) that I need in an environment, but that are not available through Guix? For that purpose, I create a wrapper script for every environment that checks development dependencies and installs them on the fly if needed.
 
-#+begin_src scheme :noweb-ref dev-packages
-"cmake"
-"make"
-"gcc-toolchain"
-"pkg-config"
-"libtool"
-"perl"
+** IDE
+
+Generic IDE (mostly =lsp-mode=) settings go in here.
+
+Setting a high threshold for file watchers:
+
+#+begin_src emacs-lisp :noweb-ref config
+(after! lsp-mode
+  (setq lsp-auto-guess-root nil
+        lsp-file-watch-threshold 10000))
 #+end_src
 
-** Node
+*** =lsp-ui=
+#+begin_src emacs-lisp :noweb-ref config
+(after! lsp-ui
+  (setq lsp-ui-peek-list-width 100
+        lsp-ui-peek-fontify 'always
+        lsp-ui-doc-position 'top
+        lsp-ui-doc-alignment 'window
+        lsp-ui-doc-max-height 30
+        lsp-ui-doc-max-width 90
+        lsp-ui-doc-border "white"
+        lsp-ui-imenu-enable nil))
+#+end_src
+
+*** =lsp-treemacs=
+#+begin_src emacs-lisp :noweb-ref config
+(after! treemacs
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (setq treemacs-show-hidden-files t
+        treemacs-follow-after-init t
+        treemacs-silent-filewatch t
+        treemacs-silent-refresh t
+        treemacs-recenter-after-file-follow 'always))
+
+ (with-eval-after-load 'lsp-treemacs
+  (setq lsp-treemacs-symbols-position-params
+        `((side . right)
+          (slot . 1)
+          (window-width . ,treemacs-width))))
+#+end_src
+
+I like using the symbol list using =lsp-treemacs=. This function allows me to quickly toggle it:
+
+#+begin_src emacs-lisp :noweb-ref config
+(defun db/lsp-treemacs-symbols-toggle ()
+  "Toggle the lsp-treemacs-symbols buffer."
+  (interactive)
+  (if (get-buffer "*LSP Symbols List*")
+      (kill-buffer "*LSP Symbols List*")
+    (progn (lsp-treemacs-symbols)
+           (other-window -1))))
+#+end_src
+
+** Languages
+*** Node/JS/TS
+
+This is my =node= development configuration.
+
+**** Environment
 
 I frequently develop using [[https://nodejs.org/en/][node]]. It comes with [[https://www.npmjs.com/][npm]], its package manager. Installing npm packages globally requires =sudo= permissions (which Guix doesn't like). To make this work, I set the =$NPM_PACKAGES= environment variable manually.
 
@@ -983,28 +1040,105 @@ tmp=${XDG_RUNTIME_DIR}/npm
 init-module=${XDG_CONFIG_HOME}/npm/config/npm-init.js
 #+end_src
 
-#+begin_src scheme :noweb-ref dev-packages
-"node"
-** ORG
+This configuration is for the development environment to work properly. All the npm packages I need by default (like =eslint= or =intelephense=) are installed in =xdg-data-home/npm=, therefore, I can create a environment wrapper that checks if all the tools needed are installed and does so if not.
 
-*** Key bindings
+#+begin_src sh :tangle (concat (cdr (assoc 'bindir file-paths)) "/node-env") :tangle-mode (identity #o755) :mkdirp yes :shebang "#!/usr/bin/env sh"
+check_external_dep() {
+    local NPM_DIR="${XDG_DATA_HOME}"/npm
+    local REPO=$(basename ${1} .git)
+    if [ ! -d "${NPM_DIR}"/"${REPO}" ]; then
+        echo "${REPO} not found. Cloning...";
+        git clone "${1}" "${NPM_DIR}"/"${REPO}" > /dev/null
+        cd "${NPM_DIR}"/"${REPO}"
+        echo "Building..."
+        guix environment --ad-hoc node -- npm install > /dev/null
+        guix environment --ad-hoc node -- npm run compile > /dev/null
+    fi
+}
+
+check_npm_dep() {
+    if ! command -v "${1}" &> /dev/null; then
+        echo "${1} not found. Installing..."
+        guix environment --ad-hoc node -- npm i -g "${1}"
+    fi
+}
+
+check_external_dep "https://github.com/microsoft/vscode-eslint.git"
+check_npm_dep "typescript-language-server"
+check_npm_dep "typescript"
+
+guix environment --ad-hoc node -- "${@}"
+#+end_src
+
+It can be used like so:
+#+begin_src sh :tangle no
+node-env npm -v
+6.14.11
+#+end_src
+
+If its runtime dependencies are not satisfied, it will install them and run the command then. This only needs to be run once.
+
+**** IDE
+
+#+begin_src emacs-lisp :noweb-ref config
+ (setq lsp-eslint-server-command
+       `("node-env"
+         "node"
+         ,(concat xdg-data-home "/npm/vscode-eslint/server/out/eslintServer.js")
+         "--stdio"))
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref config
+(setq npm-mode--npm-executable          "node-env npm"
+      lsp-eslint-node                   "node-env node"
+      lsp-clients-typescript-tls-path   "typescript-language-server"
+      lsp-clients-javascript-typescript-server "node-env node")
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref packages
+(unpin! npm-mode)
+(package! npm-mode :recipe (:host github :repo "minikN/npm-mode"))
+#+end_src
+
+*** PHP
+
+#+begin_src sh :tangle (concat (cdr (assoc 'profiled-home file-paths)) "/php") :tangle-mode (identity #o755) :mkdirp yes
+# if command -v php &> /dev/null; then
+#     if ! test -x "${BINDIR}/composer"; then
+#         php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+#         php "composer-setup.php"
+#         php -r "unlink('composer-setup.php');"
+#         mv composer.phar ${BINDIR}/composer
+#         chmod +x ${BINDIR}/composer
+#     fi
+# fi
+#+end_src
+
+#+begin_src scheme :noweb-ref dev-packages
+;"php"
+#+end_src
+
+*** ORG
+**** Key bindings
 
 #+begin_src emacs-lisp :noweb-ref config
 (map! :map org-mode-map
       :localleader
       (:when (featurep! :ui zen)
-       :desc "Toggle reader mode"      "r"     #'+zen/toggle))
+       :desc "Toggle reader mode"      "z"     #'+zen/toggle))
 #+end_src
 
 * Local Variables :noexport:
 # Local Variables:
 # eval: (setq-local file-paths '())
 # eval: (map-put file-paths 'xdg-config-home (or (getenv "XDG_CONFIG_HOME") "~/.config"))
+# eval: (map-put file-paths 'xdg-data-home (or (getenv "XDG_DATA_HOME") "~/.local/share"))
 # eval: (map-put file-paths 'profiled-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/profile.d"))
 # eval: (map-put file-paths 'npm-config-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/npm"))
 # eval: (map-put file-paths 'doomdir (concat (cdr (assoc 'xdg-config-home file-paths)) "/doom"))
 # eval: (map-put file-paths 'guix-config-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/guix"))
 # eval: (map-put file-paths 'guix-manifest-home (concat (cdr (assoc 'guix-config-home file-paths)) "/manifests"))
+# eval: (map-put file-paths 'bindir (concat (cdr (assoc 'xdg-data-home file-paths)) "/bin"))
 # eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload DOOM?") (doom/reload))) nil t)
 # eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload Emacs profile?") (async-shell-command "update-manifest emacs"))) nil t)
 # eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Tangle the file?") (org-babel-tangle))) nil t)
