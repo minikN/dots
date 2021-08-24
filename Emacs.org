@@ -11,7 +11,7 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
 
 * Table Of Contents :TOC:
 - [[#exported-files][Exported Files]]
-- [[#doom][DOOM]]
+- [[#doom-emacs][DOOM Emacs]]
   - [[#modules][Modules]]
   - [[#completion][Completion]]
   - [[#user-interface][User Interface]]
@@ -24,7 +24,7 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
   - [[#email][Email]]
   - [[#applications][Applications]]
 - [[#basic-settings][Basic Settings]]
-  - [[#key-bindings][Key Bindings]]
+  - [[#key-bindings][Key bindings]]
   - [[#editor-1][Editor]]
   - [[#wayland][Wayland]]
   - [[#default-applications][Default Applications]]
@@ -78,7 +78,7 @@ This is a simple list containing general problems / TODOs that I'll tackle in fu
 - configure vterm popup rules
 - Sway layouts?
 
-* DOOM
+* DOOM Emacs
 
 DOOM expects three files to be present: =doomdir/init.el= for its active modules, =doomdir/config.el= as a main configuration and =doomdir/packages.el= for package declarations.
 Well, what is org-mode good for if not tangling files? Just kidding. Generally speaking, the source blocks of this file will be tangled to =config.el= while I'll tangle bits and pieces to =init.el= and =packages.el= where needed. I also create =guix-manifest-home/emacs.scm= for external packages (binaries, fonts, ...) I need.
@@ -403,7 +403,7 @@ It can be beneficial to gather some information about the environment we're runn
 "setxkbmap"
 #+end_src
 
-** Key Bindings
+** Key bindings
 
 This section will only cover global, or mode-independent key bindings. All mode-specific bindings will be declared in their respective package configuration.
 
@@ -658,6 +658,8 @@ Some sensible defaults for working with emacs.
 (global-subword-mode 1)                         ; Iterate through camelCase
 (set-default-coding-systems 'utf-8)             ; Default utf-8 encoding
 #+end_src
+
+*** Deleting whitespace
 
 I use [[https://github.com/nflath/hungry-delete][hungry-delete]] to delete up/back to the next non-whitespace character. However, I don't want to use this globally, I only bind it to =M-<backspace>= and =M-<delete>=
 
