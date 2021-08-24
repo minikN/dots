@@ -255,6 +255,9 @@ grammar                 ; tasing grammar mistake every you make
 
 #+begin_src emacs-lisp :noweb-ref doom-tools
 (eval +overlay)         ; run code, run (also, repls)
+(lsp
+ +peek
+ :completion vertico)
 ;;ansible
 ;;debugger              ; FIXME stepping through code, to help you add bugs
 ;;direnv
@@ -262,7 +265,6 @@ grammar                 ; tasing grammar mistake every you make
 ;;editorconfig          ; let someone else argue about tabs vs spaces
 ;;ein                   ; tame Jupyter notebooks with emacs
 ;;gist                  ; interacting with github gists
-;;lsp
 ;;make                  ; run make tasks from Emacs
 ;;pass                  ; password manager for nerds
 ;;pdf                   ; pdf enhancements
@@ -279,6 +281,9 @@ magit                   ; a git porcelain for Emacs
 ** Languages
 
 #+begin_src emacs-lisp :noweb-ref doom-lang
+(javascript
+ +lsp
+ :completion vertico)
 ;;(dart +flutter)       ; paint ui and not much else
 ;;(go +lsp)             ; the hipster dialect
 ;;(haskell +dante)      ; a language that's lazier than I am
@@ -305,7 +310,6 @@ magit                   ; a git porcelain for Emacs
 ;;gdscript              ; the language you waited for
 ;;hy                    ; readability of scheme w/ speed of python
 ;;idris                 ; a language you can depend on
-;;javascript            ; all(hope(abandon(ye(who(enter(here))))))
 ;;json                  ; At least it ain't XML
 ;;julia                 ; a better, faster MATLAB
 ;;kotlin                ; a better, slicker Java(Script)
