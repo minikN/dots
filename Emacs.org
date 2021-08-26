@@ -35,7 +35,7 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
   - [[#app-launcher][App launcher]]
   - [[#pinentry][Pinentry]]
 - [[#development-environment][Development Environment]]
-  - [[#ide][IDE]]
+  - [[#generic-settings][Generic settings]]
   - [[#languages-1][Languages]]
 
 * Exported Files
@@ -947,9 +947,9 @@ With that configuration (together with the configuration in [[Desktop.org][Deskt
 
 * Development Environment
 
-I spend most of my time in emacs. This (obviously) programming. This section covers my configuration for turning emacs into an IDE. I use [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] as my foundation for this. In addition to that, I also need external tools (linters, build tools, ...).
+I spend most of my time in emacs. This (obviously) includes programming. This section covers my configuration for turning emacs into an IDE. I use [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] as my foundation for this. In addition to that, I also need external tools (linters, build tools, ...).
 
-I use [[https://guix.gnu.org/manual/en/html_node/Invoking-guix-environment.html][guix environment]] to set up my development environments. I separate my environments based on languages where it makes sense. In an isolated environment, Guix can load packages //ad hoc// and provide a shell to interact with it. For example
+I use [[https://guix.gnu.org/manual/en/html_node/Invoking-guix-environment.html][guix environment]] to set up my development environments. I separate my environments based on languages where it makes sense. In an isolated environment, Guix can load packages ad hoc and provide a shell to interact with it. For example
 
 #+begin_src sh :tangle no
 guix environment --ad-hoc node -- npm -v
@@ -957,11 +957,9 @@ guix environment --ad-hoc node -- npm -v
 
 executes =npm -v= in an isolated node environment. Great, isn't it? There is much more to this, refer to the docs if needed.
 
-However, what about packages (like certain npm packages) that I need in an environment, but that are not available through Guix? For that purpose, I create a wrapper script for every environment that checks development dependencies and installs them on the fly if needed.
+However, what about packages (like certain npm packages) that I need in an environment, but that are not available through Guix? For that purpose, I create a wrapper script for every environment that checks development dependencies and installs them on the fly if needed (See sections for each language).
 
-** IDE
-
-Generic IDE (mostly =lsp-mode=) settings go in here.
+** Generic settings
 
 Setting a high threshold for file watchers:
 
@@ -1017,7 +1015,7 @@ I like using the symbol list using =lsp-treemacs=. This function allows me to qu
 ** Languages
 *** Node/JS/TS
 
-This is my =node= development configuration.
+This is the development configuration for =node=, =js= and =ts=.
 
 **** Environment
 
@@ -1041,7 +1039,7 @@ tmp=${XDG_RUNTIME_DIR}/npm
 init-module=${XDG_CONFIG_HOME}/npm/config/npm-init.js
 #+end_src
 
-This configuration is for the development environment to work properly. All the npm packages I need by default (like =eslint= or =intelephense=) are installed in =xdg-data-home/npm=, therefore, I can create a environment wrapper that checks if all the tools needed are installed and does so if not.
+This configuration is for the development environment to work properly. All the npm packages I need by default (like =eslint= or =typescript=) are installed in =xdg-data-home/npm=, therefore, I can create a environment wrapper that checks if all the tools needed are installed and does so if not.
 
 #+begin_src sh :tangle (concat (cdr (assoc 'bindir file-paths)) "/node-env") :tangle-mode (identity #o755) :mkdirp yes :shebang "#!/usr/bin/env sh"
 NPM_DIR="${XDG_DATA_HOME}"/npm
@@ -1083,7 +1081,7 @@ If its runtime dependencies are not satisfied, it will install them and run the 
 
 **** IDE
 
-This part covers how I configure Emacs, especially =lsp-mode= to work for JS / TS development. Unfortunately, because I need to run all my executables (linters, language-servers, ...) inside the isolated environment, I need to tweak certain paths.
+This part covers how I configure Emacs, especially =lsp-mode= to work for javascript / typescript development. Unfortunately, because I need to run all my executables (linters, language-servers, ...) inside the isolated environment, I need to tweak certain paths.
 
 Path to the =eslint= server:
 
@@ -1114,7 +1112,7 @@ Path to =npm=:
 (setq npm-mode--npm-executable "node-env npm")
 #+end_src
 
-Unfortunately, the original =npm-mode= package doesn't come with the ability to change the =npm= command. So I forked it and added the functionality.
+The original =npm-mode= package doesn't come with the ability to change the =npm= command. So I forked it and added the functionality.
 
 #+begin_src emacs-lisp :noweb-ref packages
 (unpin! npm-mode)
