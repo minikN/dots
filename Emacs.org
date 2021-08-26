@@ -9,7 +9,7 @@ However, pre-built configurations themselves can be a rabbit hole as the linked 
 
 I like to have *one* file to configure Emacs. Hence why you  are reading a [[https://leanpub.com/lit-config/read][literate]] configuration. Not only documents it my configuration, it /is/ my configuration. It will tangle all of my configuration- or dotfiles on every save.
 
-* Table Of Contents :TOC:
+* Table Of Contents :TOC_3:
 - [[#exported-files][Exported Files]]
 - [[#doom-emacs][DOOM Emacs]]
   - [[#modules][Modules]]
@@ -25,7 +25,15 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
   - [[#applications][Applications]]
 - [[#basic-settings][Basic Settings]]
   - [[#key-bindings][Key bindings]]
+    - [[#conventions][Conventions]]
+    - [[#common][Common]]
+    - [[#files][Files]]
+    - [[#buffer][Buffer]]
+    - [[#help][Help]]
+    - [[#code][Code]]
   - [[#editor-1][Editor]]
+    - [[#deleting-whitespace][Deleting whitespace]]
+    - [[#writing-environment][Writing environment]]
   - [[#wayland][Wayland]]
   - [[#default-applications][Default Applications]]
   - [[#user-interface-1][User Interface]]
@@ -36,7 +44,12 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
   - [[#pinentry][Pinentry]]
 - [[#development-environment][Development Environment]]
   - [[#generic-settings][Generic settings]]
+    - [[#lsp-ui][=lsp-ui=]]
+    - [[#lsp-treemacs][=lsp-treemacs=]]
   - [[#languages-1][Languages]]
+    - [[#nodejsts][Node/JS/TS]]
+    - [[#php][PHP]]
+    - [[#org][ORG]]
 
 * Exported Files
 
