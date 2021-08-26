@@ -1073,6 +1073,7 @@ guix environment --ad-hoc node -- "${@}"
 #+end_src
 
 It can be used like so:
+
 #+begin_src sh :tangle no
 node-env npm -v
 6.14.11
@@ -1082,20 +1083,38 @@ If its runtime dependencies are not satisfied, it will install them and run the 
 
 **** IDE
 
+This part covers how I configure Emacs, especially =lsp-mode= to work for JS / TS development. Unfortunately, because I need to run all my executables (linters, language-servers, ...) inside the isolated environment, I need to tweak certain paths.
+
+Path to the =eslint= server:
+
 #+begin_src emacs-lisp :noweb-ref config
- (setq lsp-eslint-server-command
+ (setq lsp-eslint-node "node-env node"
+       lsp-eslint-server-command
        `("node-env"
          "node"
          ,(concat xdg-data-home "/npm/vscode-eslint/server/out/eslintServer.js")
          "--stdio"))
 #+end_src
 
+Path to the =typescript-language-server=:
+
 #+begin_src emacs-lisp :noweb-ref config
-(setq npm-mode--npm-executable          "node-env npm"
-      lsp-eslint-node                   "node-env node"
-      lsp-clients-typescript-tls-path   "typescript-language-server"
-      lsp-clients-javascript-typescript-server "node-env node")
+(setq lsp-clients-typescript-tls-path "node-env-ts-ls")
 #+end_src
+
+Unfortunately, setting it to =node-env typescript-language-server= doesn't work, because =lsp-mode= resolves the full path of =lsp-clients-typescript-tls-path=. Therefore I need a small wrapper script (=node-env-ts-ls=) which then calls the correct binary inside my environment.
+
+#+begin_src sh :tangle (concat (cdr (assoc 'bindir file-paths)) "/node-env-ts-ls") :tangle-mode (identity #o755) :mkdirp yes :shebang "#!/usr/bin/env sh"
+node-env typescript-language-server "${@}"
+#+end_src
+
+Path to =npm=:
+
+#+begin_src emacs-lisp :noweb-ref config
+(setq npm-mode--npm-executable "node-env npm")
+#+end_src
+
+Unfortunately, the original =npm-mode= package doesn't come with the ability to change the =npm= command. So I forked it and added the functionality.
 
 #+begin_src emacs-lisp :noweb-ref packages
 (unpin! npm-mode)
