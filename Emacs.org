@@ -1044,8 +1044,9 @@ init-module=${XDG_CONFIG_HOME}/npm/config/npm-init.js
 This configuration is for the development environment to work properly. All the npm packages I need by default (like =eslint= or =intelephense=) are installed in =xdg-data-home/npm=, therefore, I can create a environment wrapper that checks if all the tools needed are installed and does so if not.
 
 #+begin_src sh :tangle (concat (cdr (assoc 'bindir file-paths)) "/node-env") :tangle-mode (identity #o755) :mkdirp yes :shebang "#!/usr/bin/env sh"
+NPM_DIR="${XDG_DATA_HOME}"/npm
+
 check_external_dep() {
-    local NPM_DIR="${XDG_DATA_HOME}"/npm
     local REPO=$(basename ${1} .git)
     if [ ! -d "${NPM_DIR}"/"${REPO}" ]; then
         echo "${REPO} not found. Cloning...";
@@ -1058,7 +1059,7 @@ check_external_dep() {
 }
 
 check_npm_dep() {
-    if ! command -v "${1}" &> /dev/null; then
+    if [ ! -d "${NPM_DIR}"/lib/node_modules/"${1}" ]; then
         echo "${1} not found. Installing..."
         guix environment --ad-hoc node -- npm i -g "${1}"
     fi
