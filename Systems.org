@@ -2,7 +2,6 @@
 #+AUTHOR: Demis Balbach
 #+PROPERTY: header-args :mkdirp yes
 #+PROPERTY: header-args :tangle-mode (identity #o444)
-#+MANIFEST: ~/.config/guix/manifests/systems
 
 This file outlines the system configuration of all of my systems. This mainly involves creating Guix system manifest files as well as initializing systems with them.
 
