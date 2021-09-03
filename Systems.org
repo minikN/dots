@@ -93,34 +93,22 @@ This is the base configuration I use for every system I set up.
   #:export (base-operating-system
             %base-system-services
             %base-system-packages))
-#+end_src
 
-The channels I use for every system.
-
-#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes :noweb yes
 (define %guix-channels
   (scheme-file
    "channels.scm"
    #~
    <<guix-channels>>))
-#+end_src
 
-I use an additional server for substitutes, that way Guix doesn't need to build everything from scratch when pulling.
-
-#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
 (define %brielmaier-public-key
   (plain-file
    "mirror.brielmaier.net.pub"
    "(public-key
    (ecc
-     (curve Ed25519)
-     (q #7514F8D729DB1935470A581CE3851ED9FD6F1F9BAFE1D8BEC77A931ADB7A4337#)
-     ))"))
-#+end_src
+(curve Ed25519)
+(q #7514F8D729DB1935470A581CE3851ED9FD6F1F9BAFE1D8BEC77A931ADB7A4337#)
+))"))
 
-The default services. =/etc/zprofile= is sourced for every login shell. I also source =~/.config/profile=. This is your standard =~/.profile=, except I don't like files in my =$HOME= directory. Lastly I set =$ZDOTDIR= to =~/.config/zsh=. This is important because I tangle my =.zshrc= into that directory in my [[file:Desktop.org#zshell][Desktop.org]].
-
-#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
 (define %base-system-services
   (append (list
            (extra-special-file "/etc/guix/channels.scm" %guix-channels)
@@ -142,11 +130,7 @@ emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'")))))
                                                (authorized-keys
                                                 (append (list %brielmaier-public-key)
                                                         %default-authorized-guix-keys)))))))
-#+end_src
 
-The default packages to install on each system.
-
-#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
 (define %base-system-packages
   (append (list
            curl
@@ -155,11 +139,7 @@ The default packages to install on each system.
            nss-certs
            vim)
           %base-packages))
-#+end_src
 
-Default machine and user settings
-
-#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
 (define base-operating-system
   (operating-system
 
@@ -182,50 +162,38 @@ Default machine and user settings
                                          "cdrom")))
                 %base-user-accounts))
 
-#+end_src
+   ;; Services
+   (services %base-system-services)
 
-#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
-;; Services
-(services %base-system-services)
-#+end_src
+   ;; Boot loader
+   (bootloader (bootloader-configuration
+                (bootloader grub-efi-bootloader)
+                (target "/boot/efi")
+                (timeout 3)))
 
-I use the [[https://wiki.archlinux.org/title/GRUB#UEFI_systems][UEFI]] version of GRUB as my default boot loader. For this to work, I need to format and mount =/boot/efi= accordingly.
+   ;; File systems
+   (file-systems (cons* (file-system ;; System partition
+                         (device (file-system-label "GUIX"))
+                         (mount-point "/")
+                         (type "btrfs"))
+                        (file-system ;; Boot partition
+                         (device (file-system-label "BOOT"))
+                         (mount-point "/boot/efi")
+                         (type "vfat"))
+                        %base-file-systems))
 
-#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
-;; Boot loader
-(bootloader (bootloader-configuration
-             (bootloader grub-efi-bootloader)
-             (target "/boot/efi")
-             (timeout 3)))
-#+end_src
-
-Default file system structure used by my systems.
-
-#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
-;; File systems
-(file-systems (cons* (file-system ;; System partition
-                      (device (file-system-label "GUIX"))
-                      (mount-point "/")
-                      (type "ext4"))
-                     (file-system ;; Boot partition
-                      (device (file-system-label "BOOT"))
-                      (mount-point "/boot/efi")
-                      (type "vfat"))
-                     %base-file-systems))
-#+end_src
-
-The default packages to install. This is a bare minimum. System-specific configurations may override this.
-
-#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
-;; Packages to install
-(packages %base-system-packages)
-(name-service-switch %mdns-host-lookup-nss)))
+   ;; Packages to install
+   (packages %base-system-packages)
+   (name-service-switch %mdns-host-lookup-nss)))
 base-operating-system
 #+end_src
 
 * Geekcave
 
 #+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/geekcave.scm") :mkdirp yes
+;; This file is auto-generated. Do not make changes manually.
+;; Exported from Systems.org
+
 (define-module (geekcave)
   #:use-module (gnu)
   #:use-module (base-system)
