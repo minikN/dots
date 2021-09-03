@@ -91,9 +91,8 @@ This is the base configuration I use for every system I set up.
   #:use-module (gnu services xorg)
   #:use-module (srfi srfi-1)
   #:export (base-operating-system
-            %guix-channels
             %base-system-services
-            %brielmayer-public-key))
+            %base-system-packages))
 #+end_src
 
 The channels I use for every system.
@@ -145,6 +144,19 @@ emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'")))))
                                                         %default-authorized-guix-keys)))))))
 #+end_src
 
+The default packages to install on each system.
+
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
+(define %base-system-packages
+  (append (list
+           curl
+           emacs
+           git
+           nss-certs
+           vim)
+          %base-packages))
+#+end_src
+
 Default machine and user settings
 
 #+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
@@ -170,42 +182,11 @@ Default machine and user settings
                                          "cdrom")))
                 %base-user-accounts))
 
-   ;; Services
-   (services %base-system-services)
 #+end_src
 
 #+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
 ;; Services
-;; (services (cons*
-;;            ;; special files
-;;            (extra-special-file "/etc/guix/channels.scm" %guix-channels)
-;;            (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
-
-;;            ;; login manager
-;;            (service sddm-service-type)
-
-;;            ;; zsh
-;;            (simple-service 'zshrc etc-service-type
-;;                            `(("zprofile" ,(plain-file "zprofile" "\
-;;                                    emulate sh -c '. /etc/profile'
-;;                                    emulate sh -c '. $HOME/.config/profile'
-;;                                    emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'"))))
-
-;;            ;; remove gdm service and
-;;            ;; add substitute server
-;;            (remove (lambda (service)
-;;                      (eq? (service-kind service) gdm-service-type))
-;;                    (modify-services %desktop-services
-;;                                     (guix-service-type
-;;                                      config =>
-;;                                      (guix-configuration
-;;                                       (inherit config)
-;;                                       (substitute-urls
-;;                                        (append (list "https://mirror.brielmaier.net")
-;;                                                %default-substitute-urls))
-;;                                       (authorized-keys
-;;                                        (append (list %brielmaier-public-key)
-;;                                                %default-authorized-guix-keys))))))))
+(services %base-system-services)
 #+end_src
 
 I use the [[https://wiki.archlinux.org/title/GRUB#UEFI_systems][UEFI]] version of GRUB as my default boot loader. For this to work, I need to format and mount =/boot/efi= accordingly.
@@ -237,14 +218,7 @@ The default packages to install. This is a bare minimum. System-specific configu
 
 #+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
 ;; Packages to install
-(packages
- (append
-  (list git
-        curl
-        vim
-        nss-certs)
-  %base-packages))
-
+(packages %base-system-packages)
 (name-service-switch %mdns-host-lookup-nss)))
 base-operating-system
 #+end_src
@@ -295,18 +269,15 @@ base-operating-system
                       (service sddm-service-type))
                      %base-system-services))
 
+   ;; Packages
    (packages
     (append
-     (list git
-           curl
-           vim
-           nss-certs
-           sway
+     (list sway
            swaybg
            swayidle
            swaylock
            mesa
-                                        ;dxvk
+           ;dxvk
            vkd3d
            mesa-headers
            spirv-cross
@@ -314,7 +285,7 @@ base-operating-system
            mesa-utils
            spirv-headers
            shepherd)
-     %base-packages))))
+     %base-system-packages))))
 geekcave-system
 #+end_src
 
@@ -511,16 +482,7 @@ To make all of this work, I use the following manifest file inheriting from =bas
                         (device "/dev/sdb")
                         (mount-point "/")
                         (type "ext4")
-                        (mount? #t))))
-
-   (services (list (service guix-service-type)
-                   (service special-files-service-type
-                            `(("/usr/bin/env" ,(file-append coreutils "/bin/env"))))
-                   (simple-service 'zshrc etc-service-type
-                                       `(("zprofile" ,(plain-file "zprofile" "\
-                                   emulate sh -c '. /etc/profile'
-                                   emulate sh -c '. $HOME/.config/profile'
-                                   emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'"))))))))
+                        (mount? #t))))))
 wsl-operating-system
 #+end_src
 
