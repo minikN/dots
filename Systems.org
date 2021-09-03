@@ -92,6 +92,7 @@ This is the base configuration I use for every system I set up.
   #:use-module (srfi srfi-1)
   #:export (base-operating-system
             %guix-channels
+            %base-system-services
             %brielmayer-public-key))
 #+end_src
 
@@ -118,17 +119,35 @@ I use an additional server for substitutes, that way Guix doesn't need to build 
      ))"))
 #+end_src
 
-#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes
-(define %sddm-hidpi
-  (plain-file
-   "hidpi.conf"
-   "[Wayland]
-    EnableHiDPI=true"))
+The default services. =/etc/zprofile= is sourced for every login shell. I also source =~/.config/profile=. This is your standard =~/.profile=, except I don't like files in my =$HOME= directory. Lastly I set =$ZDOTDIR= to =~/.config/zsh=. This is important because I tangle my =.zshrc= into that directory in my [[file:Desktop.org#zshell][Desktop.org]].
+
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
+(define %base-system-services
+  (append (list
+           (extra-special-file "/etc/guix/channels.scm" %guix-channels)
+           (extra-special-file "/usr/bin/env"
+                               (file-append coreutils "/bin/env"))
+           (simple-service 'zshrc etc-service-type
+                           `(("zprofile" ,(plain-file "zprofile" "\
+emulate sh -c '. /etc/profile'
+emulate sh -c '. $HOME/.config/profile'
+emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'")))))
+          (modify-services %desktop-services
+                           (delete gdm-service-type)
+                           (guix-service-type config =>
+                                              (guix-configuration
+                                               (inherit config)
+                                               (substitute-urls
+                                                (append (list "https://mirror.brielmaier.net")
+                                                        %default-substitute-urls))
+                                               (authorized-keys
+                                                (append (list %brielmaier-public-key)
+                                                        %default-authorized-guix-keys)))))))
 #+end_src
 
 Default machine and user settings
 
-#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
 (define base-operating-system
   (operating-system
 
@@ -150,43 +169,43 @@ Default machine and user settings
                                          "input"
                                          "cdrom")))
                 %base-user-accounts))
-#+end_src
 
-The default services. Apart from a couple of special config files in =/etc=, this sets up =sddm=, the login manager I use, as well as =zsh= as my shell.
-=/etc/zprofile= is sourced for every login shell. I also source =~/.config/profile=. This is your standard =~/.profile=, except I don't like files in my =$HOME= directory. Lastly I set =$ZDOTDIR= to =~/.config/zsh=. This is important because I tangle my =.zshrc= into that directory in my [[file:Desktop.org#zshell][Desktop.org]].
+   ;; Services
+   (services %base-system-services)
+#+end_src
 
 #+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
 ;; Services
-(services (cons*
-           ;; special files
-           (extra-special-file "/etc/guix/channels.scm" %guix-channels)
-           (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
+;; (services (cons*
+;;            ;; special files
+;;            (extra-special-file "/etc/guix/channels.scm" %guix-channels)
+;;            (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
 
-           ;; login manager
-           (service sddm-service-type)
+;;            ;; login manager
+;;            (service sddm-service-type)
 
-           ;; zsh
-           (simple-service 'zshrc etc-service-type
-                           `(("zprofile" ,(plain-file "zprofile" "\
-                                   emulate sh -c '. /etc/profile'
-                                   emulate sh -c '. $HOME/.config/profile'
-                                   emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'"))))
+;;            ;; zsh
+;;            (simple-service 'zshrc etc-service-type
+;;                            `(("zprofile" ,(plain-file "zprofile" "\
+;;                                    emulate sh -c '. /etc/profile'
+;;                                    emulate sh -c '. $HOME/.config/profile'
+;;                                    emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'"))))
 
-           ;; remove gdm service and
-           ;; add substitute server
-           (remove (lambda (service)
-                     (eq? (service-kind service) gdm-service-type))
-                   (modify-services %desktop-services
-                                    (guix-service-type
-                                     config =>
-                                     (guix-configuration
-                                      (inherit config)
-                                      (substitute-urls
-                                       (append (list "https://mirror.brielmaier.net")
-                                               %default-substitute-urls))
-                                      (authorized-keys
-                                       (append (list %brielmaier-public-key)
-                                               %default-authorized-guix-keys))))))))
+;;            ;; remove gdm service and
+;;            ;; add substitute server
+;;            (remove (lambda (service)
+;;                      (eq? (service-kind service) gdm-service-type))
+;;                    (modify-services %desktop-services
+;;                                     (guix-service-type
+;;                                      config =>
+;;                                      (guix-configuration
+;;                                       (inherit config)
+;;                                       (substitute-urls
+;;                                        (append (list "https://mirror.brielmaier.net")
+;;                                                %default-substitute-urls))
+;;                                       (authorized-keys
+;;                                        (append (list %brielmaier-public-key)
+;;                                                %default-authorized-guix-keys))))))))
 #+end_src
 
 I use the [[https://wiki.archlinux.org/title/GRUB#UEFI_systems][UEFI]] version of GRUB as my default boot loader. For this to work, I need to format and mount =/boot/efi= accordingly.
@@ -230,7 +249,74 @@ The default packages to install. This is a bare minimum. System-specific configu
 base-operating-system
 #+end_src
 
-* TODO Geekcave
+* Geekcave
+
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/geekcave.scm") :mkdirp yes
+(define-module (geekcave)
+  #:use-module (gnu)
+  #:use-module (base-system)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages certs)
+  #:use-module (gnu packages curl)
+  #:use-module (gnu packages gl)
+  #:use-module (gnu packages version-control)
+  #:use-module (gnu packages video)
+  #:use-module (gnu packages vim)
+  #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages wm)
+  #:use-module (gnu services sddm)
+  #:use-module (nongnu packages linux)
+  #:use-module (nongnu system linux-initrd))
+
+(define %sddm-hidpi
+  (plain-file
+   "hidpi.conf"
+   "[Wayland]
+    EnableHiDPI=true"))
+
+(define geekcave-system
+  (operating-system
+   (inherit base-operating-system)
+
+   (kernel linux-lts)
+   (initrd microcode-initrd)
+   (firmware (list amdgpu-firmware linux-firmware))
+
+   ;; Kernel arguments
+   (kernel-arguments (append
+                      '("quiet"
+                        "modprobe.blacklist=nouveau"
+                        "net.ifnames=0")
+                      %default-kernel-arguments))
+
+   ;; Services
+   (services (append (list
+                      (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
+                      (service sddm-service-type))
+                     %base-system-services))
+
+   (packages
+    (append
+     (list git
+           curl
+           vim
+           nss-certs
+           sway
+           swaybg
+           swayidle
+           swaylock
+           mesa
+                                        ;dxvk
+           vkd3d
+           mesa-headers
+           spirv-cross
+           spirv-tools
+           mesa-utils
+           spirv-headers
+           shepherd)
+     %base-packages))))
+geekcave-system
+#+end_src
 
 * WSL
 
