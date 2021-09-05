@@ -721,6 +721,12 @@ input * {
 }
 #+end_src
 
+*** Startup Applications
+
+#+Begin_src conf
+exec blueman-applet
+#+end_src
+
 * Local Variables :noexport:
 # Local Variables:
 # eval: (setq-local file-paths '())
