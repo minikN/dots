@@ -158,7 +158,8 @@ emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'")))))
                                          "audio"
                                          "video"
                                          "input"
-                                         "cdrom")))
+                                         "cdrom"
+                                         "lp")))
                 %base-user-accounts))
 
    ;; Services
@@ -200,11 +201,17 @@ base-operating-system
   #:use-module (gnu packages certs)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages wm)
+  #:use-module (gnu services desktop)
+  #:use-module (gnu services dbus)
   #:use-module (gnu services sddm)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd))
@@ -230,19 +237,25 @@ base-operating-system
                         "net.ifnames=0")
                       %default-kernel-arguments))
 
-   ;; Services
    (services (append (list
                       (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
-                      (service sddm-service-type))
+                      (service sddm-service-type)
+                      (simple-service 'dbus-services dbus-root-service-type (list blueman))
+                      (service bluetooth-service-type (bluetooth-configuration
+                                                       (auto-enable? #t))))
                      %base-system-services))
 
    ;; Packages
    (packages
     (append
-     (list sway
+     (list bluez
+           blueman
+           adwaita-icon-theme
+           sway
            swaybg
            swayidle
            swaylock
+           waybar
            mesa
            ;dxvk
            vkd3d
