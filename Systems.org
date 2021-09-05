@@ -221,7 +221,7 @@ base-operating-system
   (plain-file
    "hidpi.conf"
    "[Wayland]
-    EnableHiDPI=true"))
+EnableHiDPI=true"))
 
 (define %sddm-sway-session
   (plain-file
@@ -230,8 +230,7 @@ base-operating-system
 Name=SWAY (DBUS)
 Comment=An i3-compatible Wayland compositor
 Exec=dbus-launch --exit-with-session sway
-Type=Application
-"))
+Type=Application"))
 
 (define geekcave-system
   (operating-system
