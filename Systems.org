@@ -222,6 +222,16 @@ base-operating-system
    "[Wayland]
     EnableHiDPI=true"))
 
+(define %sddm-sway-session
+  (plain-file
+   "sway.desktop"
+   "[Desktop Entry]
+Name=SWAY (DBUS)
+Comment=An i3-compatible Wayland compositor
+Exec=dbus-launch --exit-with-session sway
+Type=Application
+"))
+
 (define geekcave-system
   (operating-system
    (inherit base-operating-system)
@@ -239,7 +249,9 @@ base-operating-system
 
    (services (append (list
                       (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
-                      (service sddm-service-type)
+                      (extra-special-file "/etc/sddm/wayland-sessions/sway.desktop" %sddm-sway-session)
+                      (service sddm-service-type (sddm-configuration
+                                                  (sessions-directory "/etc/sddm/wayland-sessions")))
                       (simple-service 'dbus-services dbus-root-service-type (list blueman))
                       (service bluetooth-service-type (bluetooth-configuration
                                                        (auto-enable? #t))))
