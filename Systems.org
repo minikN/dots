@@ -251,9 +251,7 @@ Type=Application
    (services (append (list
                       (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
                       (extra-special-file "/etc/sddm/wayland-sessions/sway.desktop" %sddm-sway-session)
-                      (service pulseaudio-service-type)
                       (service sddm-service-type (sddm-configuration
-
                                                   (sessions-directory "/etc/sddm/wayland-sessions")))
                       (simple-service 'dbus-services dbus-root-service-type (list blueman))
                       (service bluetooth-service-type (bluetooth-configuration
