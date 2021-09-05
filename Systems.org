@@ -205,13 +205,14 @@ base-operating-system
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages wm)
-  #:use-module (gnu services desktop)
   #:use-module (gnu services dbus)
+  #:use-module (gnu services desktop)
   #:use-module (gnu services sddm)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd))
@@ -250,7 +251,9 @@ Type=Application
    (services (append (list
                       (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
                       (extra-special-file "/etc/sddm/wayland-sessions/sway.desktop" %sddm-sway-session)
+                      (service pulseaudio-service-type)
                       (service sddm-service-type (sddm-configuration
+
                                                   (sessions-directory "/etc/sddm/wayland-sessions")))
                       (simple-service 'dbus-services dbus-root-service-type (list blueman))
                       (service bluetooth-service-type (bluetooth-configuration
@@ -260,23 +263,25 @@ Type=Application
    ;; Packages
    (packages
     (append
-     (list bluez
-           blueman
+     (list ;dxvk
            adwaita-icon-theme
+           blueman
+           bluez
+           mesa
+           mesa-headers
+           mesa-utils
+           pavucontrol
+           pulseaudio
+           shepherd
+           spirv-cross
+           spirv-headers
+           spirv-tools
            sway
            swaybg
            swayidle
            swaylock
-           waybar
-           mesa
-           ;dxvk
            vkd3d
-           mesa-headers
-           spirv-cross
-           spirv-tools
-           mesa-utils
-           spirv-headers
-           shepherd)
+           waybar)
      %base-system-packages))))
 geekcave-system
 #+end_src
