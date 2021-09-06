@@ -812,7 +812,7 @@ Set the font.
 #+end_src
 
 I want my waybar to always have the colors of my current theme. Ideally, it would change the colors on the fly every time I change my theme.
-The idea is to export the theme's current colors, format them in css as save them to =xdg-config-home/waybar/colors.css=. In my waybar config I can then =@import 'colors.css'= to use them. All that is left to do is reload the sway config with =swaymsg reload=.
+The idea is to export the theme's current colors, format and save them as css to =xdg-config-home/waybar/colors.css=. In my waybar config I can then =@import= them. All that is left to do is reload the sway config with =swaymsg reload=.
 
 The following function does this. In addition I execute it every time I change my theme with the =advice-add=.
 
