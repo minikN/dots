@@ -812,6 +812,47 @@ Set the font and line spacing.
 "font-fira-code"
 #+end_src
 
+#+begin_src emacs-lisp :noweb-ref config
+(defun db/update-waybar-colors (&optional file-path)
+  "Update the waybar colors and restart it.
+This may not work with every theme."
+  (or file-path (setq file-path
+                      (concat (or xdg-config-home
+                                  (getenv "XDG_CONFIG_HOME")
+                                  "~/.config")
+                              "/waybar/colors.css")))
+  (with-temp-buffer
+    (insert "@define-color" ?\s "theme-bg" ?\s (face-background 'default) ";" ?\n
+            "@define-color" ?\s "theme-fg" ?\s (face-foreground 'default) ";" ?\n
+            "@define-color" ?\s "theme-b0" ?\s (or (face-foreground 'highlight)
+                                                   (face-foreground 'default)) ";" ?\n
+            "@define-color" ?\s "theme-b1" ?\s (face-background 'tooltip) ";" ?\n
+            "@define-color" ?\s "theme-b2" ?\s (face-background 'default) ";" ?\n
+            "@define-color" ?\s "theme-b3" ?\s (face-background 'region) ";" ?\n
+            "@define-color" ?\s "theme-b4" ?\s (or (face-foreground 'fringe)
+                                                   (face-foreground 'region)
+                                                   (face-foreground 'default)) ";" ?\n
+            "@define-color" ?\s "theme-b5" ?\s (face-foreground 'shadow) ";" ?\n
+            "@define-color" ?\s "theme-b6" ?\s (face-foreground 'font-lock-comment-face) ";" ?\n
+            "@define-color" ?\s "theme-b7" ?\s (or (face-foreground 'line-number-current-line)
+                                                   (face-foreground 'font-lock-comment-face)) ";" ?\n
+            "@define-color" ?\s "theme-b8" ?\s (or (face-foreground 'match)
+                                                   (face-foreground 'line-number-current-line)
+                                                   (face-foreground 'font-lock-comment-face)) ";" ?\n
+            "@define-color" ?\s "theme-red" ?\s (or (face-foreground 'font-lock-preprocessor-face)
+                                                    (face-foreground 'warning)) ";" ?\n
+            "@define-color" ?\s "theme-orange" ?\s (face-foreground 'warning) ";" ?\n
+            "@define-color" ?\s "theme-green" ?\s (face-foreground 'font-lock-function-name-face) ";" ?\n
+            "@define-color" ?\s "theme-yellow" ?\s (face-foreground 'font-lock-string-face) ";" ?\n
+            "@define-color" ?\s "theme-violet" ?\s (face-foreground 'font-lock-constant-face) ";" ?\n
+            "@define-color" ?\s "theme-cyan" ?\s (face-foreground 'font-lock-type-face) ";")
+    (write-region (point-min) (point-max) file-path)
+  (call-process "swaymsg" nil 0 nil "reload")))
+
+(advice-add 'enable-theme :after (cmd! (db/update-waybar-colors "~/.config/waybar/colors.css")))
+#+end_src
+
+
 ** Window Management
 
 Emacs has the ability to spawn windows on demand. However, controlling their placement is as close to rocket science as it gets. Here is a quote from the DOOM manual:
