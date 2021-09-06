@@ -229,7 +229,7 @@ EnableHiDPI=true"))
    "[Desktop Entry]
 Name=SWAY (DBUS)
 Comment=An i3-compatible Wayland compositor
-Exec=dbus-launch --exit-with-session sway
+Exec=dbus-launch --sh-syntax --exit-with-session sway
 Type=Application"))
 
 (define geekcave-system
