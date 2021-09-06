@@ -774,7 +774,7 @@ Automatically use =zsh= when using =ansi-term=
 
 Set the theme. I use my own fork of [[https://github.com/minikN/emacs-doom-themes][doom-themes]] and I need to configure it separately to make use of my changes, namely =doom-colors-extended= as the treemacs theme.
 
-;#+begin_src emacs-lisp :noweb-ref config
+#+begin_src emacs-lisp :noweb-ref config
 ;(use-package! doom-themes
 ;  :defer t
 ;  :init
@@ -797,7 +797,7 @@ Set the theme. I use my own fork of [[https://github.com/minikN/emacs-doom-theme
 ;  :recipe (:host github
 ;           :repo "minikN/emacs-doom-themes"
 ;           :files ("*.el" "themes/*.el")))
-;#+end_src
+#+end_src
 
 Set the font and line spacing.
 
