@@ -746,7 +746,7 @@ Lets set the browser depending on what environment we are running in.
   2. =nil=
 
 #+begin_src emacs-lisp :noweb-ref config
-(setq db-browser (if IS-WSL
+(setq db/browser (if IS-WSL
                      (progn (let* ((brave-path "/mnt/c/Program Files (x86)/Brave/Chrome/Application")
                                    (chrome-path "/mnt/c/Program Files (x86)/Google/Chrome/Application"))
                               (cond ((when (file-directory-p brave-path) (concat brave-path "/brave.exe")))
@@ -759,7 +759,7 @@ Open links the proper browser.
 
 #+begin_src emacs-lisp :noweb-ref config
 (setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program db-browser)
+      browse-url-generic-program db/browser)
 #+end_src
 
 Automatically use =zsh= when using =ansi-term=
