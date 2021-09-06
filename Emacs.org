@@ -661,6 +661,7 @@ Some sensible defaults for working with emacs.
 
 #+begin_src emacs-lisp :noweb-ref config
 (setq-default
+ line-spacing 0.2                               ; Increase the line-spacing a bit
  undo-limit (* 8 1024 1024)                     ; Set the undo history limit to 80 MB
  gc-cons-threshold (* 8 1024 1024)              ; Threshold for garbage collection (80 MB)
  read-process-output-max (* 1024 1024)          ; Threshold for process output (10 MB)
@@ -672,7 +673,6 @@ Some sensible defaults for working with emacs.
  auto-save-file-name-transforms                 ; Therefore, move them to /tmp/.
  `((".*" ,temporary-file-directory t))
  delete-by-moving-to-trash t                    ; Delete by moving to trash
- ;; help-window-select t                        ; Focus new help buffers (set this with popper)
  indent-tabs-mode nil                           ; No tabs for indentation
  tab-with 4                                     ; 4 spaces = 1 tab
  scroll-margin 2                                ; Margin when scrolling vertically
@@ -799,11 +799,10 @@ Set the theme. I use my own fork of [[https://github.com/minikN/emacs-doom-theme
 ;           :files ("*.el" "themes/*.el")))
 #+end_src
 
-Set the font and line spacing.
+Set the font.
 
 #+begin_src emacs-lisp :noweb-ref config
-(setq line-spacing 0.2
-      doom-font (font-spec :family "Fira Code Retina" :size 17)
+(setq doom-font (font-spec :family "Fira Code Retina" :size 17)
       doom-big-font (font-spec :family "Fira Code Retina" :size 20)
       doom-variable-pitch-font (font-spec :family "Fira Code Retina" :size 17))
 #+end_src
