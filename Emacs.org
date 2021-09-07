@@ -41,6 +41,7 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
   - [[#completion-system][Completion System]]
 - [[#applications-1][Applications]]
   - [[#app-launcher][App launcher]]
+  - [[#pass][Pass]]
   - [[#pinentry][Pinentry]]
 - [[#development-environment][Development Environment]]
   - [[#generic-settings][Generic settings]]
@@ -135,6 +136,7 @@ Well, what is org-mode good for if not tangling files? Just kidding. Generally s
 
 <<config>>
 #+end_src
+
 
 ** Modules
 
@@ -293,16 +295,16 @@ grammar                 ; tasing grammar mistake every you make
 ;;ein                   ; tame Jupyter notebooks with emacs
 ;;gist                  ; interacting with github gists
 ;;make                  ; run make tasks from Emacs
-;;pass                  ; password manager for nerds
 ;;pdf                   ; pdf enhancements
 ;;prodigy               ; FIXME managing external services & code builders
 ;;rgb                   ; creating color strings
 ;;taskrunner            ; taskrunner for all your projects
 ;;terraform             ; infrastructure as code
 ;;tmux                  ; an API for interacting with tmux
+;;upload                ; map local to remote projects via ssh/ftp
 lookup                  ; navigate your code and its documentation
 magit                   ; a git porcelain for Emacs
-;;upload                ; map local to remote projects via ssh/ftp
+pass                    ; password manager for nerds
 #+end_src
 
 ** Languages
@@ -871,7 +873,6 @@ This may not work with every theme."
 (advice-add 'enable-theme :after (cmd! (db/update-waybar-colors "~/.config/waybar/colors.css")))
 #+end_src
 
-
 ** Window Management
 
 Emacs has the ability to spawn windows on demand. However, controlling their placement is as close to rocket science as it gets. Here is a quote from the DOOM manual:
@@ -887,6 +888,7 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
   '(
     ("^\\*\\([Hh]elp\\|Apropos\\)"                              :side right :slot 0 :vslot 0 :width 0.25 :select t :quit 'current :modeline nil)
     ("^\\*Buffer List\\*$"                                      :side right :slot 0 :vslot 0 :width 0.25 :select t :quit 'current :modeline nil)
+    ("^\\*Password-Store"                                       :side left  :slot 0 :vslot 0 :width 0.20 :select t :quit 'current :modeline nil)
     ("^\\*Warnings\\*$"                                         :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
     ("^\\*Messages\\*$"                                         :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
     ("^\\*Local Variables\\*$"                                  :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
@@ -915,7 +917,8 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
           "^\\*Shell Command Output\\*$"
           "^\\*Async Shell Command\\*$"
           help-mode
-          helpful-mode))
+          helpful-mode
+          pass-mode))
   (popper-mode +1)
   :config
   (setq popper-display-control nil))
@@ -998,6 +1001,12 @@ I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch e
 #+begin_src emacs-lisp :noweb-ref packages
 (package! app-launcher
   :recipe (:host github :repo "SebastienWae/app-launcher"))
+#+end_src
+** Pass
+
+#+begin_src scheme :noweb-ref external-packages
+"password-store"
+"gnutls"
 #+end_src
 
 ** Pinentry
