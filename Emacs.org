@@ -31,6 +31,7 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
     - [[#buffer][Buffer]]
     - [[#help][Help]]
     - [[#code][Code]]
+    - [[#terminals][Terminals]]
   - [[#editor-1][Editor]]
     - [[#deleting-whitespace][Deleting whitespace]]
     - [[#writing-environment][Writing environment]]
@@ -552,7 +553,6 @@ In summary:
                            (kbd "TAB")
                            (list (evil-get-auxiliary-keymap (current-local-map) evil-state)))
                           (doom-lookup-key (kbd "TAB") (list (current-local-map))))
-                      it
                       (fboundp 'evil-jump-item)
                       #'evil-jump-item))
 #+end_src
@@ -668,6 +668,26 @@ In summary:
       :prefix ("c" . "Code")
       :desc "Show documentation"                "K"   #'lsp-ui-doc-show
       :desc "Toggle Symbols"                    "S"   #'db/lsp-treemacs-symbols-toggle)
+#+end_src
+
+*** Terminals
+#+begin_src emacs-lisp :noweb-ref config
+(map! :leader
+      (:when (featurep! :term vterm)
+       :desc "Open terminal"                    "C-t"   #'+vterm/here
+       :prefix ("t" . "Terminals")
+       :desc "Open vterm"                       "v"     #'+vterm/here
+       :desc "Popup vterm"                      "V"     #'+vterm/toggle)
+      (:unless (featurep! :term vterm)
+       :desc "Open terminal"                    "C-t"   #'ansi-term)
+
+      :prefix ("t" . "Terminals")
+      :desc "Open ansi-term"                    "a"     #'ansi-term
+      :desc "Open scratch buffer"               "x"     #'doom/switch-scratch-buffer
+      :desc "Popup scratch buffer"              "X"     #'doom/open-scratch-buffer
+      :desc "Open eshell buffer"                "e"     #'+eshell/here
+      :desc "Popup eshell buffer"               "E"     #'+eshell/toggle
+      :desc "Open full eshell buffer"           "f"     #'+eshell/frame)
 #+end_src
 
 ** Editor
