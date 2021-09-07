@@ -42,6 +42,7 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
   - [[#completion-system][Completion System]]
 - [[#applications-1][Applications]]
   - [[#app-launcher][App launcher]]
+  - [[#irc][IRC]]
   - [[#pass][Pass]]
   - [[#pinentry][Pinentry]]
 - [[#development-environment][Development Environment]]
@@ -389,8 +390,8 @@ web                     ; the tubes
 ;;calendar
 ;;emms
 ;;everywhere            ; *leave* Emacs!? You must be joking
-;;irc                   ; how neckbeards socialize
 ;;twitter               ; twitter client https://twitter.com/vnought
+irc                     ; how neckbeards socialize
 #+end_src
 
 * Basic Settings
@@ -1028,6 +1029,19 @@ I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch e
 (package! app-launcher
   :recipe (:host github :repo "SebastienWae/app-launcher"))
 #+end_src
+** IRC
+
+I use DOOM's IRC [[https://github.com/hlissner/doom-emacs/tree/develop/modules/app/irc][module]] to connect to IRC.
+
+#+begin_src emacs-lisp :noweb-ref config
+(after! circe
+  (set-irc-server! "minikn.xyz"
+    `(:tls t
+      :port 6698
+      :nick ,(+pass-get-user "IRC/znc/db")
+      :pass (lambda (&rest _) (+pass-get-secret "IRC/znc/db")))))
+#+end_src
+
 ** Pass
 
 I use [[https://www.passwordstore.org/][pass]] as my password manager. Luckily DOOM provides a module for it. So I don't need any configuration besides declaring the external packages needed.
