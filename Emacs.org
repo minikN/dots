@@ -476,6 +476,11 @@ In summary:
 (map! :leader
       :desc "Eval expression"                           "."       #'eval-expression
 
+      (:when (featurep! :tools pass)
+       :desc "Open password store"                      "s"       #'pass
+       (:when (featurep! :completion vertico)
+        :desc "Get password"                            "C-s"     #'+pass/consult))
+
       (:when IS-GERMAN-LAYOUT
        :desc "Toggle last buffer"                       "#"       #'evil-switch-to-windows-last-buffer
        :desc "Search project"                           "-"       #'+default/search-project
@@ -671,6 +676,7 @@ In summary:
 #+end_src
 
 *** Terminals
+
 #+begin_src emacs-lisp :noweb-ref config
 (map! :leader
       (:when (featurep! :term vterm)
@@ -1023,6 +1029,8 @@ I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch e
   :recipe (:host github :repo "SebastienWae/app-launcher"))
 #+end_src
 ** Pass
+
+I use [[https://www.passwordstore.org/][pass]] as my password manager. Luckily DOOM provides a module for it. So I don't need any configuration besides declaring the external packages needed.
 
 #+begin_src scheme :noweb-ref external-packages
 "password-store"
