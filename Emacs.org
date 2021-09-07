@@ -109,6 +109,16 @@ Well, what is org-mode good for if not tangling files? Just kidding. Generally s
    ))
 #+end_src
 
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/development.scm") :noweb yes :mkdir yes
+;; This file is auto-generated. Do not make changes manually.
+;; Exported from Emacs.org
+
+(specifications->manifest
+ '(
+   <<dev-packages>>
+   ))
+#+end_src
+
 #+begin_src emacs-lisp :tangle (concat (cdr (assoc 'doomdir file-paths)) "/packages.el") :noweb yes :mkdirp yes
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
@@ -247,8 +257,11 @@ vterm                   ; the best terminal emulation in Emacs
 
 I need the =libvterm= dependency in order to build =vterm=.
 
-#+begin_src scheme :noweb-ref external-packages
+#+begin_src scheme :noweb-ref dev-packages
 "libvterm"
+"cmake"
+"make"
+"gcc"
 #+end_src
 
 ** Checkers
