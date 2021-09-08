@@ -31,6 +31,7 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
     - [[#buffer][Buffer]]
     - [[#help][Help]]
     - [[#code][Code]]
+    - [[#workspaces][Workspaces]]
   - [[#editor-1][Editor]]
     - [[#deleting-whitespace][Deleting whitespace]]
     - [[#writing-environment][Writing environment]]
@@ -655,6 +656,48 @@ In summary:
       :desc "Toggle Symbols"                    "S"   #'db/lsp-treemacs-symbols-toggle)
 #+end_src
 
+*** Workspaces
+#+begin_src emacs-lisp :noweb-ref config
+(map! (:when (featurep! :ui workspaces)
+       :n "C-t"   #'+workspace/new
+       :n "C-S-t" #'+workspace/display
+       :g "M-1"   #'+workspace/switch-to-0
+       :g "M-2"   #'+workspace/switch-to-1
+       :g "M-3"   #'+workspace/switch-to-2
+       :g "M-4"   #'+workspace/switch-to-3
+       :g "M-5"   #'+workspace/switch-to-4
+       :g "M-6"   #'+workspace/switch-to-5
+       :g "M-7"   #'+workspace/switch-to-6
+       :g "M-8"   #'+workspace/switch-to-7
+       :g "M-9"   #'+workspace/switch-to-8
+       :g "M-0"   #'+workspace/switch-to-final
+
+       :leader
+       (:prefix-map ("TAB" . "workspace")
+        :desc "Display tab bar"           "TAB" #'+workspace/display
+        :desc "Switch workspace"          "."   #'+workspace/switch-to
+        :desc "Switch to last workspace"  "`"   #'+workspace/other
+        :desc "New workspace"             "n"   #'+workspace/new
+        :desc "New named workspace"       "N"   #'+workspace/new-named
+        :desc "Load workspace from file"  "l"   #'+workspace/load
+        :desc "Save workspace to file"    "s"   #'+workspace/save
+        :desc "Delete session"            "x"   #'+workspace/kill-session
+        :desc "Delete this workspace"     "d"   #'+workspace/delete
+        :desc "Rename workspace"          "r"   #'+workspace/rename
+        :desc "Restore last session"      "R"   #'+workspace/restore-last-session
+        :desc "Next workspace"            "]"   #'+workspace/switch-right
+        :desc "Previous workspace"        "["   #'+workspace/switch-left
+        :desc "Switch to 1st workspace"   "1"   #'+workspace/switch-to-0
+        :desc "Switch to 2nd workspace"   "2"   #'+workspace/switch-to-1
+        :desc "Switch to 3rd workspace"   "3"   #'+workspace/switch-to-2
+        :desc "Switch to 4th workspace"   "4"   #'+workspace/switch-to-3
+        :desc "Switch to 5th workspace"   "5"   #'+workspace/switch-to-4
+        :desc "Switch to 6th workspace"   "6"   #'+workspace/switch-to-5
+        :desc "Switch to 7th workspace"   "7"   #'+workspace/switch-to-6
+        :desc "Switch to 8th workspace"   "8"   #'+workspace/switch-to-7
+        :desc "Switch to 9th workspace"   "9"   #'+workspace/switch-to-8
+        :desc "Switch to final workspace" "0"   #'+workspace/switch-to-final)))
+#+end_src
 ** Editor
 
 Some sensible defaults for working with emacs.
