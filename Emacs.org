@@ -809,7 +809,7 @@ DOOM offers a [[https://github.com/hlissner/doom-emacs/tree/develop/modules/ui/z
 By default, pasting from the system clipboard does not work with DOOM. It works on vanilla, but DOOM needs a little extra help. More information can be found [[https://github.com/hlissner/doom-emacs/issues/5219][here]].
 
 #+begin_src emacs-lisp :noweb-ref config
-(when (getenv "WAYLAND_DISPLAY")
+(when IS-WAYLAND
   (setq wl-copy-p nil
         interprogram-cut-function (lambda (text)
                                     (setq-local process-connection-type 'pipe)
