@@ -411,9 +411,9 @@ Set global user information.
 Lets make some default directories available to Emacs.
 
 #+begin_src emacs-lisp :noweb-ref config
-(setq db-git-dir (or (getenv "GITDIR") "~/.local/share/git")
-      db-bin-dir (or (getenv "BINDIR") "~/.local/share/bin")
-      db-literate-config-dir (concat db-git-dir "/guix/")
+(setq db/git-dir (or (getenv "GITDIR") "~/.local/share/git")
+      db/bin-dir (or (getenv "BINDIR") "~/.local/share/bin")
+      db/literate-config-dir (concat db/git-dir "/guix/")
       xdg-config-home (or (getenv "XDG_CONFIG_HOME") "~/.config")
       xdg-data-home (or (getenv "XDG_DATA_HOME") "~/.local/share"))
 #+end_src
@@ -425,15 +425,16 @@ It can be beneficial to gather some information about the environment we're runn
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref config
-(setq db-keyboard-layout
+(setq db/keyboard-layout
       (shell-command-to-string (if (getenv "WAYLAND_DISPLAY")
                                    "swaymsg -t get_inputs | jq 'map(select(has(\"xkb_active_layout_name\")))[0].xkb_active_layout_name'"
                                  "printf %s \"$(setxkbmap -print | awk -F\"+\" '/xkb_symbols/ {print $2}')\"")))
-(defconst IS-GERMAN-LAYOUT (or (string-match "de" db-keyboard-layout)
-                               (string-match "German" db-keyboard-layout)))
-(defconst IS-ENGLISH-LAYOUT (or (string-match "en" db-keyboard-layout)
-                                (string-match "English" db-keyboard-layout)))
-(defconst IS-WSL (string-match "-[Mm]icrosoft" operating-system-release))
+(defconst IS-GERMAN-LAYOUT (numberp (or (string-match "de" db/keyboard-layout)
+                                        (string-match "German" db/keyboard-layout))))
+(defconst IS-ENGLISH-LAYOUT (numberp (or (string-match "en" db/keyboard-layout)
+                                         (string-match "English" db/keyboard-layout))))
+(defconst IS-WSL (numberp (string-match "-[Mm]icrosoft" operating-system-release)))
+(defconst IS-WAYLAND (stringp (getenv "WAYLAND_DISPLAY")))
 #+end_src
 
 #+begin_src conf :tangle no :noweb-ref external-packages
@@ -560,6 +561,7 @@ In summary:
                            (kbd "TAB")
                            (list (evil-get-auxiliary-keymap (current-local-map) evil-state)))
                           (doom-lookup-key (kbd "TAB") (list (current-local-map))))
+                      it
                       (fboundp 'evil-jump-item)
                       #'evil-jump-item))
 #+end_src
@@ -576,7 +578,7 @@ In summary:
       :desc "Find file in emacs.d"              "e"     #'doom/find-file-in-emacsd
       :desc "Find file"                         "f"     #'find-file
       :desc "Locate file"                       "l"     #'locate
-      :desc "Open literate config"              "p"     (cmd! (doom-project-browse db-literate-config-dir))
+      :desc "Open literate config"              "p"     (cmd! (doom-project-browse db/literate-config-dir))
       :desc "Rename/move file"                  "r"     #'doom/move-this-file
       :desc "Save file"                         "s"     #'save-buffer
       :desc "Save file as..."                   "S"     #'write-file
