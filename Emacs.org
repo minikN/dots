@@ -198,7 +198,9 @@ First, let's define the modules doom should use. These go into =doomdir/init.el=
 ** User Interface
 
 #+begin_src emacs-lisp :noweb-ref doom-ui
-;;(emoji +unicode)      ; 🙂
+(emoji +unicode
+       +ascii
+       +github)         ; 🙂
 ;;deft                  ; notational velocity for Emacs
 ;;doom-quit             ; DOOM quit-message prompts when you quit Emacs
 ;;fill-column           ; a `fill-column' indicator
