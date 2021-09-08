@@ -685,18 +685,19 @@ In summary:
 
 #+begin_src emacs-lisp :noweb-ref config
 (map! (:when (featurep! :ui workspaces)
-       :n "C-t"   #'+workspace/new
-       :n "C-S-t" #'+workspace/display
-       :g "M-1"   #'+workspace/switch-to-0
-       :g "M-2"   #'+workspace/switch-to-1
-       :g "M-3"   #'+workspace/switch-to-2
-       :g "M-4"   #'+workspace/switch-to-3
-       :g "M-5"   #'+workspace/switch-to-4
-       :g "M-6"   #'+workspace/switch-to-5
-       :g "M-7"   #'+workspace/switch-to-6
-       :g "M-8"   #'+workspace/switch-to-7
-       :g "M-9"   #'+workspace/switch-to-8
-       :g "M-0"   #'+workspace/switch-to-final
+       :n "C-t"                                 #'+workspace/new
+       :n "C-S-t"                               #'+workspace/display
+       :g "M-1"                                 #'+workspace/switch-to-0
+       :g "M-2"                                 #'+workspace/switch-to-1
+       :g "M-3"                                 #'+workspace/switch-to-2
+       :g "M-4"                                 #'+workspace/switch-to-3
+       :g "M-5"                                 #'+workspace/switch-to-4
+       :g "M-6"                                 #'+workspace/switch-to-5
+       :g "M-7"                                 #'+workspace/switch-to-6
+       :g "M-8"                                 #'+workspace/switch-to-7
+       :g "M-9"                                 #'+workspace/switch-to-8
+       :g "M-0"                                 #'+workspace/switch-to-final
+       :g "M-<tab>"                             #'+workspace/cycle
 
        :leader
        (:prefix-map ("TAB" . "workspace")
@@ -979,10 +980,9 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
 
 #+begin_src emacs-lisp :noweb-ref config
 (use-package! popper
-  :bind (
-         ("C-1" . popper-toggle-latest)
-         ("M-1" . popper-cycle)
-         ("C-M-1" . popper-toggle-type))
+  :bind (("C-<escape>" . popper-toggle-latest)
+         ("M-<escape>" . popper-cycle)
+         ("C-M-<escape>" . popper-toggle-type))
   :init
   (setq popper-reference-buffers
         '("^\\*\\([Hh]elp\\|Apropos\\)"
