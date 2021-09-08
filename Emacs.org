@@ -32,6 +32,7 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
     - [[#help][Help]]
     - [[#code][Code]]
     - [[#workspaces][Workspaces]]
+    - [[#terminals][Terminals]]
   - [[#editor-1][Editor]]
     - [[#deleting-whitespace][Deleting whitespace]]
     - [[#writing-environment][Writing environment]]
@@ -42,6 +43,8 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
   - [[#completion-system][Completion System]]
 - [[#applications-1][Applications]]
   - [[#app-launcher][App launcher]]
+  - [[#irc][IRC]]
+  - [[#pass][Pass]]
   - [[#pinentry][Pinentry]]
 - [[#development-environment][Development Environment]]
   - [[#generic-settings][Generic settings]]
@@ -110,6 +113,16 @@ Well, what is org-mode good for if not tangling files? Just kidding. Generally s
    ))
 #+end_src
 
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/development.scm") :noweb yes :mkdir yes
+;; This file is auto-generated. Do not make changes manually.
+;; Exported from Emacs.org
+
+(specifications->manifest
+ '(
+   <<dev-packages>>
+   ))
+#+end_src
+
 #+begin_src emacs-lisp :tangle (concat (cdr (assoc 'doomdir file-paths)) "/packages.el") :noweb yes :mkdirp yes
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
@@ -126,6 +139,7 @@ Well, what is org-mode good for if not tangling files? Just kidding. Generally s
 
 <<config>>
 #+end_src
+
 
 ** Modules
 
@@ -248,8 +262,11 @@ vterm                   ; the best terminal emulation in Emacs
 
 I need the =libvterm= dependency in order to build =vterm=.
 
-#+begin_src scheme :noweb-ref external-packages
+#+begin_src scheme :noweb-ref dev-packages
 "libvterm"
+"cmake"
+"make"
+"gcc"
 #+end_src
 
 ** Checkers
@@ -281,16 +298,16 @@ grammar                 ; tasing grammar mistake every you make
 ;;ein                   ; tame Jupyter notebooks with emacs
 ;;gist                  ; interacting with github gists
 ;;make                  ; run make tasks from Emacs
-;;pass                  ; password manager for nerds
 ;;pdf                   ; pdf enhancements
 ;;prodigy               ; FIXME managing external services & code builders
 ;;rgb                   ; creating color strings
 ;;taskrunner            ; taskrunner for all your projects
 ;;terraform             ; infrastructure as code
 ;;tmux                  ; an API for interacting with tmux
+;;upload                ; map local to remote projects via ssh/ftp
 lookup                  ; navigate your code and its documentation
 magit                   ; a git porcelain for Emacs
-;;upload                ; map local to remote projects via ssh/ftp
+pass                    ; password manager for nerds
 #+end_src
 
 ** Languages
@@ -374,8 +391,8 @@ web                     ; the tubes
 ;;calendar
 ;;emms
 ;;everywhere            ; *leave* Emacs!? You must be joking
-;;irc                   ; how neckbeards socialize
 ;;twitter               ; twitter client https://twitter.com/vnought
+irc                     ; how neckbeards socialize
 #+end_src
 
 * Basic Settings
@@ -461,6 +478,11 @@ In summary:
 (map! :leader
       :desc "Eval expression"                           "."       #'eval-expression
 
+      (:when (featurep! :tools pass)
+       :desc "Open password store"                      "s"       #'pass
+       (:when (featurep! :completion vertico)
+        :desc "Get password"                            "C-s"     #'+pass/consult))
+
       (:when IS-GERMAN-LAYOUT
        :desc "Toggle last buffer"                       "#"       #'evil-switch-to-windows-last-buffer
        :desc "Search project"                           "-"       #'+default/search-project
@@ -538,7 +560,6 @@ In summary:
                            (kbd "TAB")
                            (list (evil-get-auxiliary-keymap (current-local-map) evil-state)))
                           (doom-lookup-key (kbd "TAB") (list (current-local-map))))
-                      it
                       (fboundp 'evil-jump-item)
                       #'evil-jump-item))
 #+end_src
@@ -657,6 +678,7 @@ In summary:
 #+end_src
 
 *** Workspaces
+
 #+begin_src emacs-lisp :noweb-ref config
 (map! (:when (featurep! :ui workspaces)
        :n "C-t"   #'+workspace/new
@@ -698,12 +720,35 @@ In summary:
         :desc "Switch to 9th workspace"   "9"   #'+workspace/switch-to-8
         :desc "Switch to final workspace" "0"   #'+workspace/switch-to-final)))
 #+end_src
+
+*** Terminals
+
+#+begin_src emacs-lisp :noweb-ref config
+(map! :leader
+      (:when (featurep! :term vterm)
+       :desc "Open terminal"                    "C-t"   #'+vterm/here
+       :prefix ("t" . "Terminals")
+       :desc "Open vterm"                       "v"     #'+vterm/here
+       :desc "Popup vterm"                      "V"     #'+vterm/toggle)
+      (:unless (featurep! :term vterm)
+       :desc "Open terminal"                    "C-t"   #'ansi-term)
+
+      :prefix ("t" . "Terminals")
+      :desc "Open ansi-term"                    "a"     #'ansi-term
+      :desc "Open scratch buffer"               "x"     #'doom/switch-scratch-buffer
+      :desc "Popup scratch buffer"              "X"     #'doom/open-scratch-buffer
+      :desc "Open eshell buffer"                "e"     #'+eshell/here
+      :desc "Popup eshell buffer"               "E"     #'+eshell/toggle
+      :desc "Open full eshell buffer"           "f"     #'+eshell/frame)
+#+end_src
+
 ** Editor
 
 Some sensible defaults for working with emacs.
 
 #+begin_src emacs-lisp :noweb-ref config
 (setq-default
+ line-spacing 0.2                               ; Increase the line-spacing a bit
  undo-limit (* 8 1024 1024)                     ; Set the undo history limit to 80 MB
  gc-cons-threshold (* 8 1024 1024)              ; Threshold for garbage collection (80 MB)
  read-process-output-max (* 1024 1024)          ; Threshold for process output (10 MB)
@@ -715,7 +760,6 @@ Some sensible defaults for working with emacs.
  auto-save-file-name-transforms                 ; Therefore, move them to /tmp/.
  `((".*" ,temporary-file-directory t))
  delete-by-moving-to-trash t                    ; Delete by moving to trash
- ;; help-window-select t                        ; Focus new help buffers (set this with popper)
  indent-tabs-mode nil                           ; No tabs for indentation
  tab-with 4                                     ; 4 spaces = 1 tab
  scroll-margin 2                                ; Margin when scrolling vertically
@@ -789,7 +833,7 @@ Lets set the browser depending on what environment we are running in.
   2. =nil=
 
 #+begin_src emacs-lisp :noweb-ref config
-(setq db-browser (if IS-WSL
+(setq db/browser (if IS-WSL
                      (progn (let* ((brave-path "/mnt/c/Program Files (x86)/Brave/Chrome/Application")
                                    (chrome-path "/mnt/c/Program Files (x86)/Google/Chrome/Application"))
                               (cond ((when (file-directory-p brave-path) (concat brave-path "/brave.exe")))
@@ -802,7 +846,7 @@ Open links the proper browser.
 
 #+begin_src emacs-lisp :noweb-ref config
 (setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program db-browser)
+      browse-url-generic-program db/browser)
 #+end_src
 
 Automatically use =zsh= when using =ansi-term=
@@ -818,41 +862,87 @@ Automatically use =zsh= when using =ansi-term=
 Set the theme. I use my own fork of [[https://github.com/minikN/emacs-doom-themes][doom-themes]] and I need to configure it separately to make use of my changes, namely =doom-colors-extended= as the treemacs theme.
 
 #+begin_src emacs-lisp :noweb-ref config
-(use-package! doom-themes
-  :defer t
-  :init
-  (setq doom-theme 'doom-monokai-spectrum
-        doom-themes-treemacs-enable-variable-pitch nil
-        doom-themes-treemacs-theme "doom-colors-extended"
-        lsp-treemacs-theme "doom-colors-extended")
+;(use-package! doom-themes
+;  :defer t
+;  :init
+;  (setq doom-theme 'doom-monokai-spectrum
+;        doom-themes-treemacs-enable-variable-pitch nil
+;        doom-themes-treemacs-theme "doom-colors-extended"
+;        lsp-treemacs-theme "doom-colors-extended");
+;
+;  ;; improve integration w/ org-mode
+;  (add-hook 'doom-load-theme-hook #'doom-themes-org-config);
+;
+;  ;; more Atom-esque file icons for neotree/treemacs
+;  (when (featurep! :ui treemacs)
+;    (add-hook 'doom-load-theme-hook #'doom-themes-treemacs-config)))
+;#+end_src
 
-  ;; improve integration w/ org-mode
-  (add-hook 'doom-load-theme-hook #'doom-themes-org-config)
-
-  ;; more Atom-esque file icons for neotree/treemacs
-  (when (featurep! :ui treemacs)
-    (add-hook 'doom-load-theme-hook #'doom-themes-treemacs-config)))
+;#+begin_src emacs-lisp :noweb-ref packages
+;(unpin! doom-themes)
+;(package! doom-themes
+;  :recipe (:host github
+;           :repo "minikN/emacs-doom-themes"
+;           :files ("*.el" "themes/*.el")))
 #+end_src
 
-#+begin_src emacs-lisp :noweb-ref packages
-(unpin! doom-themes)
-(package! doom-themes
-  :recipe (:host github
-           :repo "minikN/emacs-doom-themes"
-           :files ("*.el" "themes/*.el")))
-#+end_src
-
-Set the font and line spacing.
+Set the font.
 
 #+begin_src emacs-lisp :noweb-ref config
-(setq line-spacing 0.2
-      doom-font (font-spec :family "Fira Code Retina" :size 17)
+(setq doom-font (font-spec :family "Fira Code Retina" :size 17)
       doom-big-font (font-spec :family "Fira Code Retina" :size 20)
       doom-variable-pitch-font (font-spec :family "Fira Code Retina" :size 17))
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref external-packages
 "font-fira-code"
+#+end_src
+
+I want my waybar to always have the colors of my current theme. Ideally, it would change the colors on the fly every time I change my theme.
+The idea is to export the theme's current colors, format and save them as css to =xdg-config-home/waybar/colors.css=. In my waybar config I can then =@import= them. All that is left to do is reload the sway config with =swaymsg reload=.
+
+The following function does this. In addition I execute it every time I change my theme with the =advice-add=.
+
+*Note*: This may not work with every theme. I tried to add fallback colors (see the multiple =(or ...)= statements). However, I wasn't able to cover all cases.
+
+#+begin_src emacs-lisp :noweb-ref config
+(defun db/update-waybar-colors (&optional file-path)
+  "Update the waybar colors and restart it.
+This may not work with every theme."
+  (or file-path (setq file-path
+                      (concat (or xdg-config-home
+                                  (getenv "XDG_CONFIG_HOME")
+                                  "~/.config")
+                              "/waybar/colors.css")))
+  (with-temp-buffer
+    (insert "@define-color" ?\s "theme-bg" ?\s (face-background 'default) ";" ?\n
+            "@define-color" ?\s "theme-fg" ?\s (face-foreground 'default) ";" ?\n
+            "@define-color" ?\s "theme-b0" ?\s (or (face-foreground 'highlight)
+                                                   (face-foreground 'default)) ";" ?\n
+            "@define-color" ?\s "theme-b1" ?\s (face-background 'tooltip) ";" ?\n
+            "@define-color" ?\s "theme-b2" ?\s (face-background 'default) ";" ?\n
+            "@define-color" ?\s "theme-b3" ?\s (face-background 'region) ";" ?\n
+            "@define-color" ?\s "theme-b4" ?\s (or (face-foreground 'fringe)
+                                                   (face-foreground 'region)
+                                                   (face-foreground 'default)) ";" ?\n
+            "@define-color" ?\s "theme-b5" ?\s (face-foreground 'shadow) ";" ?\n
+            "@define-color" ?\s "theme-b6" ?\s (face-foreground 'font-lock-comment-face) ";" ?\n
+            "@define-color" ?\s "theme-b7" ?\s (or (face-foreground 'line-number-current-line)
+                                                   (face-foreground 'font-lock-comment-face)) ";" ?\n
+            "@define-color" ?\s "theme-b8" ?\s (or (face-foreground 'match)
+                                                   (face-foreground 'line-number-current-line)
+                                                   (face-foreground 'font-lock-comment-face)) ";" ?\n
+            "@define-color" ?\s "theme-red" ?\s (or (face-foreground 'font-lock-preprocessor-face)
+                                                    (face-foreground 'warning)) ";" ?\n
+            "@define-color" ?\s "theme-orange" ?\s (face-foreground 'warning) ";" ?\n
+            "@define-color" ?\s "theme-green" ?\s (face-foreground 'font-lock-function-name-face) ";" ?\n
+            "@define-color" ?\s "theme-yellow" ?\s (face-foreground 'font-lock-string-face) ";" ?\n
+            "@define-color" ?\s "theme-violet" ?\s (face-foreground 'font-lock-constant-face) ";" ?\n
+            "@define-color" ?\s "theme-cyan" ?\s (face-foreground 'font-lock-type-face) ";")
+    (write-region (point-min) (point-max) file-path)
+  (call-process "swaymsg" nil 0 nil "reload")))
+
+(advice-add 'enable-theme :after (cmd! (db/update-waybar-colors "~/.config/waybar/colors.css")))
 #+end_src
 
 ** Window Management
@@ -870,6 +960,7 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
   '(
     ("^\\*\\([Hh]elp\\|Apropos\\)"                              :side right :slot 0 :vslot 0 :width 0.25 :select t :quit 'current :modeline nil)
     ("^\\*Buffer List\\*$"                                      :side right :slot 0 :vslot 0 :width 0.25 :select t :quit 'current :modeline nil)
+    ("^\\*Password-Store"                                       :side left  :slot 0 :vslot 0 :width 0.20 :select t :quit 'current :modeline nil)
     ("^\\*Warnings\\*$"                                         :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
     ("^\\*Messages\\*$"                                         :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
     ("^\\*Local Variables\\*$"                                  :side bottom :slot 0 :vslot 0 :height 0.20 :select t :quit 'current :modeline nil)
@@ -898,7 +989,8 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
           "^\\*Shell Command Output\\*$"
           "^\\*Async Shell Command\\*$"
           help-mode
-          helpful-mode))
+          helpful-mode
+          pass-mode))
   (popper-mode +1)
   :config
   (setq popper-display-control nil))
@@ -981,6 +1073,27 @@ I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch e
 #+begin_src emacs-lisp :noweb-ref packages
 (package! app-launcher
   :recipe (:host github :repo "SebastienWae/app-launcher"))
+#+end_src
+** IRC
+
+I use DOOM's IRC [[https://github.com/hlissner/doom-emacs/tree/develop/modules/app/irc][module]] to connect to IRC.
+
+#+begin_src emacs-lisp :noweb-ref config
+(after! circe
+  (set-irc-server! "minikn.xyz"
+    `(:tls t
+      :port 6698
+      :nick ,(+pass-get-user "IRC/znc/db")
+      :pass (lambda (&rest _) (+pass-get-secret "IRC/znc/db")))))
+#+end_src
+
+** Pass
+
+I use [[https://www.passwordstore.org/][pass]] as my password manager. Luckily DOOM provides a module for it. So I don't need any configuration besides declaring the external packages needed.
+
+#+begin_src scheme :noweb-ref external-packages
+"password-store"
+"gnutls"
 #+end_src
 
 ** Pinentry

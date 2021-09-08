@@ -2,11 +2,11 @@
 #+AUTHOR: Demis Balbach
 #+PROPERTY: header-args :mkdirp yes
 #+PROPERTY: header-args :tangle-mode (identity #o444)
-#+MANIFEST: ~/.config/guix/manifests/systems
 
 This file outlines the system configuration of all of my systems. This mainly involves creating Guix system manifest files as well as initializing systems with them.
 
 * Table Of Contents :TOC:
+- [[#exported-files][Exported Files]]
 - [[#channels][Channels]]
 - [[#base-system][Base System]]
 - [[#geekcave][Geekcave]]
@@ -18,10 +18,35 @@ This file outlines the system configuration of all of my systems. This mainly in
   - [[#gui-applications][GUI Applications]]
   - [[#desktop-icons][Desktop Icons]]
 
+* Exported Files
+
+Tangling this file will create various directories and files in the home directory. However, I don't specify the target file for every source block individually, I rather declare file-local variables containing the target directories (I like [[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself][DRY]]). Because I follow the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html][XDG]] directory specification, I'll use the preferred defaults.
+I set all local variables in the [[#Local Variables][Local Variables]] footer of this file (View the raw file in order to see it).
+
+The following tables shows all the defined target directories. All exports are based on these. This table is auto-generated.
+
+#+name: filelist
+#+begin_src emacs-lisp :results value :exports results :tangle no
+(append
+ `(("Variable" "Path") hline)
+ (cl-loop for (e) on file-paths collect
+          (list (car e)
+                (concat "=" (prin1-to-string (cdr e) t) "="))))
+#+end_src
+
+#+RESULTS: filelist
+| Variable           | Path                                      |
+|--------------------+-------------------------------------------|
+| guix-manifest-home | =/home/db/.config/guix/manifests/systems= |
+| guix-config-home   | =/home/db/.config/guix=                   |
+| xdg-config-home    | =/home/db/.config=                        |
+
+I may refer to these directories throughout the configuration, e.g. like that: =guix-config-home/channels.scm=.
+
 * Channels
 I use some custom channels for my Guix systems.
 
-#+begin_src scheme :noweb-ref guix-channels :tangle ~/.config/guix/channels.scm :mkdirp yes
+#+begin_src scheme :noweb-ref guix-channels :tangle (concat (cdr (assoc 'guix-config-home file-paths)) "/channels.scm") :mkdirp yes
 (cons* (channel
         (name 'nonguix)
         (url "https://gitlab.com/nonguix/nonguix")
@@ -48,7 +73,7 @@ I use some custom channels for my Guix systems.
 
 This is the base configuration I use for every system I set up.
 
-#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
 ;; This file is auto-generated. Do not make changes manually.
 ;; Exported from Systems.org
 
@@ -65,44 +90,55 @@ This is the base configuration I use for every system I set up.
   #:use-module (gnu services xorg)
   #:use-module (srfi srfi-1)
   #:export (base-operating-system
-            %guix-channels
-            %brielmayer-public-key))
-#+end_src
+            %base-system-services
+            %base-system-packages))
 
-The channels I use for every system.
-
-#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes :noweb yes
 (define %guix-channels
   (scheme-file
    "channels.scm"
    #~
    <<guix-channels>>))
-#+end_src
 
-I use an additional server for substitutes, that way Guix doesn't need to build everything from scratch when pulling.
-
-#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes
 (define %brielmaier-public-key
   (plain-file
    "mirror.brielmaier.net.pub"
    "(public-key
    (ecc
-     (curve Ed25519)
-     (q #7514F8D729DB1935470A581CE3851ED9FD6F1F9BAFE1D8BEC77A931ADB7A4337#)
-     ))"))
-#+end_src
+(curve Ed25519)
+(q #7514F8D729DB1935470A581CE3851ED9FD6F1F9BAFE1D8BEC77A931ADB7A4337#)
+))"))
 
-#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes
-(define %sddm-hidpi
-  (plain-file
-   "hidpi.conf"
-   "[Wayland]
-    EnableHiDPI=true"))
-#+end_src
+(define %base-system-services
+  (append (list
+           (extra-special-file "/etc/guix/channels.scm" %guix-channels)
+           (extra-special-file "/usr/bin/env"
+                               (file-append coreutils "/bin/env"))
+           (simple-service 'zshrc etc-service-type
+                           `(("zprofile" ,(plain-file "zprofile" "\
+emulate sh -c '. /etc/profile'
+emulate sh -c '. $HOME/.config/profile'
+emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'")))))
+          (modify-services %desktop-services
+                           (delete gdm-service-type)
+                           (guix-service-type config =>
+                                              (guix-configuration
+                                               (inherit config)
+                                               (substitute-urls
+                                                (append (list "https://mirror.brielmaier.net")
+                                                        %default-substitute-urls))
+                                               (authorized-keys
+                                                (append (list %brielmaier-public-key)
+                                                        %default-authorized-guix-keys)))))))
 
-Default machine and user settings
+(define %base-system-packages
+  (append (list
+           curl
+           emacs
+           git
+           nss-certs
+           vim)
+          %base-packages))
 
-#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes
 (define base-operating-system
   (operating-system
 
@@ -122,89 +158,130 @@ Default machine and user settings
                                          "audio"
                                          "video"
                                          "input"
-                                         "cdrom")))
+                                         "cdrom"
+                                         "lp")))
                 %base-user-accounts))
-#+end_src
 
-The default services. Apart from a couple of special config files in =/etc=, this sets up =sddm=, the login manager I use, as well as =zsh= as my shell.
-=/etc/zprofile= is sourced for every login shell. I also source =~/.config/profile=. This is your standard =~/.profile=, except I don't like files in my =$HOME= directory. Lastly I set =$ZDOTDIR= to =~/.config/zsh=. This is important because I tangle my =.zshrc= into that directory in my [[file:Desktop.org#zshell][Desktop.org]].
+   ;; Services
+   (services %base-system-services)
 
-#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes
-;; Services
-(services (cons*
-           ;; special files
-           (extra-special-file "/etc/guix/channels.scm" %guix-channels)
-           (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
+   ;; Boot loader
+   (bootloader (bootloader-configuration
+                (bootloader grub-efi-bootloader)
+                (target "/boot/efi")
+                (timeout 3)))
 
-           ;; login manager
-           (service sddm-service-type)
+   ;; File systems
+   (file-systems (cons* (file-system ;; System partition
+                         (device (file-system-label "GUIX"))
+                         (mount-point "/")
+                         (type "ext4"))
+                        (file-system ;; Boot partition
+                         (device (file-system-label "BOOT"))
+                         (mount-point "/boot/efi")
+                         (type "vfat"))
+                        %base-file-systems))
 
-           ;; zsh
-           (simple-service 'zshrc etc-service-type
-                           `(("zprofile" ,(plain-file "zprofile" "\
-                                   emulate sh -c '. /etc/profile'
-                                   emulate sh -c '. $HOME/.config/profile'
-                                   emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'"))))
-
-           ;; remove gdm service and
-           ;; add substitute server
-           (remove (lambda (service)
-                     (eq? (service-kind service) gdm-service-type))
-                   (modify-services %desktop-services
-                                    (guix-service-type
-                                     config =>
-                                     (guix-configuration
-                                      (inherit config)
-                                      (substitute-urls
-                                       (append (list "https://mirror.brielmaier.net")
-                                               %default-substitute-urls))
-                                      (authorized-keys
-                                       (append (list %brielmaier-public-key)
-                                               %default-authorized-guix-keys))))))))
-#+end_src
-
-I use the [[https://wiki.archlinux.org/title/GRUB#UEFI_systems][UEFI]] version of GRUB as my default boot loader. For this to work, I need to format and mount =/boot/efi= accordingly.
-
-#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes
-;; Boot loader
-(bootloader (bootloader-configuration
-             (bootloader grub-efi-bootloader)
-             (target "/boot/efi")
-             (timeout 3)))
-#+end_src
-
-Default file system structure used by my systems.
-
-#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes
-;; File systems
-(file-systems (cons* (file-system ;; System partition
-                      (device (file-system-label "GUIX"))
-                      (mount-point "/")
-                      (type "ext4"))
-                     (file-system ;; Boot partition
-                      (device (file-system-label "BOOT"))
-                      (mount-point "/boot/efi")
-                      (type "vfat"))
-                     %base-file-systems))
-#+end_src
-
-The default packages to install. This is a bare minimum. System-specific configurations may override this.
-
-#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/base-system.scm") :mkdirp yes
-;; Packages to install
-(packages
- (append
-  (list git
-        curl
-        vim
-        nss-certs)
-  %base-packages))
-
-(name-service-switch %mdns-host-lookup-nss)))
+   ;; Packages to install
+   (packages %base-system-packages)
+   (name-service-switch %mdns-host-lookup-nss)))
 base-operating-system
 #+end_src
 
-* TODO Geekcave
+* Geekcave
+
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/geekcave.scm") :mkdirp yes
+;; This file is auto-generated. Do not make changes manually.
+;; Exported from Systems.org
+
+(define-module (geekcave)
+  #:use-module (gnu)
+  #:use-module (base-system)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages certs)
+  #:use-module (gnu packages curl)
+  #:use-module (gnu packages gl)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages networking)
+  #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages version-control)
+  #:use-module (gnu packages video)
+  #:use-module (gnu packages vim)
+  #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages wm)
+  #:use-module (gnu services dbus)
+  #:use-module (gnu services desktop)
+  #:use-module (gnu services sddm)
+  #:use-module (nongnu packages linux)
+  #:use-module (nongnu system linux-initrd))
+
+(define %sddm-hidpi
+  (plain-file
+   "hidpi.conf"
+   "[Wayland]
+EnableHiDPI=true"))
+
+(define %sddm-sway-session
+  (plain-file
+   "sway.desktop"
+   "[Desktop Entry]
+Name=SWAY (DBUS)
+Comment=An i3-compatible Wayland compositor
+Exec=dbus-launch --sh-syntax --exit-with-session sway
+Type=Application"))
+
+(define geekcave-system
+  (operating-system
+   (inherit base-operating-system)
+
+   (kernel linux-lts)
+   (initrd microcode-initrd)
+   (firmware (list amdgpu-firmware linux-firmware))
+
+   ;; Kernel arguments
+   (kernel-arguments (append
+                      '("quiet"
+                        "modprobe.blacklist=nouveau"
+                        "net.ifnames=0")
+                      %default-kernel-arguments))
+
+   (services (append (list
+                      (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
+                      (extra-special-file "/etc/sddm/wayland-sessions/sway.desktop" %sddm-sway-session)
+                      (service sddm-service-type (sddm-configuration
+                                                  (sessions-directory "/etc/sddm/wayland-sessions")))
+                      (simple-service 'dbus-services dbus-root-service-type (list blueman))
+                      (service bluetooth-service-type (bluetooth-configuration
+                                                       (auto-enable? #t))))
+                     %base-system-services))
+
+   ;; Packages
+   (packages
+    (append
+     (list ;dxvk
+           adwaita-icon-theme
+           blueman
+           bluez
+           mesa
+           mesa-headers
+           mesa-utils
+           pavucontrol
+           pulseaudio
+           shepherd
+           spirv-cross
+           spirv-headers
+           spirv-tools
+           sway
+           swaybg
+           swayidle
+           swaylock
+           vkd3d
+           waybar)
+     %base-system-packages))))
+geekcave-system
+#+end_src
 
 * WSL
 
@@ -231,7 +308,7 @@ In case a mistake was made, I can run =wsl --unregister guix= and start again.
 
 This script is used to install the base GuixSD.
 
-#+begin_src sh :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/guix-wsl-install.sh") :mkdirp yes :noweb yes
+#+begin_src sh :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/guix-wsl-install.sh") :mkdirp yes :noweb yes
 #!/bin/sh
 ## This file is auto-generated. Do not make changes manually.
 ## Exported from Systems.org
@@ -310,7 +387,7 @@ guix system: warning: while talking to shepherd: No such file or directory
 
 This is to be expected. The following script initializes Guix and starts all the necessary services. This usually only needs to be run once per session (after a restart).
 
-#+begin_src sh :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/guix-wsl-init.sh") :mkdirp yes
+#+begin_src sh :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/guix-wsl-init.sh") :mkdirp yes
 #!/bin/sh
 DIR="/run/current-system"
 if [ ! -d "$DIR" ]; then
@@ -362,7 +439,7 @@ sudo guix system reconfigure /mnt/c/path/to/wsl.scm
 
 To make all of this work, I use the following manifest file inheriting from =base-system=:
 
-#+begin_src scheme :tangle (concat (cadr (assoc "MANIFEST" (org-collect-keywords '("MANIFEST")))) "/wsl.scm") :mkdirp yes
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/wsl.scm") :mkdirp yes
 (define-module (wsl)
   #:use-module (base-system)
   #:use-module (gnu)
@@ -399,16 +476,7 @@ To make all of this work, I use the following manifest file inheriting from =bas
                         (device "/dev/sdb")
                         (mount-point "/")
                         (type "ext4")
-                        (mount? #t))))
-
-   (services (list (service guix-service-type)
-                   (service special-files-service-type
-                            `(("/usr/bin/env" ,(file-append coreutils "/bin/env"))))
-                   (simple-service 'zshrc etc-service-type
-                                       `(("zprofile" ,(plain-file "zprofile" "\
-                                   emulate sh -c '. /etc/profile'
-                                   emulate sh -c '. $HOME/.config/profile'
-                                   emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'"))))))))
+                        (mount? #t))))))
 wsl-operating-system
 #+end_src
 
@@ -426,3 +494,12 @@ WScript.CreateObject("WScript.Shell").Run "wsl ~ -u db -d guix /home/db/.local/s
 #+end_src
 
 Then I can create a new shortcut on my desktop to that file. After that I right click on it an select =Properties=. In the =target= field I append the name of the application I want to execute, =emacs= for example. Like this: =C:\Users\deb\Desktop\launcher.vbs emacs=. I can even assign a dedicated icon if I wanted to.
+
+* Local Variables :noexport:
+# Local Variables:
+# eval: (setq-local file-paths '())
+# eval: (map-put file-paths 'xdg-config-home (or (getenv "XDG_CONFIG_HOME") "~/.config"))
+# eval: (map-put file-paths 'guix-config-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/guix"))
+# eval: (map-put file-paths 'guix-manifest-home (concat (cdr (assoc 'guix-config-home file-paths)) "/manifests/systems"))
+# eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Tangle the file?") (org-babel-tangle))) nil t)
+# End:
