@@ -140,7 +140,6 @@ Well, what is org-mode good for if not tangling files? Just kidding. Generally s
 <<config>>
 #+end_src
 
-
 ** Modules
 
 First, let's define the modules doom should use. These go into =doomdir/init.el=. Note that you can also declare your own modules, there's a [[https://github.com/hlissner/doom-emacs/blob/develop/docs/getting_started.org#writing-your-own-modules][section]] about it in the documentation. Please note that this list is shortened, I excluded module sections I will never use.
@@ -427,16 +426,19 @@ It can be beneficial to gather some information about the environment we're runn
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref config
-(setq db/keyboard-layout
-      (shell-command-to-string (if (getenv "WAYLAND_DISPLAY")
-                                   "swaymsg -t get_inputs | jq 'map(select(has(\"xkb_active_layout_name\")))[0].xkb_active_layout_name'"
-                                 "printf %s \"$(setxkbmap -print | awk -F\"+\" '/xkb_symbols/ {print $2}')\"")))
-(defconst IS-GERMAN-LAYOUT (numberp (or (string-match "de" db/keyboard-layout)
-                                        (string-match "German" db/keyboard-layout))))
-(defconst IS-ENGLISH-LAYOUT (numberp (or (string-match "en" db/keyboard-layout)
-                                         (string-match "English" db/keyboard-layout))))
 (defconst IS-WSL (numberp (string-match "-[Mm]icrosoft" operating-system-release)))
 (defconst IS-WAYLAND (stringp (getenv "WAYLAND_DISPLAY")))
+
+(setq db/keyboard-layout (shell-command-to-string
+                          (if IS-WAYLAND
+                              "swaymsg -t get_inputs | jq 'map(select(has(\"xkb_active_layout_name\")))[0].xkb_active_layout_name'"
+                            "printf %s \"$(setxkbmap -print | awk -F\"+\" '/xkb_symbols/ {print $2}')\"")))
+
+(defconst IS-GERMAN-LAYOUT (numberp (or (string-match "de" db/keyboard-layout)
+                                        (string-match "German" db/keyboard-layout))))
+
+(defconst IS-ENGLISH-LAYOUT (numberp (or (string-match "en" db/keyboard-layout)
+                                         (string-match "English" db/keyboard-layout))))
 #+end_src
 
 #+begin_src conf :tangle no :noweb-ref external-packages
