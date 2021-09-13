@@ -844,37 +844,11 @@ Automatically use =zsh= when using =ansi-term=
 
 ** User Interface
 
-Set the theme. I use my own fork of [[https://github.com/minikN/emacs-doom-themes][doom-themes]] and I need to configure it separately to make use of my changes, namely =doom-colors-extended= as the treemacs theme.
+Set the font and theme.
 
 #+begin_src emacs-lisp :noweb-ref config
-;(use-package! doom-themes
-;  :defer t
-;  :init
-;  (setq doom-theme 'doom-monokai-spectrum
-;        doom-themes-treemacs-enable-variable-pitch nil
-;        doom-themes-treemacs-theme "doom-colors-extended"
-;        lsp-treemacs-theme "doom-colors-extended");
-;
-;  ;; improve integration w/ org-mode
-;  (add-hook 'doom-load-theme-hook #'doom-themes-org-config);
-;
-;  ;; more Atom-esque file icons for neotree/treemacs
-;  (when (featurep! :ui treemacs)
-;    (add-hook 'doom-load-theme-hook #'doom-themes-treemacs-config)))
-;#+end_src
-
-;#+begin_src emacs-lisp :noweb-ref packages
-;(unpin! doom-themes)
-;(package! doom-themes
-;  :recipe (:host github
-;           :repo "minikN/emacs-doom-themes"
-;           :files ("*.el" "themes/*.el")))
-#+end_src
-
-Set the font.
-
-#+begin_src emacs-lisp :noweb-ref config
-(setq doom-font (font-spec :family "Fira Code Retina" :size 17)
+(setq doom-theme 'doom-monokai-spectrum
+      doom-font (font-spec :family "Fira Code Retina" :size 17)
       doom-big-font (font-spec :family "Fira Code Retina" :size 20)
       doom-variable-pitch-font (font-spec :family "Fira Code Retina" :size 17))
 #+end_src
