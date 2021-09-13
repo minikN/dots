@@ -324,6 +324,14 @@ GNU/Guix offers an [[https://git.savannah.gnu.org/cgit/guix.git/tree/gnu/package
 "ungoogled-chromium-wayland"
 #+end_src
 
+*** Nyxt
+
+[[https://github.com/atlas-engineer/nyxt][Nyxt]] is a web browser written on Common Lisp
+
+#+begin_src scheme :noweb-ref packages
+"nyxt"
+#+end_src
+
 ** GnuPG
 
 I use [[https://gnupg.org/][GnuPG]] to manage my key chain. I also configure it to work well with Emacs. Because I work from within Emacs most of the time I use =pinentry-emacs= to control passphrase prompts. Take a look at my [[Emacs.org][Emacs configuration]] for details.
