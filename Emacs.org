@@ -36,7 +36,6 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
   - [[#editor-1][Editor]]
     - [[#deleting-whitespace][Deleting whitespace]]
     - [[#writing-environment][Writing environment]]
-  - [[#wayland][Wayland]]
   - [[#default-applications][Default Applications]]
   - [[#user-interface-1][User Interface]]
   - [[#window-management][Window Management]]
@@ -804,20 +803,6 @@ DOOM offers a [[https://github.com/hlissner/doom-emacs/tree/develop/modules/ui/z
   :config
   (setq writeroom-width 0.5
         +zen-text-scale 0))
-#+end_src
-
-** Wayland
-
-By default, pasting from the system clipboard does not work with DOOM. It works on vanilla, but DOOM needs a little extra help. More information can be found [[https://github.com/hlissner/doom-emacs/issues/5219][here]].
-
-#+begin_src emacs-lisp :noweb-ref config
-(when IS-WAYLAND
-  (setq interprogram-paste-function
-        (lambda () (shell-command-to-string "wl-paste -n | tr -d '\r'"))))
-#+end_src
-
-#+begin_src emacs-lisp :noweb-ref external-packages
-"wl-clipboard"
 #+end_src
 
 ** Default Applications
