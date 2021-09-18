@@ -865,36 +865,36 @@ The following function does this. In addition I execute it every time I change m
 *Note*: This may not work with every theme. I tried to add fallback colors (see the multiple =(or ...)= statements). However, I wasn't able to cover all cases.
 
 #+begin_src emacs-lisp :noweb-ref config
-(defun db/update-waybar-colors (&optional file-path)
-  "Update the waybar colors and restart it.
-This may not work with every theme."
-  (let ((file-path (or file-path
-                       (concat (or xdg-config-home
-                                   (getenv "XDG_CONFIG_HOME")
-                                   "~/.config")
-                               "/waybar/colors.css"))))
-    (with-temp-buffer
-      (insert "@define-color" ?\s "theme-bg"     ?\s (face-attribute 'default                           :background) ";" ?\n
-              "@define-color" ?\s "theme-fg"     ?\s (face-attribute 'default                           :foreground) ";" ?\n
-              "@define-color" ?\s "theme-b0"     ?\s (face-attribute 'highlight                         :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-b1"     ?\s (face-attribute 'tooltip                           :background nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-b2"     ?\s (face-attribute 'default                           :background) ";" ?\n
-              "@define-color" ?\s "theme-b3"     ?\s (face-attribute 'region                            :background nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-b4"     ?\s (face-attribute 'fringe                            :foreground nil (list 'region 'default)) ";" ?\n
-              "@define-color" ?\s "theme-b5"     ?\s (face-attribute 'shadow                            :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-b6"     ?\s (face-attribute 'font-lock-comment-face            :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-b7"     ?\s (face-attribute 'line-number-current-line          :foreground nil (list 'font-lock-comment-face 'default)) ";" ?\n
-              "@define-color" ?\s "theme-b8"     ?\s (face-attribute 'match                             :foreground nil (list 'line-number-current-line 'font-lock-comment-face 'default)) ";" ?\n
-              "@define-color" ?\s "theme-red"    ?\s (face-attribute 'font-lock-preprocessor-face       :foreground nil (list 'warning 'default)) ";" ?\n
-              "@define-color" ?\s "theme-orange" ?\s (face-attribute 'warning                           :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-green"  ?\s (face-attribute 'font-lock-function-name-face      :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-yellow" ?\s (face-attribute 'font-lock-string-face             :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-violet" ?\s (face-attribute 'font-lock-constant-face           :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-cyan"   ?\s (face-attribute 'font-lock-type-face               :foreground nil 'defauult) ";")
-      (write-region (point-min) (point-max) file-path)
-      (call-process "swaymsg" nil 0 nil "reload"))))
-
-(advice-add 'enable-theme :after (cmd! (db/update-waybar-colors "~/.config/waybar/colors.css")))
+(when IS-WAYLAND
+  (defun db/update-waybar-colors (&optional file-path)
+    "Update the waybar colors and restart it.
+  This may not work with every theme."
+    (let ((file-path (or file-path
+                         (concat (or xdg-config-home
+                                     (getenv "XDG_CONFIG_HOME")
+                                     "~/.config")
+                                 "/waybar/colors.css"))))
+      (with-temp-buffer
+        (insert "@define-color" ?\s "theme-bg"     ?\s (face-attribute 'default                           :background) ";" ?\n
+                "@define-color" ?\s "theme-fg"     ?\s (face-attribute 'default                           :foreground) ";" ?\n
+                "@define-color" ?\s "theme-b0"     ?\s (face-attribute 'highlight                         :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-b1"     ?\s (face-attribute 'tooltip                           :background nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-b2"     ?\s (face-attribute 'default                           :background) ";" ?\n
+                "@define-color" ?\s "theme-b3"     ?\s (face-attribute 'region                            :background nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-b4"     ?\s (face-attribute 'fringe                            :foreground nil (list 'region 'default)) ";" ?\n
+                "@define-color" ?\s "theme-b5"     ?\s (face-attribute 'shadow                            :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-b6"     ?\s (face-attribute 'font-lock-comment-face            :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-b7"     ?\s (face-attribute 'line-number-current-line          :foreground nil (list 'font-lock-comment-face 'default)) ";" ?\n
+                "@define-color" ?\s "theme-b8"     ?\s (face-attribute 'match                             :foreground nil (list 'line-number-current-line 'font-lock-comment-face 'default)) ";" ?\n
+                "@define-color" ?\s "theme-red"    ?\s (face-attribute 'font-lock-preprocessor-face       :foreground nil (list 'warning 'default)) ";" ?\n
+                "@define-color" ?\s "theme-orange" ?\s (face-attribute 'warning                           :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-green"  ?\s (face-attribute 'font-lock-function-name-face      :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-yellow" ?\s (face-attribute 'font-lock-string-face             :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-violet" ?\s (face-attribute 'font-lock-constant-face           :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-cyan"   ?\s (face-attribute 'font-lock-type-face               :foreground nil 'defauult) ";")
+        (write-region (point-min) (point-max) file-path)
+        (call-process "swaymsg" nil 0 nil "reload"))))
+  (advice-add 'enable-theme :after (cmd! (db/update-waybar-colors "~/.config/waybar/colors.css"))))
 #+end_src
 
 ** Window Management
