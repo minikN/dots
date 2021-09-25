@@ -19,7 +19,6 @@ This file outlines the system configuration of all of my systems. This mainly in
   - [[#desktop-icons][Desktop Icons]]
 
 * Exported Files
-
 Tangling this file will create various directories and files in the home directory. However, I don't specify the target file for every source block individually, I rather declare file-local variables containing the target directories (I like [[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself][DRY]]). Because I follow the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html][XDG]] directory specification, I'll use the preferred defaults.
 I set all local variables in the [[#Local Variables][Local Variables]] footer of this file (View the raw file in order to see it).
 
@@ -70,7 +69,6 @@ I use some custom channels for my Guix systems.
 #+end_src
 
 * Base System
-
 This is the base configuration I use for every system I set up.
 
 #+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/base-system.scm") :mkdirp yes
@@ -189,7 +187,6 @@ base-operating-system
 #+end_src
 
 * Geekcave
-
 #+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/geekcave.scm") :mkdirp yes
 ;; This file is auto-generated. Do not make changes manually.
 ;; Exported from Systems.org
@@ -284,7 +281,6 @@ geekcave-system
 #+end_src
 
 * WSL
-
 This is the configuration for running my Guix setup on the Windows Subsystem for Linux. This will only work if WSL2 is installed and configured [[https://docs.microsoft.com/en-us/windows/wsl/install-win10][properly]].
 I based this set up on [[https://gist.github.com/giuliano108/49ec5bd0a9339db98535bc793ceb5ab4][this]] and [[https://gist.github.com/vldn-dev/de379bf81a80ff0a53cd851bcc3bbff2][this]] gist I found online. Running GuixSD as a WSL distribution requires special configuration because it is not offered as a built in distribution on the Windows store.
 
@@ -305,7 +301,6 @@ wsl --import guix /guix rootfs.tgz --version 2
 In case a mistake was made, I can run =wsl --unregister guix= and start again.
 
 ** Installation
-
 This script is used to install the base GuixSD.
 
 #+begin_src sh :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/guix-wsl-install.sh") :mkdirp yes :noweb yes
@@ -436,7 +431,6 @@ sudo guix system reconfigure /mnt/c/path/to/wsl.scm
 #+end_src
 
 ** Manifest
-
 To make all of this work, I use the following manifest file inheriting from =base-system=:
 
 #+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/wsl.scm") :mkdirp yes
@@ -481,12 +475,10 @@ wsl-operating-system
 #+end_src
 
 ** GUI Applications
-
 In order to run GUI applications, the =DISPLAY= variable and some other stuff needs to be set properly. For that reason, I tangle a wrapper script in my [[file:Desktop.org#Scripts][Desktop configuration]].
 See the next section for information on how to use it.
 
 ** Desktop Icons
-
 In order to start individual applications from desktop shortcuts, we need a launcher. I create a file called =launcher.vbs= somewhere on my host where I can access it with the following content (edit the user and path to script):
 
 #+begin_src vbs :tangle no
