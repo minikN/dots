@@ -51,7 +51,6 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
     - [[#lsp-treemacs][=lsp-treemacs=]]
   - [[#languages-1][Languages]]
     - [[#nodejsts][Node/JS/TS]]
-    - [[#php][PHP]]
     - [[#org][ORG]]
 
 * Exported Files
@@ -1239,27 +1238,8 @@ The original =npm-mode= package doesn't come with the ability to change the =npm
 (package! npm-mode :recipe (:host github :repo "minikN/npm-mode"))
 #+end_src
 
-*** PHP
-
-#+begin_src sh :tangle (concat (cdr (assoc 'profiled-home file-paths)) "/php") :tangle-mode (identity #o755) :mkdirp yes
-# if command -v php &> /dev/null; then
-#     if ! test -x "${BINDIR}/composer"; then
-#         php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-#         php "composer-setup.php"
-#         php -r "unlink('composer-setup.php');"
-#         mv composer.phar ${BINDIR}/composer
-#         chmod +x ${BINDIR}/composer
-#     fi
-# fi
-#+end_src
-
-#+begin_src scheme :noweb-ref dev-packages
-;"php"
-#+end_src
-
 *** ORG
 **** Key bindings
-
 #+begin_src emacs-lisp :noweb-ref config
 (map! :map org-mode-map
       :localleader
