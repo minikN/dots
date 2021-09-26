@@ -51,11 +51,9 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
     - [[#lsp-treemacs][=lsp-treemacs=]]
   - [[#languages-1][Languages]]
     - [[#nodejsts][Node/JS/TS]]
-    - [[#php][PHP]]
     - [[#org][ORG]]
 
 * Exported Files
-
 Tangling this file will create various directories and files in the home directory. However, I don't specify the target file for every source block individually, I rather declare file-local variables containing the target directories (I like [[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself][DRY]]). Because I follow the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html][XDG]] directory specification, I'll use the preferred defaults.
 I set all local variables in the [[#Local Variables][Local Variables]] footer of this file (View the raw file in order to see it).
 
@@ -85,7 +83,6 @@ The following tables shows all the defined target directories. All exports are b
 I may refer to these directories throughout the configuration, e.g. like that: =doomdir/config.el=.
 
 * TODO Current problems :noexport:
-
 This is a simple list containing general problems / TODOs that I'll tackle in future commits.
 
 - key bindings via =general=
@@ -97,7 +94,6 @@ This is a simple list containing general problems / TODOs that I'll tackle in fu
 - Sway layouts?
 
 * DOOM Emacs
-
 DOOM expects three files to be present: =doomdir/init.el= for its active modules, =doomdir/config.el= as a main configuration and =doomdir/packages.el= for package declarations.
 Well, what is org-mode good for if not tangling files? Just kidding. Generally speaking, the source blocks of this file will be tangled to =config.el= while I'll tangle bits and pieces to =init.el= and =packages.el= where needed. I also create =guix-manifest-home/emacs.scm= for external packages (binaries, fonts, ...) I need.
 
@@ -140,7 +136,6 @@ Well, what is org-mode good for if not tangling files? Just kidding. Generally s
 #+end_src
 
 ** Modules
-
 First, let's define the modules doom should use. These go into =doomdir/init.el=. Note that you can also declare your own modules, there's a [[https://github.com/hlissner/doom-emacs/blob/develop/docs/getting_started.org#writing-your-own-modules][section]] about it in the documentation. Please note that this list is shortened, I excluded module sections I will never use.
 
 #+begin_src emacs-lisp :tangle (concat (cdr (assoc 'doomdir file-paths)) "/init.el") :noweb yes
@@ -183,7 +178,6 @@ First, let's define the modules doom should use. These go into =doomdir/init.el=
 #+end_src
 
 ** Completion
-
 #+begin_src emacs-lisp :noweb-ref doom-completion
 :completion
 ;company                ; the ultimate code completion backend
@@ -194,7 +188,6 @@ First, let's define the modules doom should use. These go into =doomdir/init.el=
 #+end_src
 
 ** User Interface
-
 #+begin_src emacs-lisp :noweb-ref doom-ui
 (emoji +unicode
        +ascii
@@ -225,7 +218,6 @@ zen                   ; distraction-free coding or writing
 #+end_src
 
 ** Editor
-
 #+begin_src emacs-lisp :noweb-ref doom-editor
 (evil +everywhere)      ; come to the dark side, we have cookies
 ;;(format +onsave)      ; automated prettiness
@@ -242,7 +234,6 @@ snippets                ; my elves. They type so I don't have to
 #+end_src
 
 ** Emacs
-
 #+begin_src emacs-lisp :noweb-ref doom-emacs
 ;;ibuffer               ; interactive buffer management
 dired                   ; making dired pretty [functional]
@@ -252,7 +243,6 @@ vc                      ; version-control and Emacs, sitting in a tree
 #+end_src
 
 ** Terminal
-
 #+begin_src emacs-lisp :noweb-ref doom-term
 ;;shell                 ; simple shell REPL for Emacs
 ;;term                  ; basic terminal emulator for Emacs
@@ -270,7 +260,6 @@ I need the =libvterm= dependency in order to build =vterm=.
 #+end_src
 
 ** Checkers
-
 #+begin_src emacs-lisp :noweb-ref doom-checkers
 (spell +flyspell)       ; tasing you for misspelling mispelling
 (syntax +childframe)    ; tasing you for every semicolon you forget
@@ -284,7 +273,6 @@ grammar                 ; tasing grammar mistake every you make
 #+end_src
 
 ** Tools
-
 #+begin_src emacs-lisp :noweb-ref doom-tools
 (eval +overlay)         ; run code, run (also, repls)
 (lsp
@@ -311,7 +299,6 @@ pass                    ; password manager for nerds
 #+end_src
 
 ** Languages
-
 #+begin_src emacs-lisp :noweb-ref doom-lang
 (javascript
  +lsp
@@ -377,7 +364,6 @@ web                     ; the tubes
 #+end_src
 
 ** Email
-
 #+begin_src emacs-lisp :noweb-ref doom-email
 ;;(mu4e +gmail)
 ;;notmuch
@@ -385,7 +371,6 @@ web                     ; the tubes
 #+end_src
 
 ** Applications
-
 #+begin_src emacs-lisp :noweb-ref doom-app
 ;;(rss +org)            ; emacs as an RSS reader
 ;;calendar
@@ -396,7 +381,6 @@ irc                     ; how neckbeards socialize
 #+end_src
 
 * Basic Settings
-
 This chapter covers the essential configuration. While I do enjoy GNU/Guix, I currently don't use it to manage my emacs packages. The reason for this is that DOOM comes with its own package manager built on top of [[https://github.com/raxod502/straight.el][straight.el]], which is (in my opinion) superior to Guix.
 DOOM comes with a the =use-package!= macro, which is a thin wrapper around =straight-use-package=. This is used to install packages into =doomdir/packages.el=.
 
@@ -445,7 +429,6 @@ It can be beneficial to gather some information about the environment we're runn
 #+end_src
 
 ** Key bindings
-
 This section will only cover global, or mode-independent key bindings. All mode-specific bindings will be declared in their respective package configuration.
 
 I would like to use =C-SPC= as my leader and =C-SPC C-SPC= as my local leader in both normal and insert state. To do that, I first need to unbind =C-SPC= completely. Fortunately, DOOM provides the handy =map!= macro.
@@ -464,7 +447,6 @@ DOOM comes with a handful of predefined key bindings. However, I decided to deac
 That being said, I copy a lot of the DOOM bindings, so why not simply keep the original bindings and override the ones I want? I don't do that because that way, the bindings that I don't override would still be present, which would not decrease the total amount of key bindings available (in lets say =which-key=). I want to start from a clean state and only add what I want.
 
 *** Conventions
-
 My key bindings revolve around =C-SPC= being my leader. Mode-specific bindings can be accessed with =C-SPC C-SPC=. In practice, this means I only have to tap =SPC= twice to access them. The ctrl key is pretty bad positioned in terms of ergonomics. To remedy that, I swapped it with capslock. It takes some time getting used to, but it's worth it!
 
 I like the concept of having keys prefixing certain key maps (=f= for files, =b= for buffers, ...). In addition to that, I assign the most used function to =C-<prefix>=. For files that would be =find-file=. By binding it to =C-f= I can quickly access it by pressing =C-SPC C-f=, if I need more file-related functions I can always access its key map with =C-SPC f=.
@@ -477,7 +459,6 @@ In summary:
 - most used function for every key map bound to =C-<prefix>=
 
 *** Common
-
 #+begin_src emacs-lisp :noweb-ref config
 (map! :leader
       :desc "Eval expression"                           "."       #'eval-expression
@@ -570,7 +551,6 @@ In summary:
 #+end_src
 
 *** Files
-
 #+begin_src emacs-lisp :noweb-ref config
 (map! :leader
       :desc "Find file"                         "C-f"   #'find-file
@@ -592,7 +572,6 @@ In summary:
 #+end_src
 
 *** Buffer
-
 #+begin_src emacs-lisp :noweb-ref config
 (map!                                           "C-M-j" #'persp-switch-to-buffer
       (:when (featurep! :completion vertico)
@@ -623,7 +602,6 @@ In summary:
 #+end_src
 
 *** Help
-
 #+begin_src emacs-lisp :noweb-ref config
 (map! :leader
       :prefix ("h" . "Help")
@@ -673,7 +651,6 @@ In summary:
 #+end_src
 
 *** Code
-
 #+begin_src emacs-lisp :noweb-ref config
 (map! (:after lsp-mode :map lsp-mode-map        "<M-return>" #'lsp-execute-code-action)
       :leader
@@ -683,7 +660,6 @@ In summary:
 #+end_src
 
 *** Workspaces
-
 #+begin_src emacs-lisp :noweb-ref config
 (map! (:when (featurep! :ui workspaces)
        :n "C-t"                                 #'+workspace/new
@@ -728,7 +704,6 @@ In summary:
 #+end_src
 
 *** Terminals
-
 #+begin_src emacs-lisp :noweb-ref config
 (map! :leader
       (:when (featurep! :term vterm)
@@ -749,7 +724,6 @@ In summary:
 #+end_src
 
 ** Editor
-
 Some sensible defaults for working with emacs.
 
 #+begin_src emacs-lisp :noweb-ref config
@@ -781,7 +755,6 @@ Some sensible defaults for working with emacs.
 #+end_src
 
 *** Deleting whitespace
-
 I use [[https://github.com/nflath/hungry-delete][hungry-delete]] to delete up/back to the next non-whitespace character. However, I don't want to use this globally, I only bind it to =M-<backspace>= and =M-<delete>=
 
 #+begin_src emacs-lisp :noweb-ref config
@@ -795,7 +768,6 @@ I use [[https://github.com/nflath/hungry-delete][hungry-delete]] to delete up/ba
 #+end_src
 
 *** Writing environment
-
 DOOM offers a [[https://github.com/hlissner/doom-emacs/tree/develop/modules/ui/zen][zen]] module which has some nice features for writing text. I just tweak its appearance a bit.
 
 #+begin_src emacs-lisp :noweb-ref config
@@ -806,7 +778,6 @@ DOOM offers a [[https://github.com/hlissner/doom-emacs/tree/develop/modules/ui/z
 #+end_src
 
 ** Default Applications
-
 Lets set the browser depending on what environment we are running in.
 
 - WSL
@@ -843,7 +814,6 @@ Automatically use =zsh= when using =ansi-term=
 #+end_src
 
 ** User Interface
-
 Set the font and theme.
 
 #+begin_src emacs-lisp :noweb-ref config
@@ -865,40 +835,39 @@ The following function does this. In addition I execute it every time I change m
 *Note*: This may not work with every theme. I tried to add fallback colors (see the multiple =(or ...)= statements). However, I wasn't able to cover all cases.
 
 #+begin_src emacs-lisp :noweb-ref config
-(defun db/update-waybar-colors (&optional file-path)
-  "Update the waybar colors and restart it.
-This may not work with every theme."
-  (let ((file-path (or file-path
-                       (concat (or xdg-config-home
-                                   (getenv "XDG_CONFIG_HOME")
-                                   "~/.config")
-                               "/waybar/colors.css"))))
-    (with-temp-buffer
-      (insert "@define-color" ?\s "theme-bg"     ?\s (face-attribute 'default                           :background) ";" ?\n
-              "@define-color" ?\s "theme-fg"     ?\s (face-attribute 'default                           :foreground) ";" ?\n
-              "@define-color" ?\s "theme-b0"     ?\s (face-attribute 'highlight                         :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-b1"     ?\s (face-attribute 'tooltip                           :background nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-b2"     ?\s (face-attribute 'default                           :background) ";" ?\n
-              "@define-color" ?\s "theme-b3"     ?\s (face-attribute 'region                            :background nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-b4"     ?\s (face-attribute 'fringe                            :foreground nil (list 'region 'default)) ";" ?\n
-              "@define-color" ?\s "theme-b5"     ?\s (face-attribute 'shadow                            :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-b6"     ?\s (face-attribute 'font-lock-comment-face            :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-b7"     ?\s (face-attribute 'line-number-current-line          :foreground nil (list 'font-lock-comment-face 'default)) ";" ?\n
-              "@define-color" ?\s "theme-b8"     ?\s (face-attribute 'match                             :foreground nil (list 'line-number-current-line 'font-lock-comment-face 'default)) ";" ?\n
-              "@define-color" ?\s "theme-red"    ?\s (face-attribute 'font-lock-preprocessor-face       :foreground nil (list 'warning 'default)) ";" ?\n
-              "@define-color" ?\s "theme-orange" ?\s (face-attribute 'warning                           :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-green"  ?\s (face-attribute 'font-lock-function-name-face      :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-yellow" ?\s (face-attribute 'font-lock-string-face             :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-violet" ?\s (face-attribute 'font-lock-constant-face           :foreground nil 'default) ";" ?\n
-              "@define-color" ?\s "theme-cyan"   ?\s (face-attribute 'font-lock-type-face               :foreground nil 'defauult) ";")
-      (write-region (point-min) (point-max) file-path)
-      (call-process "swaymsg" nil 0 nil "reload"))))
-
-(advice-add 'enable-theme :after (cmd! (db/update-waybar-colors "~/.config/waybar/colors.css")))
+(when IS-WAYLAND
+  (defun db/update-waybar-colors (&optional file-path)
+    "Update the waybar colors and restart it.
+  This may not work with every theme."
+    (let ((file-path (or file-path
+                         (concat (or xdg-config-home
+                                     (getenv "XDG_CONFIG_HOME")
+                                     "~/.config")
+                                 "/waybar/colors.css"))))
+      (with-temp-buffer
+        (insert "@define-color" ?\s "theme-bg"     ?\s (face-attribute 'default                           :background) ";" ?\n
+                "@define-color" ?\s "theme-fg"     ?\s (face-attribute 'default                           :foreground) ";" ?\n
+                "@define-color" ?\s "theme-b0"     ?\s (face-attribute 'highlight                         :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-b1"     ?\s (face-attribute 'tooltip                           :background nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-b2"     ?\s (face-attribute 'default                           :background) ";" ?\n
+                "@define-color" ?\s "theme-b3"     ?\s (face-attribute 'region                            :background nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-b4"     ?\s (face-attribute 'fringe                            :foreground nil (list 'region 'default)) ";" ?\n
+                "@define-color" ?\s "theme-b5"     ?\s (face-attribute 'shadow                            :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-b6"     ?\s (face-attribute 'font-lock-comment-face            :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-b7"     ?\s (face-attribute 'line-number-current-line          :foreground nil (list 'font-lock-comment-face 'default)) ";" ?\n
+                "@define-color" ?\s "theme-b8"     ?\s (face-attribute 'match                             :foreground nil (list 'line-number-current-line 'font-lock-comment-face 'default)) ";" ?\n
+                "@define-color" ?\s "theme-red"    ?\s (face-attribute 'font-lock-preprocessor-face       :foreground nil (list 'warning 'default)) ";" ?\n
+                "@define-color" ?\s "theme-orange" ?\s (face-attribute 'warning                           :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-green"  ?\s (face-attribute 'font-lock-function-name-face      :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-yellow" ?\s (face-attribute 'font-lock-string-face             :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-violet" ?\s (face-attribute 'font-lock-constant-face           :foreground nil 'default) ";" ?\n
+                "@define-color" ?\s "theme-cyan"   ?\s (face-attribute 'font-lock-type-face               :foreground nil 'defauult) ";")
+        (write-region (point-min) (point-max) file-path)
+        (call-process "swaymsg" nil 0 nil "reload"))))
+  (advice-add 'enable-theme :after (cmd! (db/update-waybar-colors "~/.config/waybar/colors.css"))))
 #+end_src
 
 ** Window Management
-
 Emacs has the ability to spawn windows on demand. However, controlling their placement is as close to rocket science as it gets. Here is a quote from the DOOM manual:
 
 #+begin_quote
@@ -958,7 +927,6 @@ There are a couple of ways to control the way Emacs spawns windows. One can dig 
 #+End_src
 
 ** Completion System
-
 I am using the [[https://github.com/minad/vertico][vertico]] stack for completion in emacs, besides vertico, this includes [[https://github.com/minad/consult][consult]], [[https://github.com/minad/marginalia][marginalia]], [[https://github.com/oantolin/orderless][orderless]], [[https://github.com/oantolin/embark][embark]] and [[https://github.com/minad/corfu][corfu]].
 Vertico is a
 
@@ -1018,15 +986,14 @@ Emacs offers [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dynamic
 
 * Applications
 ** App launcher
-
 I use [[https://github.com/SebastienWae/app-launcher][app-launcher]] to launch external applications.
 
 #+begin_src emacs-lisp :noweb-ref packages
 (package! app-launcher
   :recipe (:host github :repo "SebastienWae/app-launcher"))
 #+end_src
-** IRC
 
+** IRC
 I use DOOM's IRC [[https://github.com/hlissner/doom-emacs/tree/develop/modules/app/irc][module]] to connect to IRC.
 
 #+begin_src emacs-lisp :noweb-ref config
@@ -1039,7 +1006,6 @@ I use DOOM's IRC [[https://github.com/hlissner/doom-emacs/tree/develop/modules/a
 #+end_src
 
 ** Pass
-
 I use [[https://www.passwordstore.org/][pass]] as my password manager. Luckily DOOM provides a module for it. So I don't need any configuration besides declaring the external packages needed.
 
 #+begin_src scheme :noweb-ref external-packages
@@ -1048,7 +1014,6 @@ I use [[https://www.passwordstore.org/][pass]] as my password manager. Luckily D
 #+end_src
 
 ** Pinentry
-
 I use [[https://gnupg.org][GnuPG]] to manage my keys. More information about the system setup of GnuPG can be found [[file:Desktop.org::*GnuPG][here]]. This all is fine, but I want to be prompted for my pass phrase in the mini buffer when working with git or similar tools. We can use the =pinentry= package for that, it needs some additional configuration to work. After that, we need to start it with =pinentry-start=.
 
 With that configuration (together with the configuration in [[Desktop.org][Desktop.org]]) I'll be prompted for my pass phrase when encrypting, signing or authenticating. Neat!
@@ -1066,7 +1031,6 @@ With that configuration (together with the configuration in [[Desktop.org][Deskt
 #+end_src
 
 * Development Environment
-
 I spend most of my time in emacs. This (obviously) includes programming. This section covers my configuration for turning emacs into an IDE. I use [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] as my foundation for this. In addition to that, I also need external tools (linters, build tools, ...).
 
 I use [[https://guix.gnu.org/manual/en/html_node/Invoking-guix-environment.html][guix environment]] to set up my development environments. I separate my environments based on languages where it makes sense. In an isolated environment, Guix can load packages ad hoc and provide a shell to interact with it. For example
@@ -1080,7 +1044,6 @@ executes =npm -v= in an isolated node environment. Great, isn't it? There is muc
 However, what about packages (like certain npm packages) that I need in an environment, but that are not available through Guix? For that purpose, I create a wrapper script for every environment that checks development dependencies and installs them on the fly if needed (See sections for each language).
 
 ** Generic settings
-
 Setting a high threshold for file watchers:
 
 #+begin_src emacs-lisp :noweb-ref config
@@ -1134,11 +1097,9 @@ I like using the symbol list using =lsp-treemacs=. This function allows me to qu
 
 ** Languages
 *** Node/JS/TS
-
 This is the development configuration for =node=, =js= and =ts=.
 
 **** Environment
-
 I frequently develop using [[https://nodejs.org/en/][node]]. It comes with [[https://www.npmjs.com/][npm]], its package manager. Installing npm packages globally requires =sudo= permissions (which Guix doesn't like). To make this work, I set the =$NPM_PACKAGES= environment variable manually.
 
 #+begin_src sh :tangle (concat (cdr (assoc 'profiled-home file-paths)) "/npm") :tangle-mode (identity #o755) :mkdirp yes
@@ -1200,7 +1161,6 @@ node-env npm -v
 If its runtime dependencies are not satisfied, it will install them and run the command then. This only needs to be run once.
 
 **** IDE
-
 This part covers how I configure Emacs, especially =lsp-mode= to work for javascript / typescript development. Unfortunately, because I need to run all my executables (linters, language-servers, ...) inside the isolated environment, I need to tweak certain paths.
 
 Path to the =eslint= server:
@@ -1239,27 +1199,8 @@ The original =npm-mode= package doesn't come with the ability to change the =npm
 (package! npm-mode :recipe (:host github :repo "minikN/npm-mode"))
 #+end_src
 
-*** PHP
-
-#+begin_src sh :tangle (concat (cdr (assoc 'profiled-home file-paths)) "/php") :tangle-mode (identity #o755) :mkdirp yes
-# if command -v php &> /dev/null; then
-#     if ! test -x "${BINDIR}/composer"; then
-#         php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-#         php "composer-setup.php"
-#         php -r "unlink('composer-setup.php');"
-#         mv composer.phar ${BINDIR}/composer
-#         chmod +x ${BINDIR}/composer
-#     fi
-# fi
-#+end_src
-
-#+begin_src scheme :noweb-ref dev-packages
-;"php"
-#+end_src
-
 *** ORG
 **** Key bindings
-
 #+begin_src emacs-lisp :noweb-ref config
 (map! :map org-mode-map
       :localleader
