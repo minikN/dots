@@ -189,8 +189,10 @@ Next are variables to declare default applications. Stuff like =$BROWSER= and =$
 #+begin_src sh
 export VISUAL="emacsclient"
 export EDITOR="${VISUAL}"
-export BROWSER="next"
+export BROWSER="nyxt"
 #+end_src
+
+#+RESULTS:
 
 *** Application specific variables
 
