@@ -13,256 +13,255 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
 - [[#exported-files][Exported Files]]
 
 * Exported Files
-Tangling this file will create various directories and files in the home directory. However, I don't specify the target file for every source block individually, I rather declare file-local variables containing the target directories (I like [[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself][DRY]]). Because I follow the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html][XDG]] directory specification, I'll use the preferred defaults.
-I set all local variables in the [[#Local Variables][Local Variables]] footer of this file (View the raw file in order to see it).
+  Tangling this file will create various directories and files in the home directory. However, I don't specify the target file for every source block individually, I rather declare file-local variables containing the target directories (I like [[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself][DRY]]). Because I follow the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html][XDG]] directory specification, I'll use the preferred defaults.
+  I set all local variables in the [[#Local Variables][Local Variables]] footer of this file (View the raw file in order to see it).
 
-The following tables shows all the defined target directories. All exports are based on these. This table is auto-generated.
+  The following tables shows all the defined target directories. All exports are based on these. This table is auto-generated.
 
-#+name: filelist
-#+begin_src emacs-lisp :results value :exports results :tangle no
-(append
- `(("Variable" "Path") hline)
- (cl-loop for (e) on file-paths collect
-          (list (car e)
-                (concat "=" (prin1-to-string (cdr e) t) "="))))
-#+end_src
+  #+name: filelist
+  #+begin_src emacs-lisp :results value :exports results :tangle no
+  (append
+   `(("Variable" "Path") hline)
+   (cl-loop for (e) on file-paths collect
+	    (list (car e)
+		  (concat "=" (prin1-to-string (cdr e) t) "="))))
+  #+end_src
 
-#+RESULTS: filelist
-| Variable           | Path                              |
-|--------------------+-----------------------------------|
-| bindir             | =/home/db/.local/share/bin=       |
-| guix-manifest-home | =/home/db/.config/guix/manifests= |
-| guix-config-home   | =/home/db/.config/guix=           |
-| doomdir            | =/home/db/.config/doom=           |
-| npm-config-home    | =/home/db/.config/npm=            |
-| profiled-home      | =/home/db/.config/profile.d=      |
-| xdg-data-home      | =/home/db/.local/share=           |
-| xdg-config-home    | =/home/db/.config=                |
+  #+RESULTS: filelist
+  | Variable           | Path                              |
+  |--------------------+-----------------------------------|
+  | bindir             | =/home/db/.local/share/bin=       |
+  | guix-manifest-home | =/home/db/.config/guix/manifests= |
+  | guix-config-home   | =/home/db/.config/guix=           |
+  | doomdir            | =/home/db/.config/doom=           |
+  | npm-config-home    | =/home/db/.config/npm=            |
+  | profiled-home      | =/home/db/.config/profile.d=      |
+  | xdg-data-home      | =/home/db/.local/share=           |
+  | xdg-config-home    | =/home/db/.config=                |
 
-I may refer to these directories throughout the configuration, e.g. like that: =doomdir/config.el=.
+  I may refer to these directories throughout the configuration, e.g. like that: =doomdir/config.el=.
 
-#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/emacs.scm") :noweb yes
-;; This file is auto-generated. Do not make changes manually.
-;; Exported from Emacs.org
+  #+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/emacs.scm") :noweb yes
+  ;; This file is auto-generated. Do not make changes manually.
+  ;; Exported from Emacs.org
 
-(specifications->manifest
- '(
-   "emacs-pgtk-native-comp"
-   <<packages>>
-   ))
-#+end_src
+  (specifications->manifest
+   '(
+     "emacs-pgtk-native-comp"
+     <<packages>>
+     ))
+  #+end_src
 
 * =early-init.el=
 
   #+begin_src emacs-lisp :tangle (eval (concat user-emacs-directory "/early-init.el"))
-    ;;; early-init.el --- Early Init File -*- lexical-binding: t -*-
+  ;;; early-init.el --- Early Init File -*- lexical-binding: t -*-
 
-    ;; Copyright (c) 2021 Demis Balbach <db@minikn.xyz>
+  ;; Copyright (c) 2021 Demis Balbach <db@minikn.xyz>
 
-    ;; Author: Demis Balbach <db@minikn.xyz>
-    ;; Version: 0.1
-    ;; Package-Requires: ((emacs "28.1"))
+  ;; Author: Demis Balbach <db@minikn.xyz>
+  ;; Version: 0.1
+  ;; Package-Requires: ((emacs "28.1"))
 
-    ;; This file is NOT part of GNU Emacs.
+  ;; This file is NOT part of GNU Emacs.
 
-    ;; This file is free software: you can redistribute it and/or modify it
-    ;; under the terms of the GNU General Public License as published by the
-    ;; Free Software Foundation, either version 3 of the License, or (at
-    ;; your option) any later version.
-    ;;
-    ;; This file is distributed in the hope that it will be useful, but
-    ;; WITHOUT ANY WARRANTY; without even the implied warranty of
-    ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    ;; General Public License for more details.
-    ;;
-    ;; You should have received a copy of the GNU General Public License
-    ;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
+  ;; This file is free software: you can redistribute it and/or modify it
+  ;; under the terms of the GNU General Public License as published by the
+  ;; Free Software Foundation, either version 3 of the License, or (at
+  ;; your option) any later version.
+  ;;
+  ;; This file is distributed in the hope that it will be useful, but
+  ;; WITHOUT ANY WARRANTY; without even the implied warranty of
+  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ;; General Public License for more details.
+  ;;
+  ;; You should have received a copy of the GNU General Public License
+  ;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
-    ;;; Commentary:
+  ;;; Commentary:
 
-    ;;; Code:
+  ;;; Code:
 
-    ;; Packages will be initialized by use-package later.
-    (setq package-enable-at-startup nil
-	  package-archives nil)
+  ;; Packages will be initialized by use-package later.
+  (setq package-enable-at-startup nil
+	package-archives nil)
 
-    ;; Set some appropriate size limits.
-    (setq  undo-limit (* 8 1024 1024)
-	   gc-cons-threshold (* 8 1024 1024)
-	   read-process-output-max (* 1024 1024))
+  ;; Set some appropriate size limits.
+  (setq  undo-limit (* 8 1024 1024)
+	 gc-cons-threshold (* 8 1024 1024)
+	 read-process-output-max (* 1024 1024))
 
-    ;; Do not resize the frame at this early stage.
-    (setq frame-inhibit-implied-resize t)
+  ;; Do not resize the frame at this early stage.
+  (setq frame-inhibit-implied-resize t)
 
-    ;; Ignore X resources
-    (setq inhibit-x-resources t)
+  ;; Ignore X resources
+  (setq inhibit-x-resources t)
 
-    ;; Disable default GUI elements
-    (menu-bar-mode -1)
-    (tool-bar-mode -1)
-    (scroll-bar-mode -1)
+  ;; Disable default GUI elements
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
 
-    ;; Set some defaults for the startup behaviour.
-    (setq inhibit-splash-screen t
-	  inhibit-startup-screen t
-	  inhibit-startup-buffer-menu t
-	  inhibit-startup-echo-area-message "Welcome."
-	  use-dialog-box t
-	  use-file-dialog nil)
+  ;; Set some defaults for the startup behaviour.
+  (setq inhibit-splash-screen t
+	inhibit-startup-screen t
+	inhibit-startup-buffer-menu t
+	inhibit-startup-echo-area-message "Welcome."
+	use-dialog-box t
+	use-file-dialog nil)
 
-    ;; Silence native compilation warnings.
-    (setq native-comp-async-report-warnings-errors 'silent)
-    (load-theme 'modus-operandi t) ;; temp
-    ;;; early-init.el ends here
+  ;; Silence native compilation warnings.
+  (setq native-comp-async-report-warnings-errors 'silent)
+  (load-theme 'modus-operandi t) ;; temp
+  ;;; early-init.el ends here
   #+end_src
 
 * =init.el=
   #+begin_src emacs-lisp :tangle (eval (concat user-emacs-directory "/init.el")) :noweb yes
-    ;;; init.el --- Init File -*- lexical-binding: t -*-
+  ;;; init.el --- Init File -*- lexical-binding: t -*-
 
-    ;; Copyright (c) 2021 Demis Balbach <db@minikn.xyz>
+  ;; Copyright (c) 2021 Demis Balbach <db@minikn.xyz>
 
-    ;; Author: Demis Balbach <db@minikn.xyz>
-    ;; Version: 0.1
-    ;; Package-Requires: ((emacs "28.1"))
+  ;; Author: Demis Balbach <db@minikn.xyz>
+  ;; Version: 0.1
+  ;; Package-Requires: ((emacs "28.1"))
 
-    ;; This file is NOT part of GNU Emacs.
+  ;; This file is NOT part of GNU Emacs.
 
-    ;; This file is free software: you can redistribute it and/or modify it
-    ;; under the terms of the GNU General Public License as published by the
-    ;; Free Software Foundation, either version 3 of the License, or (at
-    ;; your option) any later version.
-    ;;
-    ;; This file is distributed in the hope that it will be useful, but
-    ;; WITHOUT ANY WARRANTY; without even the implied warranty of
-    ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    ;; General Public License for more details.
-    ;;
-    ;; You should have received a copy of the GNU General Public License
-    ;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
+  ;; This file is free software: you can redistribute it and/or modify it
+  ;; under the terms of the GNU General Public License as published by the
+  ;; Free Software Foundation, either version 3 of the License, or (at
+  ;; your option) any later version.
+  ;;
+  ;; This file is distributed in the hope that it will be useful, but
+  ;; WITHOUT ANY WARRANTY; without even the implied warranty of
+  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ;; General Public License for more details.
+  ;;
+  ;; You should have received a copy of the GNU General Public License
+  ;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
-    ;;; Commentary:
+  ;;; Commentary:
 
-    ;;; Code:
+  ;;; Code:
 
-    <<config>>
+  <<config>>
   #+end_src
   
 ** Environment
+   #+begin_src emacs-lisp :noweb-ref config
+   (require 'xdg)
 
-   #+begin_src emacs-lisp :noweb-ref config 
-     (require 'xdg)
+   ;; Setting some important folders.
+   (defvar db-config-home
+     (or (xdg-config-home) "~/.config")
+     "The config location according to the XDG specification.")
 
-     ;; Setting some important folders.
-     (defvar db-config-home
-       (or (xdg-config-home) "~/.config")
-       "The config location according to the XDG specification.")
+   (defvar db-data-home
+     (or (xdg-data-home) "~/.local/share")
+     "The data location according to the XDG specification.")
 
-     (defvar db-data-home
-       (or (xdg-data-home) "~/.local/share")
-       "The data location according to the XDG specification.")
+   (defvar db-git-home
+     (or (getenv "GITDIR") (concat db-data-home "/git"))
+     "The location containing all the cloned git repositories.")
 
-     (defvar db-git-home
-       (or (getenv "GITDIR") (concat db-data-home "/git"))
-       "The location containing all the cloned git repositories.")
+   (defvar db-bin-home
+     (or (getenv "BINDIR") (concat db-data-home "/bin"))
+     "The location for user-defined binaries.")
 
-     (defvar db-bin-home
-       (or (getenv "BINDIR") (concat db-data-home "/bin"))
-       "The location for user-defined binaries.")
+   (defvar db-lit-config-home
+     (concat db-git-home "/guix")
+     "The location of the literate configuration creating
+	all the necessary `.el' files.")
 
-     (defvar db-lit-config-home
-       (concat db-git-home "/guix")
-       "The location of the literate configuration creating
-	  all the necessary `.el' files.")
+   ;; Gathering useful information about the os we
+   ;; are running on.
+   (defconst IS-WSL
+     (numberp (string-match "-[Mm]icrosoft" operating-system-release))
+     "Is `t' if running under the Windows Subsystem for Linux.")
 
-     ;; Gathering useful information about the os we
-     ;; are running on.
-     (defconst IS-WSL
-       (numberp (string-match "-[Mm]icrosoft" operating-system-release))
-       "Is `t' if running under the Windows Subsystem for Linux.")
+   (defconst IS-LINUX
+     (eq system-type 'gnu/linux)
+     "Is `t' if running under native Linux.")
 
-     (defconst IS-LINUX
-       (eq system-type 'gnu/linux)
-       "Is `t' if running under native Linux.")
+   ;; Source: https://github.com/daviwil/dotfiles/blob/master/Emacs.org#system-settings
+   (defvar IS-GUIX (and IS-LINUX
+			(require 'f)
+			(string-equal (f-read "/etc/issue")
+				      "\nThis is the GNU system.  Welcome.\n"))
+     "Is `t' if running under the Guix System Distribution.")
 
-     ;; Source: https://github.com/daviwil/dotfiles/blob/master/Emacs.org#system-settings
-     (defvar IS-GUIX (and IS-LINUX
-			  (require 'f)
-			  (string-equal (f-read "/etc/issue")
-					"\nThis is the GNU system.  Welcome.\n"))
-       "Is `t' if running under the Guix System Distribution.")
+   (defconst IS-WAYLAND
+     (stringp (getenv "WAYLAND_DISPLAY"))
+     "Is `t' if running under Wayland.")
 
-     (defconst IS-WAYLAND
-       (stringp (getenv "WAYLAND_DISPLAY"))
-       "Is `t' if running under Wayland.")
+   ;; Determining the currently active keyboard layout.
+   (setq db--keyboard-layout
+	 (shell-command-to-string
+	  (if IS-WAYLAND
+	      "swaymsg -t get_inputs | jq 'map(select(has(\"xkb_active_layout_name\")))[0].xkb_active_layout_name'"
+	    "printf %s \"$(setxkbmap -print | awk -F\"+\" '/xkb_symbols/ {print $2}')\"")))
 
-     ;; Determining the currently active keyboard layout.
-     (setq db--keyboard-layout
-	   (shell-command-to-string
-	    (if IS-WAYLAND
-		"swaymsg -t get_inputs | jq 'map(select(has(\"xkb_active_layout_name\")))[0].xkb_active_layout_name'"
-	      "printf %s \"$(setxkbmap -print | awk -F\"+\" '/xkb_symbols/ {print $2}')\"")))
+   (defconst IS-GERMAN-LAYOUT
+     (numberp (or (string-match "de" db--keyboard-layout)
+		  (string-match "German" db--keyboard-layout)))
+     "is `t' if the German keyboard layout is active.")
 
-     (defconst IS-GERMAN-LAYOUT
-       (numberp (or (string-match "de" db--keyboard-layout)
-		    (string-match "German" db--keyboard-layout)))
-       "is `t' if the German keyboard layout is active.")
-
-     (defconst IS-ENGLISH-LAYOUT
-       (numberp (or (string-match "en" db--keyboard-layout)
-		    (string-match "English" db--keyboard-layout)))
-       "Is `t' if the English keyboard layout is active.")
+   (defconst IS-ENGLISH-LAYOUT
+     (numberp (or (string-match "en" db--keyboard-layout)
+		  (string-match "English" db--keyboard-layout)))
+     "Is `t' if the English keyboard layout is active.")
    #+end_src
 
    #+begin_src sh :noweb-ref packages
-     "jq"
-     "setxkbmap"
-     "emacs-f"
+   "jq"
+   "setxkbmap"
+   "emacs-f"
    #+end_src
    
 ** Package management
 
    #+begin_src emacs-lisp :noweb-ref config
-     ;; Bootstrap straight.el
-     (defvar bootstrap-version)
-     (let ((bootstrap-file
-	   (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	   (bootstrap-version 5))
-       (unless (file-exists-p bootstrap-file)
-	 (with-current-buffer
-	     (url-retrieve-synchronously
-	     "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	     'silent 'inhibit-cookies)
-	   (goto-char (point-max))
-	   (eval-print-last-sexp)))
-       (load bootstrap-file nil 'nomessage))
+   ;; Bootstrap straight.el
+   (defvar bootstrap-version)
+   (let ((bootstrap-file
+	  (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	 (bootstrap-version 5))
+     (unless (file-exists-p bootstrap-file)
+       (with-current-buffer
+	   (url-retrieve-synchronously
+	    "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	    'silent 'inhibit-cookies)
+	 (goto-char (point-max))
+	 (eval-print-last-sexp)))
+     (load bootstrap-file nil 'nomessage))
 
-     ;; Use straight.el for use-package expressions
-     (straight-use-package 'use-package)
+   ;; Use straight.el for use-package expressions
+   (straight-use-package 'use-package)
    #+end_src
 
-| TYPE          | CONTENT             |
-|---------------+---------------------|
-| Guix Packages | =emacs-use-package= |
+   | TYPE          | CONTENT             |
+   |---------------+---------------------|
+   | Guix Packages | =emacs-use-package= |
    
    #+begin_src sh :noweb-ref packages :exports no
-     "emacs-use-package"
+   "emacs-use-package"
    #+end_src
 
 ** Temp
    #+begin_src emacs-lisp :noweb-ref config
-     (use-package pinentry
-       :config
-       (setq epa-pinentry-mode 'loopback)
-       (shell-command "gpg-connect-agent /bye")
-       (pinentry-start))
+   (use-package pinentry
+     :config
+     (setq epa-pinentry-mode 'loopback)
+     (shell-command "gpg-connect-agent /bye")
+     (pinentry-start))
 
-     (use-package magit)
+   (use-package magit)
    #+end_src
 
    #+begin_src sh :noweb-ref packages :exports no
-     "emacs-pinentry"
-     "emacs-magit"
+   "emacs-pinentry"
+   "emacs-magit"
    #+end_src
    
 * Local Variables :noexport:
