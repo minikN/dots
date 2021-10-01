@@ -482,6 +482,11 @@ fi
 
 This is my sway config.
 
+#+begin_src scheme :noweb-ref packages
+"bemenu"
+"alacritty"
+#+end_src
+
 #+begin_src conf
 ## This file is auto-generated. Do not make changes manually.
 ## Exported from Desktop.org
@@ -507,12 +512,13 @@ set $right l
 
 # Your preferred terminal emulator
 set $term run-emacs -c -e "(eshell)"
+set $emacs run-emacs -c
 
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-#set $menu bemenu-run | xargs swaymsg exec --
-set $menu run-emacs -e "(app-launcher-run-app)"
+set $menu bemenu-run | xargs swaymsg exec --
+#set $menu run-emacs -e "(app-launcher-run-app)"
 #+end_src
 
 *** Outputs
@@ -548,7 +554,8 @@ Basic key bindings.
 
 #+begin_src conf
 # Start a terminal
-bindsym $mod+Return exec $term
+bindsym $mod+Return exec $emacs
+bindsym $mod+grave exec $term
 
 # Kill focused window
 bindsym $mod+Shift+q kill
@@ -703,7 +710,18 @@ I use [[https://github.com/Alexays/Waybar][waybar]] as my status bar. Its config
 
 #+begin_src conf
 bar {
-    swaybar_command waybar
+    #swaybar_command waybar
+        position top
+
+    # When the status_command prints a new line to stdout, swaybar updates.
+    # The default just shows the current date and time.
+    status_command while date +'%Y-%m-%d %I:%M:%S %p'; do sleep 1; done
+
+    colors {
+        statusline #ffffff
+        background #323232
+        inactive_workspace #32323200 #32323200 #5c5c5c
+    }
 }
 #+end_src
 
