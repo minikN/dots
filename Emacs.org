@@ -817,14 +817,15 @@ Automatically use =zsh= when using =ansi-term=
 Set the font and theme.
 
 #+begin_src emacs-lisp :noweb-ref config
-(setq doom-theme 'doom-monokai-spectrum
-      doom-font (font-spec :family "Fira Code Retina" :size 17)
+(setq doom-theme 'modus-operandi
+      doom-font (font-spec :family "Iosevka" :size 18)
       doom-big-font (font-spec :family "Fira Code Retina" :size 20)
-      doom-variable-pitch-font (font-spec :family "Fira Code Retina" :size 17))
+      doom-variable-pitch-font (font-spec :family "Iosevka" :size 19))
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref external-packages
 "font-fira-code"
+"font-iosevka"
 #+end_src
 
 I want my waybar to always have the colors of my current theme. Ideally, it would change the colors on the fly every time I change my theme.
