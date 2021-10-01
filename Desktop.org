@@ -181,8 +181,10 @@ Next are variables to declare default applications. Stuff like =$BROWSER= and =$
 #+begin_src sh
 export VISUAL="emacsclient"
 export EDITOR="${VISUAL}"
-export BROWSER="next"
+export BROWSER="nyxt"
 #+end_src
+
+#+RESULTS:
 
 *** Application specific variables
 This section covers application-specific exports. This, for the most part, is an effort in keeping my home directory clean. I set my =xdg-config-home=, and many applications respect that, which is great. However, there still is a plethora of applications that are not aware of it and have default config file paths in =$HOME=.
