@@ -78,8 +78,8 @@ The following tables shows all the defined target directories. All exports are b
 | doomdir            | =/home/db/.config/doom=           |
 | npm-config-home    | =/home/db/.config/npm=            |
 | profiled-home      | =/home/db/.config/profile.d=      |
-| xdg-data-home      | =/home/db/.local/share=           |
-| xdg-config-home    | =/home/db/.config=                |
+| db-data-home       | =/home/db/.local/share=           |
+| db-config-home     | =/home/db/.config=                |
 
 I may refer to these directories throughout the configuration, e.g. like that: =doomdir/config.el=.
 
@@ -394,7 +394,6 @@ Set global user information.
 #+end_src
 
 ** Environment
-
 One of the first things I like to declare are some variables and constants describing the environment we are running in.
 
 #+begin_src emacs-lisp :noweb-ref config
