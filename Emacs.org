@@ -24,6 +24,7 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
   - [[#email][Email]]
   - [[#applications][Applications]]
 - [[#basic-settings][Basic Settings]]
+  - [[#environment][Environment]]
   - [[#key-bindings][Key bindings]]
     - [[#conventions][Conventions]]
     - [[#common][Common]]
@@ -77,8 +78,8 @@ The following tables shows all the defined target directories. All exports are b
 | doomdir            | =/home/db/.config/doom=           |
 | npm-config-home    | =/home/db/.config/npm=            |
 | profiled-home      | =/home/db/.config/profile.d=      |
-| xdg-data-home      | =/home/db/.local/share=           |
-| xdg-config-home    | =/home/db/.config=                |
+| db-data-home       | =/home/db/.local/share=           |
+| db-config-home     | =/home/db/.config=                |
 
 I may refer to these directories throughout the configuration, e.g. like that: =doomdir/config.el=.
 
@@ -207,8 +208,8 @@ First, let's define the modules doom should use. These go into =doomdir/init.el=
 ;;vc-gutter             ; vcs diff in the fringe
 ;;vi-tilde-fringe       ; fringe tildes to mark beyond EOB
 ;;window-select         ; visually switch windows
+;doom-dashboard          ; a nifty splash screen for Emacs
 doom                    ; what makes DOOM look the way it does
-doom-dashboard          ; a nifty splash screen for Emacs
 hl-todo                 ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 modeline                ; snazzy, Atom-inspired modeline, plus API
 ophints                 ; highlight the region an operation acts on
@@ -392,40 +393,79 @@ Set global user information.
       user-mail-address "db@minikn.xyz")
 #+end_src
 
-Lets make some default directories available to Emacs.
+** Environment
+One of the first things I like to declare are some variables and constants describing the environment we are running in.
 
 #+begin_src emacs-lisp :noweb-ref config
-(setq db/git-dir (or (getenv "GITDIR") "~/.local/share/git")
-      db/bin-dir (or (getenv "BINDIR") "~/.local/share/bin")
-      db/literate-config-dir (concat db/git-dir "/guix/")
-      xdg-config-home (or (getenv "XDG_CONFIG_HOME") "~/.config")
-      xdg-data-home (or (getenv "XDG_DATA_HOME") "~/.local/share"))
-#+end_src
+(use-package! xdg
+  :config
+  (defvar db-config-home
+    (or (xdg-config-home) "~/.config")
+    "The config location according to the XDG specification.")
 
-It can be beneficial to gather some information about the environment we're running on. Sway is a bit picky here. In order to get the current keyboard layout, I need a JSON processor called =jq=, luckily, Guix has it.
+  (defvar db-data-home
+    (or (xdg-data-home) "~/.local/share")
+    "The data location according to the XDG specification.")
 
-#+begin_src scheme :noweb-ref external-packages
-"jq"
+  (defvar db-cache-chome
+    (or (xdg-cache-home) "~/.cache")
+    "The cache location according to the XDG specification.")
+
+  (defvar db-git-home
+    (or (getenv "GITDIR") (concat db-data-home "/git"))
+    "The location containing all the cloned git repositories.")
+
+  (defvar db-bin-home
+    (or (getenv "BINDIR") (concat db-data-home "/bin"))
+    "The location for user-defined binaries.")
+
+  (defvar db-lit-config-home
+    (concat db-git-home "/guix")
+    "The location of the literate configuration creating
+	all the necessary `.el' files."))
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref config
-(defconst IS-WSL (numberp (string-match "-[Mm]icrosoft" operating-system-release)))
-(defconst IS-WAYLAND (stringp (getenv "WAYLAND_DISPLAY")))
+  (defconst IS-WSL
+    (numberp (string-match "-[Mm]icrosoft" operating-system-release))
+    "Is `t' if running under the Windows Subsystem for Linux.")
 
-(setq db/keyboard-layout (shell-command-to-string
-                          (if IS-WAYLAND
-                              "swaymsg -t get_inputs | jq 'map(select(has(\"xkb_active_layout_name\")))[0].xkb_active_layout_name'"
-                            "printf %s \"$(setxkbmap -print | awk -F\"+\" '/xkb_symbols/ {print $2}')\"")))
+  (defconst IS-LINUX
+    (eq system-type 'gnu/linux)
+    "Is `t' if running under native Linux.")
 
-(defconst IS-GERMAN-LAYOUT (numberp (or (string-match "de" db/keyboard-layout)
-                                        (string-match "German" db/keyboard-layout))))
+  ;; Source: https://github.com/daviwil/dotfiles/blob/master/Emacs.org#system-settings
+  (defvar IS-GUIX (and IS-LINUX
+            (require 'f)
+            (string-equal (f-read "/etc/issue")
+                      "\nThis is the GNU system.  Welcome.\n"))
+    "Is `t' if running under the Guix System Distribution.")
 
-(defconst IS-ENGLISH-LAYOUT (numberp (or (string-match "en" db/keyboard-layout)
-                                         (string-match "English" db/keyboard-layout))))
+  (defconst IS-WAYLAND
+    (stringp (getenv "WAYLAND_DISPLAY"))
+    "Is `t' if running under Wayland.")
+
+  ;; Determining the currently active keyboard layout.
+  (setq db--keyboard-layout
+     (shell-command-to-string
+      (if IS-WAYLAND
+          "swaymsg -t get_inputs | jq 'map(select(has(\"xkb_active_layout_name\")))[0].xkb_active_layout_name'"
+        "printf %s \"$(setxkbmap -print | awk -F\"+\" '/xkb_symbols/ {print $2}')\"")))
+
+  (defconst IS-GERMAN-LAYOUT
+    (numberp (or (string-match "de" db--keyboard-layout)
+          (string-match "German" db--keyboard-layout)))
+    "is `t' if the German keyboard layout is active.")
+
+  (defconst IS-ENGLISH-LAYOUT
+    (numberp (or (string-match "en" db--keyboard-layout)
+          (string-match "English" db--keyboard-layout)))
+    "Is `t' if the English keyboard layout is active.")
 #+end_src
 
 #+begin_src conf :tangle no :noweb-ref external-packages
 "setxkbmap"
+"jq"
 #+end_src
 
 ** Key bindings
@@ -561,7 +601,7 @@ In summary:
       :desc "Find file in emacs.d"              "e"     #'doom/find-file-in-emacsd
       :desc "Find file"                         "f"     #'find-file
       :desc "Locate file"                       "l"     #'locate
-      :desc "Open literate config"              "p"     (cmd! (doom-project-browse db/literate-config-dir))
+      :desc "Open literate config"              "p"     (cmd! (doom-project-browse db-lit-config-home))
       :desc "Rename/move file"                  "r"     #'doom/move-this-file
       :desc "Save file"                         "s"     #'save-buffer
       :desc "Save file as..."                   "S"     #'write-file
@@ -728,7 +768,6 @@ Some sensible defaults for working with emacs.
 
 #+begin_src emacs-lisp :noweb-ref config
 (setq-default
- line-spacing 0.2                               ; Increase the line-spacing a bit
  undo-limit (* 8 1024 1024)                     ; Set the undo history limit to 80 MB
  gc-cons-threshold (* 8 1024 1024)              ; Threshold for garbage collection (80 MB)
  read-process-output-max (* 1024 1024)          ; Threshold for process output (10 MB)
@@ -789,20 +828,21 @@ Lets set the browser depending on what environment we are running in.
   2. =nil=
 
 #+begin_src emacs-lisp :noweb-ref config
-(setq db/browser (if IS-WSL
+(defvar db-browser (if IS-WSL
                      (progn (let* ((brave-path "/mnt/c/Program Files (x86)/Brave/Chrome/Application")
                                    (chrome-path "/mnt/c/Program Files (x86)/Google/Chrome/Application"))
                               (cond ((when (file-directory-p brave-path) (concat brave-path "/brave.exe")))
                                     ((when (file-directory-p chrome-path) (concat chrome-path "/chrome.exe")))
                                     (t nil))))
-                   (or (getenv "BROWSER") nil)))
+                     (or (getenv "BROWSER") nil))
+  "The default browser to use.")
 #+end_src
 
 Open links the proper browser.
 
 #+begin_src emacs-lisp :noweb-ref config
 (setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program db/browser)
+      browse-url-generic-program db-browser)
 #+end_src
 
 Automatically use =zsh= when using =ansi-term=
@@ -817,18 +857,25 @@ Automatically use =zsh= when using =ansi-term=
 Set the font and theme.
 
 #+begin_src emacs-lisp :noweb-ref config
-(setq doom-theme 'doom-monokai-spectrum
-      doom-font (font-spec :family "Fira Code Retina" :size 17)
+(setq doom-theme 'modus-operandi
+      doom-font (font-spec :family "Iosevka" :size 18)
       doom-big-font (font-spec :family "Fira Code Retina" :size 20)
-      doom-variable-pitch-font (font-spec :family "Fira Code Retina" :size 17))
+      doom-variable-pitch-font (font-spec :family "Iosevka" :size 19))
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref external-packages
 "font-fira-code"
+"font-iosevka"
+#+end_src
+
+When using the modus themes, I like to disable DOOM's =solaire-mode=.
+
+#+begin_src emacs-lisp :noweb-ref packages
+(package! solaire-mode :disable t)
 #+end_src
 
 I want my waybar to always have the colors of my current theme. Ideally, it would change the colors on the fly every time I change my theme.
-The idea is to export the theme's current colors, format and save them as css to =xdg-config-home/waybar/colors.css=. In my waybar config I can then =@import= them. All that is left to do is reload the sway config with =swaymsg reload=.
+The idea is to export the theme's current colors, format and save them as css to =db-config-home/waybar/colors.css=. In my waybar config I can then =@import= them. All that is left to do is reload the sway config with =swaymsg reload=.
 
 The following function does this. In addition I execute it every time I change my theme with the =advice-add=.
 
@@ -840,7 +887,7 @@ The following function does this. In addition I execute it every time I change m
     "Update the waybar colors and restart it.
   This may not work with every theme."
     (let ((file-path (or file-path
-                         (concat (or xdg-config-home
+                         (concat (or db-config-home
                                      (getenv "XDG_CONFIG_HOME")
                                      "~/.config")
                                  "/waybar/colors.css"))))
@@ -1113,14 +1160,14 @@ if [ ! -d $NPM_PACKAGES ]; then
 fi
 #+end_src
 
-#+begin_src sh :tangle (concat (cdr (assoc 'xdg-config-home file-paths)) "/npm/npmrc") :mkdirp yes
+#+begin_src sh :tangle (concat (cdr (assoc 'db-config-home file-paths)) "/npm/npmrc") :mkdirp yes
 prefix=${XDG_DATA_HOME}/npm
 cache=${XDG_CACHE_HOME}/npm
 tmp=${XDG_RUNTIME_DIR}/npm
 init-module=${XDG_CONFIG_HOME}/npm/config/npm-init.js
 #+end_src
 
-This configuration is for the development environment to work properly. All the npm packages I need by default (like =eslint= or =typescript=) are installed in =xdg-data-home/npm=, therefore, I can create a environment wrapper that checks if all the tools needed are installed and does so if not.
+This configuration is for the development environment to work properly. All the npm packages I need by default (like =eslint= or =typescript=) are installed in =db-data-home/npm=, therefore, I can create a environment wrapper that checks if all the tools needed are installed and does so if not.
 
 #+begin_src sh :tangle (concat (cdr (assoc 'bindir file-paths)) "/node-env") :tangle-mode (identity #o755) :mkdirp yes :shebang "#!/usr/bin/env sh"
 NPM_DIR="${XDG_DATA_HOME}"/npm
@@ -1170,7 +1217,7 @@ Path to the =eslint= server:
        lsp-eslint-server-command
        `("node-env"
          "node"
-         ,(concat xdg-data-home "/npm/vscode-eslint/server/out/eslintServer.js")
+         ,(concat db-data-home "/npm/vscode-eslint/server/out/eslintServer.js")
          "--stdio"))
 #+end_src
 
@@ -1211,14 +1258,14 @@ The original =npm-mode= package doesn't come with the ability to change the =npm
 * Local Variables :noexport:
 # Local Variables:
 # eval: (setq-local file-paths '())
-# eval: (map-put file-paths 'xdg-config-home (or (getenv "XDG_CONFIG_HOME") "~/.config"))
-# eval: (map-put file-paths 'xdg-data-home (or (getenv "XDG_DATA_HOME") "~/.local/share"))
-# eval: (map-put file-paths 'profiled-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/profile.d"))
-# eval: (map-put file-paths 'npm-config-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/npm"))
-# eval: (map-put file-paths 'doomdir (concat (cdr (assoc 'xdg-config-home file-paths)) "/doom"))
-# eval: (map-put file-paths 'guix-config-home (concat (cdr (assoc 'xdg-config-home file-paths)) "/guix"))
+# eval: (map-put file-paths 'db-config-home (or (getenv "XDG_CONFIG_HOME") "~/.config"))
+# eval: (map-put file-paths 'db-data-home (or (getenv "XDG_DATA_HOME") "~/.local/share"))
+# eval: (map-put file-paths 'profiled-home (concat (cdr (assoc 'db-config-home file-paths)) "/profile.d"))
+# eval: (map-put file-paths 'npm-config-home (concat (cdr (assoc 'db-config-home file-paths)) "/npm"))
+# eval: (map-put file-paths 'doomdir (concat (cdr (assoc 'db-config-home file-paths)) "/doom"))
+# eval: (map-put file-paths 'guix-config-home (concat (cdr (assoc 'db-config-home file-paths)) "/guix"))
 # eval: (map-put file-paths 'guix-manifest-home (concat (cdr (assoc 'guix-config-home file-paths)) "/manifests"))
-# eval: (map-put file-paths 'bindir (concat (cdr (assoc 'xdg-data-home file-paths)) "/bin"))
+# eval: (map-put file-paths 'bindir (concat (cdr (assoc 'db-data-home file-paths)) "/bin"))
 # eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload DOOM?") (doom/reload))) nil t)
 # eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Reload Emacs profile?") (async-shell-command "update-manifest emacs"))) nil t)
 # eval: (add-hook 'after-save-hook (lambda () (if (y-or-n-p "Tangle the file?") (org-babel-tangle))) nil t)
