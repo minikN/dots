@@ -728,7 +728,6 @@ Some sensible defaults for working with emacs.
 
 #+begin_src emacs-lisp :noweb-ref config
 (setq-default
- line-spacing 0.2                               ; Increase the line-spacing a bit
  undo-limit (* 8 1024 1024)                     ; Set the undo history limit to 80 MB
  gc-cons-threshold (* 8 1024 1024)              ; Threshold for garbage collection (80 MB)
  read-process-output-max (* 1024 1024)          ; Threshold for process output (10 MB)
