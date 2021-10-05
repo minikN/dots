@@ -11,6 +11,7 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
 
 * Table Of Contents :TOC_3:
 - [[#exported-files][Exported Files]]
+  - [[#guix-profiles][Guix Profiles]]
 - [[#doom-emacs][DOOM Emacs]]
   - [[#modules][Modules]]
   - [[#completion][Completion]]
@@ -83,20 +84,13 @@ The following tables shows all the defined target directories. All exports are b
 
 I may refer to these directories throughout the configuration, e.g. like that: =doomdir/config.el=.
 
-* TODO Current problems :noexport:
-This is a simple list containing general problems / TODOs that I'll tackle in future commits.
+** Guix Profiles
+The following Guix profiles will be created.
 
-- key bindings via =general=
-- org-mode navigation key bindings
-- truncate in help buffers
-- =move-text=
-- Add Marginalia/Vertico to theme
-- configure vterm popup rules
-- Sway layouts?
-
-* DOOM Emacs
-DOOM expects three files to be present: =doomdir/init.el= for its active modules, =doomdir/config.el= as a main configuration and =doomdir/packages.el= for package declarations.
-Well, what is org-mode good for if not tangling files? Just kidding. Generally speaking, the source blocks of this file will be tangled to =config.el= while I'll tangle bits and pieces to =init.el= and =packages.el= where needed. I also create =guix-manifest-home/emacs.scm= for external packages (binaries, fonts, ...) I need.
+| Type         | Content                              |
+|--------------+--------------------------------------|
+| Guix Profile | =guix-manifest-home/emacs.scm=       |
+| Guix Profile | =guix-manifest-home/development.scm= |
 
 #+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/emacs.scm") :noweb yes :mkdir yes
 ;; This file is auto-generated. Do not make changes manually.
@@ -115,9 +109,28 @@ Well, what is org-mode good for if not tangling files? Just kidding. Generally s
 
 (specifications->manifest
  '(
+   "cmake"
+   "make"
+   "gcc"
    <<dev-packages>>
    ))
 #+end_src
+
+
+* TODO Current problems :noexport:
+This is a simple list containing general problems / TODOs that I'll tackle in future commits.
+
+- key bindings via =general=
+- org-mode navigation key bindings
+- truncate in help buffers
+- =move-text=
+- Add Marginalia/Vertico to theme
+- configure vterm popup rules
+- Sway layouts?
+
+* DOOM Emacs
+DOOM expects three files to be present: =doomdir/init.el= for its active modules, =doomdir/config.el= as a main configuration and =doomdir/packages.el= for package declarations.
+Well, what is org-mode good for if not tangling files? Just kidding. Generally speaking, the source blocks of this file will be tangled to =config.el= while I'll tangle bits and pieces to =init.el= and =packages.el= where needed.
 
 #+begin_src emacs-lisp :tangle (concat (cdr (assoc 'doomdir file-paths)) "/packages.el") :noweb yes :mkdirp yes
 ;; -*- no-byte-compile: t; -*-
@@ -255,9 +268,6 @@ I need the =libvterm= dependency in order to build =vterm=.
 
 #+begin_src scheme :noweb-ref dev-packages
 "libvterm"
-"cmake"
-"make"
-"gcc"
 #+end_src
 
 ** Checkers
@@ -601,7 +611,7 @@ In summary:
       :desc "Find file in emacs.d"              "e"     #'doom/find-file-in-emacsd
       :desc "Find file"                         "f"     #'find-file
       :desc "Locate file"                       "l"     #'locate
-      :desc "Open literate config"              "p"     (cmd! (doom-project-browse db-lit-config-home))
+      :desc "Open literate config"              "p"     (cmd! (doom-project-browse (file-name-as-directory db-lit-config-home))
       :desc "Rename/move file"                  "r"     #'doom/move-this-file
       :desc "Save file"                         "s"     #'save-buffer
       :desc "Save file as..."                   "S"     #'write-file
