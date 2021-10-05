@@ -53,7 +53,7 @@ I use some custom channels for my Guix systems.
          (make-channel-introduction
           "897c1a470da759236cc11798f4e0a5f7d4d59fbc"
           (openpgp-fingerprint
-           "2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5"))))
+           "8141 6036 E81A 5CF7 8F80  1071 ECFC 8398 8B4E 4B9F"))))
        (channel
         (name 'flat)
         (url "https://github.com/flatwhatson/guix-channel.git")
