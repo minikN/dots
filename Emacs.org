@@ -608,7 +608,7 @@ In summary:
       :desc "Find file in emacs.d"              "e"     #'doom/find-file-in-emacsd
       :desc "Find file"                         "f"     #'find-file
       :desc "Locate file"                       "l"     #'locate
-      :desc "Open literate config"              "p"     (cmd! (doom-project-browse (file-name-as-directory db-lit-config-home))
+      :desc "Open literate config"              "p"     (cmd! (doom-project-browse (file-name-as-directory db-lit-config-home)))
       :desc "Rename/move file"                  "r"     #'doom/move-this-file
       :desc "Save file"                         "s"     #'save-buffer
       :desc "Save file as..."                   "S"     #'write-file
