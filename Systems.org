@@ -131,7 +131,6 @@ emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'")))))
 (define %base-system-packages
   (append (list
            curl
-           emacs
            git
            nss-certs
            vim)
