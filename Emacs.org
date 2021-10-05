@@ -52,7 +52,6 @@ I like to have *one* file to configure Emacs. Hence why you  are reading a [[htt
     - [[#lsp-ui][=lsp-ui=]]
     - [[#lsp-treemacs][=lsp-treemacs=]]
   - [[#languages-1][Languages]]
-    - [[#nodejsts][Node/JS/TS]]
     - [[#org][ORG]]
 
 * Exported Files
@@ -115,7 +114,6 @@ The following Guix profiles will be created.
    <<dev-packages>>
    ))
 #+end_src
-
 
 * TODO Current problems :noexport:
 This is a simple list containing general problems / TODOs that I'll tackle in future commits.
@@ -1153,109 +1151,6 @@ I like using the symbol list using =lsp-treemacs=. This function allows me to qu
 #+end_src
 
 ** Languages
-*** Node/JS/TS
-This is the development configuration for =node=, =js= and =ts=.
-
-**** Environment
-I frequently develop using [[https://nodejs.org/en/][node]]. It comes with [[https://www.npmjs.com/][npm]], its package manager. Installing npm packages globally requires =sudo= permissions (which Guix doesn't like). To make this work, I set the =$NPM_PACKAGES= environment variable manually.
-
-#+begin_src sh :tangle (concat (cdr (assoc 'profiled-home file-paths)) "/npm") :tangle-mode (identity #o755) :mkdirp yes
-NPM_PACKAGES="${XDG_DATA_HOME}"/npm
-export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}"/npm/npmrc
-export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
-export PATH="$PATH:$NPM_PACKAGES/bin"
-
-if [ ! -d $NPM_PACKAGES ]; then
-    mkdir -p $NPM_PACKAGES
-fi
-#+end_src
-
-#+begin_src sh :tangle (concat (cdr (assoc 'db-config-home file-paths)) "/npm/npmrc") :mkdirp yes
-prefix=${XDG_DATA_HOME}/npm
-cache=${XDG_CACHE_HOME}/npm
-tmp=${XDG_RUNTIME_DIR}/npm
-init-module=${XDG_CONFIG_HOME}/npm/config/npm-init.js
-#+end_src
-
-This configuration is for the development environment to work properly. All the npm packages I need by default (like =eslint= or =typescript=) are installed in =db-data-home/npm=, therefore, I can create a environment wrapper that checks if all the tools needed are installed and does so if not.
-
-#+begin_src sh :tangle (concat (cdr (assoc 'bindir file-paths)) "/node-env") :tangle-mode (identity #o755) :mkdirp yes :shebang "#!/usr/bin/env sh"
-NPM_DIR="${XDG_DATA_HOME}"/npm
-
-check_external_dep() {
-    local REPO=$(basename ${1} .git)
-    if [ ! -d "${NPM_DIR}"/"${REPO}" ]; then
-        echo "${REPO} not found. Cloning...";
-        git clone "${1}" "${NPM_DIR}"/"${REPO}" > /dev/null
-        cd "${NPM_DIR}"/"${REPO}"
-        echo "Building..."
-        guix environment --ad-hoc node -- npm install > /dev/null
-        guix environment --ad-hoc node -- npm run compile > /dev/null
-    fi
-}
-
-check_npm_dep() {
-    if [ ! -d "${NPM_DIR}"/lib/node_modules/"${1}" ]; then
-        echo "${1} not found. Installing..."
-        guix environment --ad-hoc node -- npm i -g "${1}"
-    fi
-}
-
-check_external_dep "https://github.com/microsoft/vscode-eslint.git"
-check_npm_dep "typescript-language-server"
-check_npm_dep "typescript"
-
-guix environment --ad-hoc node -- "${@}"
-#+end_src
-
-It can be used like so:
-
-#+begin_src sh :tangle no
-node-env npm -v
-6.14.11
-#+end_src
-
-If its runtime dependencies are not satisfied, it will install them and run the command then. This only needs to be run once.
-
-**** IDE
-This part covers how I configure Emacs, especially =lsp-mode= to work for javascript / typescript development. Unfortunately, because I need to run all my executables (linters, language-servers, ...) inside the isolated environment, I need to tweak certain paths.
-
-Path to the =eslint= server:
-
-#+begin_src emacs-lisp :noweb-ref config
- (setq lsp-eslint-node "node-env node"
-       lsp-eslint-server-command
-       `("node-env"
-         "node"
-         ,(concat db-data-home "/npm/vscode-eslint/server/out/eslintServer.js")
-         "--stdio"))
-#+end_src
-
-Path to the =typescript-language-server=:
-
-#+begin_src emacs-lisp :noweb-ref config
-(setq lsp-clients-typescript-tls-path "node-env-ts-ls")
-#+end_src
-
-Unfortunately, setting it to =node-env typescript-language-server= doesn't work, because =lsp-mode= resolves the full path of =lsp-clients-typescript-tls-path=. Therefore I need a small wrapper script (=node-env-ts-ls=) which then calls the correct binary inside my environment.
-
-#+begin_src sh :tangle (concat (cdr (assoc 'bindir file-paths)) "/node-env-ts-ls") :tangle-mode (identity #o755) :mkdirp yes :shebang "#!/usr/bin/env sh"
-node-env typescript-language-server "${@}"
-#+end_src
-
-Path to =npm=:
-
-#+begin_src emacs-lisp :noweb-ref config
-(setq npm-mode--npm-executable "node-env npm")
-#+end_src
-
-The original =npm-mode= package doesn't come with the ability to change the =npm= command. So I forked it and added the functionality.
-
-#+begin_src emacs-lisp :noweb-ref packages
-(unpin! npm-mode)
-(package! npm-mode :recipe (:host github :repo "minikN/npm-mode"))
-#+end_src
-
 *** ORG
 **** Key bindings
 #+begin_src emacs-lisp :noweb-ref config

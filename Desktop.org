@@ -15,7 +15,6 @@ You are reading a [[https://leanpub.com/lit-config/read][literate]] configuratio
   - [[#exports][Exports]]
   - [[#scripts][Scripts]]
   - [[#fonts][Fonts]]
-  - [[#additional-configuration][Additional Configuration]]
 - [[#applications][Applications]]
   - [[#git][Git]]
   - [[#browsers][Browsers]]
@@ -265,19 +264,6 @@ In terms of configuration, I don't pack all the fonts I install together. I rath
   <dir>~/.guix-extra-profiles/desktop/desktop/share/fonts</dir>
   <dir>~/.guix-extra-profiles/emacs/emacs/share/fonts</dir>
 </fontconfig>
-#+end_src
-
-** Additional Configuration
-I want to configure some applications somehwere else (for example development tools like [[https://www.npmjs.com/][npm]] inside my [[file:Emacs.org][Emacs configuration]]). In order for this to work I need to source their configuration files through my =profile=. Therefore, I create =xdg-config-home/profile.d= and source every file in it.
-
-#+begin_src sh
-if [ ! -d "${XDG_CONFIG_HOME}"/profile.d ]; then
-    mkdir -p "${XDG_CONFIG_HOME}"/profile.d
-fi
-
-for file in ${XDG_CONFIG_HOME}/profile.d/*; do
-    . $file
-done
 #+end_src
 
 * Applications
