@@ -113,9 +113,9 @@ This is the base configuration I use for every system I set up.
                                (file-append coreutils "/bin/env"))
            (simple-service 'zshrc etc-service-type
                            `(("zprofile" ,(plain-file "zprofile" "\
+emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'
 emulate sh -c '. /etc/profile'
-emulate sh -c '. $HOME/.config/profile'
-emulate sh -c 'export ZDOTDIR=\"$HOME/.config/zsh\"'")))))
+emulate sh -c '. $HOME/.config/profile'")))))
           (modify-services %desktop-services
                            (delete gdm-service-type)
                            (guix-service-type config =>
