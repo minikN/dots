@@ -76,7 +76,6 @@ The following tables shows all the defined directories for this file. All export
 | guix-manifest-home | =/home/db/.config/guix/manifests= |
 | guix-config-home   | =/home/db/.config/guix=           |
 | doomdir            | =/home/db/.config/doom=           |
-| npm-config-home    | =/home/db/.config/npm=            |
 | profiled-home      | =/home/db/.config/profile.d=      |
 | db-data-home       | =/home/db/.local/share=           |
 | db-config-home     | =/home/db/.config=                |
@@ -1166,7 +1165,6 @@ I like using the symbol list using =lsp-treemacs=. This function allows me to qu
 # eval: (map-put file-paths 'db-config-home (or (getenv "XDG_CONFIG_HOME") "~/.config"))
 # eval: (map-put file-paths 'db-data-home (or (getenv "XDG_DATA_HOME") "~/.local/share"))
 # eval: (map-put file-paths 'profiled-home (concat (cdr (assoc 'db-config-home file-paths)) "/profile.d"))
-# eval: (map-put file-paths 'npm-config-home (concat (cdr (assoc 'db-config-home file-paths)) "/npm"))
 # eval: (map-put file-paths 'doomdir (concat (cdr (assoc 'db-config-home file-paths)) "/doom"))
 # eval: (map-put file-paths 'guix-config-home (concat (cdr (assoc 'db-config-home file-paths)) "/guix"))
 # eval: (map-put file-paths 'guix-manifest-home (concat (cdr (assoc 'guix-config-home file-paths)) "/manifests"))
