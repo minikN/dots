@@ -9,7 +9,7 @@ You are reading a [[https://leanpub.com/lit-config/read][literate]] configuratio
 
 * Table Of Contents :TOC:
 - [[#exported-files][Exported Files]]
-- [[#desktop-manifest][Desktop Manifest]]
+  - [[#guix-profile][Guix Profile]]
 - [[#environment][Environment]]
   - [[#channels][Channels]]
   - [[#exports][Exports]]
@@ -41,8 +41,12 @@ The following tables shows all the defined directories for this file. All export
 
 I may refer to these directories throughout the configuration, e.g. like that: =guix-config-home/channels.scm=.
 
-* Desktop Manifest
+** Guix Profile
 I use GNU/Guix as my operating system of choice (it's great, you should too!). In addition to that, I use [[https://guix.gnu.org/cookbook/en/html_node/Guix-Profiles-in-Practice.html][profiles]] to install needed packages. Throughout this file I will need to install various packages into my desktop profile. For this to work, I need to create its manifest file =desktop.scm= at =guix-manifest-home=.
+
+| Type         | Content                          |
+|--------------+----------------------------------|
+| Guix Profile | =guix-manifest-home/desktop.scm= |
 
 #+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/desktop.scm") :noweb yes :mkdirp yes
 ;; This file is auto-generated. Do not make changes manually.
