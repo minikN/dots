@@ -700,18 +700,19 @@ I use [[https://github.com/Alexays/Waybar][waybar]] as my status bar. Its config
 
 #+begin_src conf
 bar {
-    #swaybar_command waybar
-        position top
+    swaybar_command waybar
 
-    # When the status_command prints a new line to stdout, swaybar updates.
-    # The default just shows the current date and time.
-    status_command while date +'%Y-%m-%d %I:%M:%S %p'; do sleep 1; done
+    # position top
 
-    colors {
-        statusline #ffffff
-        background #323232
-        inactive_workspace #32323200 #32323200 #5c5c5c
-    }
+    # # When the status_command prints a new line to stdout, swaybar updates.
+    # # The default just shows the current date and time.
+    # status_command while date +'%Y-%m-%d %I:%M:%S %p'; do sleep 1; done
+
+    # colors {
+    #     statusline #ffffff
+    #     background #323232
+    #     inactive_workspace #32323200 #32323200 #5c5c5c
+    # }
 }
 #+end_src
 
@@ -738,7 +739,7 @@ Configuration for waybar. I took [[https://github.com/Pipshag/dotfiles_nord][thi
 
 #+begin_src js :tangle (concat (cdr (assoc 'waybar-config-home file-paths)) "/config") :tangle-mode (identity #o755) :mkdirp yes
 [{
-    "layer": "top", // Waybar at top layer
+    "layer": "bottom", // Waybar at top layer
     "position": "top", // Waybar position (top|bottom|left|right)
     "output": "DP-2",
     "height": 10,
@@ -751,13 +752,13 @@ Configuration for waybar. I took [[https://github.com/Pipshag/dotfiles_nord][thi
         "all-outputs": true,
         "format": "{icon}",
         "format-icons": {
-            "1": "<span color=\"#FFFFFF\"> WWW</span>",
-            "2": "<span color=\"#88C0D0\"> TERM</span>",
-            "3": "<span color=\"#A3BE8C\"> CODE</span>",
-            "4": "<span color=\"#D8DEE9\"> AGENDA</span>",
-            "5": "<span color=\"#D8DEE9\"> MUSIC</span>",
-            "6": "<span color=\"#D8DEE9\"> CHAT</span>",
-            "7": "<span color=\"#D8DEE9\"> GAMES</span>",
+            "1": " WWW",
+            "2": " TERM",
+            "3": " CODE",
+            "4": " AGENDA",
+            "5": " MUSIC",
+            "6": " CHAT",
+            "7": " GAMES",
             "urgent": "",
             "focused": "",
             "default": ""
@@ -782,12 +783,12 @@ Configuration for waybar. I took [[https://github.com/Pipshag/dotfiles_nord][thi
     }
 },
 {
-    "layer": "top", // Waybar at top layer
+    "layer": "bottom", // Waybar at top layer
     "position": "top", // Waybar position (top|bottom|left|right)
     "output": "HDMI-A-1",
     "height": 10,
     "modules-center": ["sway/window", "sway/mode"],
-    "modules-right": [ "cpu", "memory", "custom/gpu", "temperature", "network", "pulseaudio", "tray", "clock"],
+    "modules-right": [ "cpu", "memory", "custom/gpu", "disk#root", "disk#games", "temperature", "network", "pulseaudio", "clock", "tray"],
 
     // Modules configuration
     "sway/mode": {
@@ -810,15 +811,15 @@ Configuration for waybar. I took [[https://github.com/Pipshag/dotfiles_nord][thi
     },
     "cpu": {
         "interval": "1",
-        "format": " {max_frequency}GHz <span color=\"darkgray\">| {usage}%</span>",
-        "max-length": 15,
+        "format": " {max_frequency} GHz, {usage}%",
+        "max-length": 20,
         "min-length": 10,
         "on-click": "kitty -e htop --sort-key PERCENT_CPU",
         "tooltip": false
     },
     "memory": {
         "interval": 30,
-        "format": " {used:0.1f}GB <span color=\"darkgray\">| {percentage}%</span>",
+        "format": " {used:0.1f} GB, {percentage}%",
         "max-length": 15
     },
     "temperature": {
@@ -826,7 +827,7 @@ Configuration for waybar. I took [[https://github.com/Pipshag/dotfiles_nord][thi
         "interval": "4",
         "hwmon-path": "/sys/class/hwmon/hwmon3/temp1_input",
         "critical-threshold": 74,
-        "format-critical": " {temperatureC}°C",
+        "format-critical": " {temperatureC}°C",
         "format": "{icon} {temperatureC}°C",
         "format-icons": ["", "", ""],
         "max-length": 7,
@@ -835,21 +836,31 @@ Configuration for waybar. I took [[https://github.com/Pipshag/dotfiles_nord][thi
     "network": {
         // "interface": "wlan0", // (Optional) To force the use of this interface,
         "format-wifi": " {essid}",
-        "format-ethernet": "",
+        "format-ethernet": "",
         "format-linked": "",
         "format-disconnected": "",
         "format-alt": "{ifname}: {ipaddr}/{cidr}",
         "family": "ipv4",
-        "tooltip-format-wifi": "  {ifname} @ {essid}\nIP: {ipaddr}\nStrength: {signalStrength}%\nFreq: {frequency}MHz\n {bandwidthUpBits} / {bandwidthDownBits}",
-        "tooltip-format-ethernet": " {ifname}\nIP: {ipaddr}\n {bandwidthUpBits} / {bandwidthDownBits}"
+        "tooltip-format-wifi": " {ifname} @ {essid}\n {ipaddr}\nStrength: {signalStrength}%\nFreq: {frequency}MHz\n {bandwidthUpBits} / {bandwidthDownBits}",
+        "tooltip-format-ethernet": " {ifname}\n {ipaddr}\n {bandwidthUpBits} / {bandwidthDownBits}"
 
+    },
+    "disk#root": {
+        "interval": 30,
+        "format": " {used}",
+        "path": "/"
+    },
+    "disk#games": {
+        "interval": 30,
+        "format": " {used}",
+        "path": "/mnt/games"
     },
     "pulseaudio": {
         "scroll-step": 3, // %, can be a float
         "format": "{icon} {volume}%",
         "format-bluetooth": "{volume}% {icon} ",
         "format-bluetooth-muted": "0% {icon} ",
-        "format-muted": "0% ",
+        "format-muted": " 0%",
         //"format-source": "{volume}% ",
         //"format-source-muted": "",
         "format-icons": {
@@ -868,7 +879,7 @@ Configuration for waybar. I took [[https://github.com/Pipshag/dotfiles_nord][thi
     "custom/gpu": {
       "exec": "$HOME/.config/waybar/custom_modules/custom-gpu.sh",
       "return-type": "json",
-      "format": " {}",
+      "format": " {}",
       "interval": 2,
       "tooltip": "{tooltip}",
       "max-length": 30,
@@ -876,6 +887,8 @@ Configuration for waybar. I took [[https://github.com/Pipshag/dotfiles_nord][thi
     }
 }]
 #+end_src
+
+#+RESULTS:
 
 *** Styling
 The styling for the bar is done in =css=.
@@ -914,31 +927,26 @@ The styling for the bar is done in =css=.
 
 /* Nord */
 @define-color bg @theme-bg;
-/*@define-color bg #353C4A;*/
-@define-color light #D8DEE9;
-/*@define-color dark @nord_dark_font;*/
-@define-color warning #ebcb8b;
-@define-color critical #BF616A;
-@define-color mode #434C5E;
-/*@define-color workspaces @bg;*/
-/*@define-color workspaces @nord_dark_font;*/
-/*@define-color workspacesfocused #434C5E;*/
-@define-color workspacesfocused #4C566A;
+@define-color light @theme-fg;
+@define-color warning @theme-orange;
+@define-color critical @theme-red;
+@define-color mode @theme-b3;
+@define-color workspacesfocused @theme-b3;
 @define-color tray @workspacesfocused;
-@define-color sound #EBCB8B;
-@define-color network #5D7096;
-@define-color memory #546484;
-@define-color cpu #596A8D;
-@define-color temp #4D5C78;
-@define-color layout #5e81ac;
-@define-color battery #88c0d0;
-@define-color date #434C5E;
-@define-color time #434C5E;
-@define-color backlight #434C5E;
-@define-color nord_bg #434C5E;
-@define-color nord_bg_blue #546484;
-@define-color nord_light #D8DEE9;
-@define-color nord_light_font #D8DEE9;
+@define-color sound @theme-orange;
+@define-color network @theme-b3;
+@define-color memory @theme-b3;
+@define-color cpu @theme-b3;
+@define-color temp @theme-b3;
+@define-color layout @theme-b3;
+@define-color battery @theme-b3;
+@define-color date @theme-b3;
+@define-color time @theme-b3;
+@define-color backlight @theme-b3;
+@define-color nord_bg @theme-b3;
+@define-color nord_bg_blue @theme-b3;
+@define-color nord_light @theme-b8;
+@define-color nord_light_font @theme-b8;
 @define-color nord_dark_font #434C5E;
 
 /* Reset all styles */
@@ -953,9 +961,10 @@ The styling for the bar is done in =css=.
 #waybar {
     background: @bg;
     color: @light;
-    font-family: "Fira Code", "Material Icons, FontAwesome";
+    font-family: "Iosevka Fixed Extended, FontAwesome 5 Pro";
     font-size: 12px;
     font-weight: bold;
+    border-bottom: 3px solid @theme-b3;
 }
 
 /* Each module */
@@ -975,9 +984,10 @@ The styling for the bar is done in =css=.
 #tray,
 #backlight,
 #language,
+#disk,
 #custom-cpugovernor {
-    padding-left: 0.6em;
-    padding-right: 0.6em;
+    padding-left: 0.7em;
+    padding-right: 0.7em;
 }
 
 /* Each module that should blink */
@@ -1013,8 +1023,7 @@ The styling for the bar is done in =css=.
 #cpu.warning,
 #temperature.warning,
 #battery.warning {
-    background: @warning;
-    color: @nord_dark_font;
+    color: @theme-red;
 }
 
 /* Each warning that should blink */
@@ -1033,105 +1042,70 @@ The styling for the bar is done in =css=.
 /* Workspaces stuff */
 
 #workspaces {
- /*   color: #D8DEE9;
+ /*   color: @theme-b8;
     margin-right: 10px;*/
 }
 
 #workspaces button {
-    font-weight: bold; /* Somewhy the bar-wide setting is ignored*/
-    padding: 0;
-    /*color: #999;*/
+    font-weight: bold;
+    padding: 0 0.4em;
     opacity: 0.3;
-    background: none;
+    color: @theme-fg;
     font-size: 1em;
 }
 
 #workspaces button.focused {
     background: @workspacesfocused;
-    color: #D8DEE9;
+    color: @theme-yellow;
     opacity: 1;
     padding: 0 0.4em;
 }
 
 #workspaces button.urgent {
-    border-color: #c9545d;
-    color: #c9545d;
+    border-color: @theme-red;
+    color: @theme-red;
     opacity: 1;
 }
 
 #window {
     margin-right: 40px;
     margin-left: 40px;
-    font-weight: normal;
-}
-#bluetooth {
-    background: @nord_bg_blue;
-    font-size: 1.2em;
     font-weight: bold;
-    padding: 0 0.6em;
 }
 #custom-gpu {
-    background: @nord_bg;
+    /*background: @theme-b3;*/
     font-weight: bold;
-    padding: 0 0.6em;
 }
-#custom-weather {
-    background: @mode;
-    font-weight: bold;
-    padding: 0 0.6em;
-}
-#custom-pacman {
-    background: @nord_light;
-    color: @nord_dark_font;
-    font-weight: bold;
-    padding: 0 0.6em;
-}
+/*
 #custom-scratchpad-indicator {
     background: @nord_light;
     color: @nord_dark_font;
     font-weight: bold;
     padding: 0 0.6em;
 }
-#idle_inhibitor {
-    background: @mode;
-    /*font-size: 1.6em;*/
-    font-weight: bold;
-    padding: 0 0.6em;
-}
-#custom-alsa {
-    background: @sound;
-}
-
+,*/
 #network {
-    background: @nord_bg_blue;
+    /*background: @theme-b3; */
 }
 
 #memory {
-    background: @memory;
+    /*background: @theme-b3;*/
+}
+
+#disk {
+    /*background: @theme-b3;*/
 }
 
 #cpu {
-    background: @nord_bg;
-    color: #D8DEE9;
+    /*background: @theme-b3;*/
+    color: @theme-fg;
 }
 #cpu.critical {
-    color: @nord_dark_font;
-}
-#language {
-    background: @nord_bg_blue;
-    color: #D8DEE9;
-    padding: 0 0.4em;
-}
-#custom-cpugovernor {
-    background-color: @nord_light;
-    color: @nord_dark_font;
-}
-#custom-cpugovernor.perf {
-
+    color: @theme-red;
 }
 #temperature {
-    background-color: @nord_bg;
-    color: #D8DEE9;
+    /*background-color: @theme-b3;*/
+    color: @theme-fg;
 }
 #temperature.critical {
     background:  @critical;
@@ -1149,8 +1123,8 @@ The styling for the bar is done in =css=.
 }
 
 #clock {
-    background: @nord_bg_blue;
-    color: #D8DEE9;
+    /*background: @theme-b3;*/
+    color: @theme-fg;
 }
 #clock.date {
     background: @date;
@@ -1161,22 +1135,21 @@ The styling for the bar is done in =css=.
 }
 
 #pulseaudio { /* Unsused but kept for those who needs it */
-    background: @nord_bg_blue;
-    color: #D8DEE9;
+    /*background: @theme-b3;*/
+    color: @theme-fg;
 }
 
 #pulseaudio.muted {
-    background: #BF616A;
-    color: #BF616A;
+    color: @theme-orange;
     /* No styles */
 }
 #pulseaudio.source-muted {
-    background: #D08770;
-    color: #D8DEE9;
+    color: @theme-orange;
     /* No styles */
 }
 #tray {
-    background: #434C5E;
+    /*background: @theme-b3;*/
+    padding: 0 0;
 }
 #+end_src
 
@@ -1196,7 +1169,7 @@ busypercent=$(cat /sys/class/hwmon/hwmon5/device/gpu_busy_percent)
 deviceinfo=$(glxinfo -B | grep 'Device:' | sed 's/^.*: //')
 driverinfo=$(glxinfo -B | grep "OpenGL version")
 
-echo '{"text": "'$clock'GHz |  '$temperature'°C <span color=\"darkgray\">| '$busypercent'%</span>", "class": "custom-gpu", "tooltip": "<b>'$deviceinfo'</b>\n'$driverinfo'"}'
+echo '{"text": "'$clock' GHz,  '$temperature'°C, '$busypercent'%", "class": "custom-gpu", "tooltip": "<b>'$deviceinfo'</b>\n'$driverinfo'"}'
 #+end_src
 
 #+begin_src scheme :noweb-ref packages
