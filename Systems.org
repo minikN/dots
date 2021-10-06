@@ -256,24 +256,21 @@ Type=Application"))
    ;; Packages
    (packages
     (append
-     (list ;dxvk
-           adwaita-icon-theme
+     (list adwaita-icon-theme
            blueman
            bluez
            mesa
            mesa-headers
            mesa-utils
+           mesa-opencl
+           mesa-opencl-icd
            pavucontrol
            pulseaudio
            shepherd
-           spirv-cross
-           spirv-headers
-           spirv-tools
            sway
            swaybg
            swayidle
            swaylock
-           vkd3d
            waybar)
      %base-system-packages))))
 geekcave-system

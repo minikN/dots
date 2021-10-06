@@ -9,6 +9,7 @@ This file contains the configuration for my games. You are reading a [[https://l
 * Table Of Contents :TOC:
 - [[#exported-files][Exported Files]]
   - [[#guix-profiles][Guix Profiles]]
+- [[#required-libraries][Required Libraries]]
 
 * Exported Files
 Tangling this file will create various directories and files in the home directory. However, I don't specify the target file for every source block individually, I rather declare file-local variables containing the target directories (I like [[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself][DRY]]). Because I follow the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html][XDG]] directory specification, I'll use the preferred defaults.
@@ -54,6 +55,41 @@ The following Guix profiles will be created.
    ))
 #+end_src
 
+* Required Libraries
+
+There are a couple of libraries that are required to run things like Proton, especially GloriousEggroll's [[https://www.gloriouseggroll.tv/how-to-get-out-of-wine-dependency-hell/][Proton Custom]] successfully.
+
+| Type | Content                                                                                                                                                                                                                        |
+|------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| NOTE | One could argue these packages should be installed in my [[file:Systems.org][System]] configuration. However I opted to only install my GPU drivers (that's the mesa packages) system wide and everything else that is needed for gaming right here. |
+
+| Type    | Content          |
+|---------+------------------|
+| Package | =spirv-cross=    |
+| Package | =spirv-headers=  |
+| Package | =spirv-tools=    |
+| Package | =vkd3d=          |
+| Package | =dvxk=           |
+| Package | =wine=           |
+| Package | =wine-staging=   |
+| Package | =winetricks=     |
+| Package | =vulkan-loader=  |
+| Package | =vulkan-tools=   |
+| Package | =vulkan-headers= |
+
+#+begin_src scheme :noweb-ref packages :exports no
+"spirv-cross"
+"spirv-headers"
+"spirv-tools"
+"vkd3d"
+"dxvk"
+"wine"
+"wine-staging"
+"winetricks"
+"vulkan-loader"
+"vulkan-tools"
+"vulkan-headers"
+#+end_src
 * Local Variables :noexport:
 # Local Variables:
 # eval: (setq-local file-paths '())
