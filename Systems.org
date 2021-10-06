@@ -156,6 +156,7 @@ emulate sh -c '. $HOME/.config/profile'")))))
                                          "video"
                                          "input"
                                          "cdrom"
+                                         "disk"
                                          "lp")))
                 %base-user-accounts))
 
@@ -253,6 +254,20 @@ Type=Application"))
                                                        (auto-enable? #t))))
                      %base-system-services))
 
+   ;; File systems
+   (file-systems (cons* (file-system ;; Games
+                         (device (file-system-label "GAMES"))
+                         (mount-point "/mnt/games")
+                         (type "ext4"))
+                        (file-system ;; System partition
+                         (device (file-system-label "GUIX"))
+                         (mount-point "/")
+                         (type "ext4"))
+                        (file-system ;; Boot partition
+                         (device (file-system-label "BOOT"))
+                         (mount-point "/boot/efi")
+                         (type "vfat"))
+                        %base-file-systems))
    ;; Packages
    (packages
     (append
