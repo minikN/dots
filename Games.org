@@ -10,6 +10,7 @@ This file contains the configuration for my games. You are reading a [[https://l
 - [[#exported-files][Exported Files]]
   - [[#guix-profiles][Guix Profiles]]
 - [[#required-libraries][Required Libraries]]
+- [[#steam][Steam]]
 
 * Exported Files
 Tangling this file will create various directories and files in the home directory. However, I don't specify the target file for every source block individually, I rather declare file-local variables containing the target directories (I like [[https://en.wikipedia.org/wiki/Don%27t_repeat_yourself][DRY]]). Because I follow the [[https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html][XDG]] directory specification, I'll use the preferred defaults.
@@ -90,6 +91,17 @@ There are a couple of libraries that are required to run things like Proton, esp
 "vulkan-tools"
 "vulkan-headers"
 #+end_src
+
+* Steam
+
+| Type    | Content |
+|---------+---------|
+| Package | =steam= |
+
+#+begin_src scheme :noweb-ref packages :exports no
+"steam"
+#+end_src
+
 * Local Variables :noexport:
 # Local Variables:
 # eval: (setq-local file-paths '())
