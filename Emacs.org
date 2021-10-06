@@ -1064,6 +1064,7 @@ I use [[https://www.passwordstore.org/][pass]] as my password manager. Luckily D
 
 #+begin_src scheme :noweb-ref external-packages
 "password-store"
+"pass-otp"
 "gnutls"
 #+end_src
 
