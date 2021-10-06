@@ -60,22 +60,20 @@ The following Guix profiles will be created.
 
 There are a couple of libraries that are required to run things like Proton, especially GloriousEggroll's [[https://www.gloriouseggroll.tv/how-to-get-out-of-wine-dependency-hell/][Proton Custom]] successfully.
 
-| Type | Content                                                                                                                                                                                                                        |
-| NOTE | One could argue these packages should be installed in my [[file:Systems.org][System]] configuration. However I opted to only install my GPU drivers (that's the mesa packages) system wide and everything else that is needed for gaming right here. |
-
-| Type    | Content          |
-|---------+------------------|
-| Package | =spirv-cross=    |
-| Package | =spirv-headers=  |
-| Package | =spirv-tools=    |
-| Package | =vkd3d=          |
-| Package | =dvxk=           |
-| Package | =wine=           |
-| Package | =wine-staging=   |
-| Package | =winetricks=     |
-| Package | =vulkan-loader=  |
-| Package | =vulkan-tools=   |
-| Package | =vulkan-headers= |
+| Type    | Content                                                                                                                                                                                                                        |
+|---------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| NOTE    | One could argue these packages should be installed in my [[file:Systems.org][System]] configuration. However I opted to only install my GPU drivers (that's the mesa packages) system wide and everything else that is needed for gaming right here. |
+| Package | =spirv-cross=                                                                                                                                                                                                                  |
+| Package | =spirv-headers=                                                                                                                                                                                                                |
+| Package | =spirv-tools=                                                                                                                                                                                                                  |
+| Package | =vkd3d=                                                                                                                                                                                                                        |
+| Package | =dvxk=                                                                                                                                                                                                                         |
+| Package | =wine=                                                                                                                                                                                                                         |
+| Package | =wine-staging=                                                                                                                                                                                                                 |
+| Package | =winetricks=                                                                                                                                                                                                                   |
+| Package | =vulkan-loader=                                                                                                                                                                                                                |
+| Package | =vulkan-tools=                                                                                                                                                                                                                 |
+| Package | =vulkan-headers=                                                                                                                                                                                                               |
 
 #+begin_src scheme :noweb-ref packages :exports no
 "spirv-cross"
