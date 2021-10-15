@@ -50,10 +50,20 @@ The following Guix profiles will be created.
 ;; This file is auto-generated. Do not make changes manually.
 ;; Exported from Emacs.org
 
-(specifications->manifest
- '(
-   <<packages>>
-   ))
+(use-modules (guix transformations))
+
+<<transformations>>
+
+(concatenate-manifests
+ (list
+  (specifications->manifest
+   '(
+     <<packages>>
+     ))
+  (packages->manifest
+   (list
+    <<pkg-trans>>
+    ))))
 #+end_src
 
 * Required Libraries
