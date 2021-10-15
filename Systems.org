@@ -207,6 +207,7 @@ base-operating-system
   #:use-module (gnu packages wm)
   #:use-module (gnu services dbus)
   #:use-module (gnu services desktop)
+  #:use-module (gnu services nix)
   #:use-module (gnu services sddm)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd))
@@ -246,6 +247,7 @@ Type=Application"))
                       (extra-special-file "/etc/sddm/wayland-sessions/sway.desktop" %sddm-sway-session)
                       (service sddm-service-type (sddm-configuration
                                                   (sessions-directory "/etc/sddm/wayland-sessions")))
+                      (service nix-service-type)
                       (simple-service 'dbus-services dbus-root-service-type (list blueman))
                       (service bluetooth-service-type (bluetooth-configuration
                                                        (auto-enable? #t))))
