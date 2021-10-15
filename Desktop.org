@@ -9,7 +9,7 @@ You are reading a [[https://leanpub.com/lit-config/read][literate]] configuratio
 
 * Table Of Contents :TOC:
 - [[#exported-files][Exported Files]]
-  - [[#guix-profile][Guix Profile]]
+  - [[#guix-profiles][Guix Profiles]]
 - [[#environment][Environment]]
   - [[#channels][Channels]]
   - [[#exports][Exports]]
@@ -41,12 +41,13 @@ The following tables shows all the defined directories for this file. All export
 
 I may refer to these directories throughout the configuration, e.g. like that: =guix-config-home/channels.scm=.
 
-** Guix Profile
-I use GNU/Guix as my operating system of choice (it's great, you should too!). In addition to that, I use [[https://guix.gnu.org/cookbook/en/html_node/Guix-Profiles-in-Practice.html][profiles]] to install needed packages. Throughout this file I will need to install various packages into my desktop profile. For this to work, I need to create its manifest file =desktop.scm= at =guix-manifest-home=.
+** Guix Profiles
+I use GNU/Guix as my operating system of choice (it's great, you should too!). In addition to that, I use [[https://guix.gnu.org/cookbook/en/html_node/Guix-Profiles-in-Practice.html][profiles]] to install needed packages. For this to work, I need to create manifest files at =guix-manifest-home=.
 
-| Type         | Content                          |
-|--------------+----------------------------------|
-| Guix Profile | =guix-manifest-home/desktop.scm= |
+| Type         | Content                           |
+|--------------+-----------------------------------|
+| Guix Profile | =guix-manifest-home/desktop.scm=  |
+| Guix Profile | =guix/manifest/home/browsers.scm= |
 
 #+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/desktop.scm") :noweb yes :mkdirp yes
 ;; This file is auto-generated. Do not make changes manually.
@@ -55,6 +56,16 @@ I use GNU/Guix as my operating system of choice (it's great, you should too!). I
 (specifications->manifest
  '(
    <<packages>>
+   ))
+#+end_src
+
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/browsers.scm") :noweb yes :mkdirp yes
+;; This file is auto-generated. Do not make changes manually.
+;; Exported from Desktop.org
+
+(specifications->manifest
+ '(
+   <<browsers>>
    ))
 #+end_src
 
@@ -294,14 +305,14 @@ program = gpg
 *** Chromium
 GNU/Guix offers an [[https://git.savannah.gnu.org/cgit/guix.git/tree/gnu/packages/chromium.scm#n476][ungoogled]] version of the chromium browser which I like to use. However, because I use wayland, I have to explicitly instruct chromium to use it.
 
-#+begin_src scheme :noweb-ref packages
+#+begin_src scheme :noweb-ref browsers
 "ungoogled-chromium-wayland"
 #+end_src
 
 *** Nyxt
-[[https://github.com/atlas-engineer/nyxt][Nyxt]] is a web browser written on Common Lisp.
+[[https://github.com/atlas-engineer/nyxt][Nyxt]] is a web browser written in Common Lisp.
 
-#+begin_src scheme :noweb-ref packages
+#+begin_src scheme :noweb-ref browsers
 "nyxt"
 #+end_src
 
