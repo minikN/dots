@@ -609,6 +609,15 @@ assign [app_id="Chromium-browser"] workspace 1
 assign [class="Steam"] workspace 7
 #+end_src
 
+#+begin_src conf
+for_window [app_id=".blueman-manager-real"] floating enable
+for_window [app_id=".blueman-manager-real"] border pixel
+for_window [app_id=".blueman-services-real"] floating enable
+for_window [app_id=".blueman-services-real"] border pixel
+for_window [app_id="pavucontrol"] floating enable
+for_window [app_id="pavucontrol"] border pixel
+#+end_src
+
 *** Bindings
 **** Basics
 Basic key bindings.
