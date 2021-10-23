@@ -10,6 +10,7 @@ This file outlines the system configuration of all of my systems. This mainly in
 - [[#channels][Channels]]
 - [[#base-system][Base System]]
 - [[#geekcave][Geekcave]]
+- [[#dropcity][Dropcity]]
 - [[#wsl][WSL]]
   - [[#installation][Installation]]
   - [[#initialization][Initialization]]
@@ -86,7 +87,9 @@ This is the base configuration I use for every system I set up.
   #:use-module (srfi srfi-1)
   #:export (base-operating-system
             %base-system-services
-            %base-system-packages))
+            %base-system-packages
+            %sddm-hidpi
+            %sddm-sway-session))
 
 (define %guix-channels
   (scheme-file
@@ -102,6 +105,21 @@ This is the base configuration I use for every system I set up.
 (curve Ed25519)
 (q #7514F8D729DB1935470A581CE3851ED9FD6F1F9BAFE1D8BEC77A931ADB7A4337#)
 ))"))
+
+(define %sddm-hidpi
+  (plain-file
+   "hidpi.conf"
+   "[Wayland]
+EnableHiDPI=true"))
+
+(define %sddm-sway-session
+  (plain-file
+   "sway.desktop"
+   "[Desktop Entry]
+Name=SWAY (DBUS)
+Comment=An i3-compatible Wayland compositor
+Exec=dbus-launch --sh-syntax --exit-with-session sway
+Type=Application"))
 
 (define %base-system-services
   (append (list
@@ -170,7 +188,7 @@ emulate sh -c '. $HOME/.config/profile'")))))
    (file-systems (cons* (file-system ;; System partition
                          (device (file-system-label "GUIX"))
                          (mount-point "/")
-                         (type "ext4"))
+                         (type "btrfs"))
                         (file-system ;; Boot partition
                          (device (file-system-label "BOOT"))
                          (mount-point "/boot/efi")
@@ -211,21 +229,6 @@ base-operating-system
   #:use-module (gnu services sddm)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd))
-
-(define %sddm-hidpi
-  (plain-file
-   "hidpi.conf"
-   "[Wayland]
-EnableHiDPI=true"))
-
-(define %sddm-sway-session
-  (plain-file
-   "sway.desktop"
-   "[Desktop Entry]
-Name=SWAY (DBUS)
-Comment=An i3-compatible Wayland compositor
-Exec=dbus-launch --sh-syntax --exit-with-session sway
-Type=Application"))
 
 (define geekcave-system
   (operating-system
@@ -288,6 +291,84 @@ Type=Application"))
            waybar)
      %base-system-packages))))
 geekcave-system
+#+end_src
+
+* Dropcity
+#+begin_src scheme :tangle (concat (cdr (assoc 'guix-manifest-home file-paths)) "/dropcity.scm") :mkdirp yes
+;; This file is auto-generated. Do not make changes manually.
+;; Exported from Systems.org
+
+(define-module (dropcity)
+  #:use-module (base-system)
+  #:use-module (gnu)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages certs)
+  #:use-module (gnu packages curl)
+  #:use-module (gnu packages gl)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages networking)
+  #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages version-control)
+  #:use-module (gnu packages video)
+  #:use-module (gnu packages vim)
+  #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages wm)
+  #:use-module (gnu services dbus)
+  #:use-module (gnu services desktop)
+  #:use-module (gnu services networking)
+  #:use-module (gnu services nix)
+  #:use-module (gnu services sddm)
+  #:use-module (nongnu packages linux)
+  #:use-module (nongnu system linux-initrd))
+
+(define dropcity-system
+  (operating-system
+   (inherit base-operating-system)
+
+   (kernel linux-5.14)
+   (initrd microcode-initrd)
+   (firmware (list intel-microcode linux-firmware))
+
+   ;; Kernel arguments
+   (kernel-arguments (append
+                      '("quiet"
+                        "modprobe.blacklist=nouveau"
+                        "net.ifnames=0")
+                      %default-kernel-arguments))
+
+   (services (append (list
+                      (extra-special-file "/etc/sddm.conf.d/hidpi.conf" %sddm-hidpi)
+                      (extra-special-file "/etc/sddm/wayland-sessions/sway.desktop" %sddm-sway-session)
+                      (service sddm-service-type (sddm-configuration
+                                                  (sessions-directory "/etc/sddm/wayland-sessions")))
+                      (service nix-service-type)
+                      (simple-service 'dbus-services dbus-root-service-type (list blueman))
+                      (service bluetooth-service-type (bluetooth-configuration
+                                                       (auto-enable? #t))))
+                     %base-system-services))
+
+   ;; Packages
+   (packages
+    (append
+     (list adwaita-icon-theme
+           hicolor-icon-theme
+           blueman
+           bluez
+           mesa
+           network-manager
+           network-manager-applet
+           pavucontrol
+           pulseaudio
+           shepherd
+           sway
+           swaybg
+           swayidle
+           swaylock
+           waybar)
+     %base-system-packages))))
+dropcity-system
 #+end_src
 
 * WSL
