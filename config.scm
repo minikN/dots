@@ -1,4 +1,4 @@
-(define-module (minikn geekcave)
+(define-module (config)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages)
   #:use-module (gnu services dbus)
@@ -31,7 +31,8 @@
   #:use-module (rde features wm)
   #:use-module (rde features xdg)
   #:use-module (rde features)
-  #:use-module (rde packages))
+  #:use-module (rde packages)
+  #:use-module (features applauncher))
 
 (define* (pkgs #:rest lst)
   (map specification->package+output lst))
@@ -58,11 +59,12 @@
                         "cdrom"
                         "disk"
                         "lp"))
-   ;(feature-gnupg
-   ; #:gpg-primary-key "F17DDB98CC3C405C"
-   ; #:gpg-ssh-agent? #t
-   ; #:pinentry-flavor 'emacs
-   ; #:ssh-keys '(("E3FFA5A1B444A4F099E594758008C1D8845EC7C0")))
+   (feature-ssh)
+   (feature-gnupg
+    #:gpg-primary-key "F17DDB98CC3C405C"
+    #:gpg-ssh-agent? #t
+    ;#:pinentry-flavor 'emacs
+    #:ssh-keys '(("E3FFA5A1B444A4F099E594758008C1D8845EC7C0")))
    ;(feature-password-store
    ; #:remote-password-store-url "ssh://git@gitlab.com:minikN/pass.git")
    (feature-keyboard
@@ -83,9 +85,12 @@
    (feature-git
     #:sign-commits? #t
     #:git-gpg-sign-key "F17DDB98CC3C405C")
+   (feature-bemenu
+    #:default-app-launcher? #t)
    (feature-sway
-    #:extra-config
-    `((include ,(local-file "./config/sway/config"))))
+     #:xwayland? #t
+     #:extra-config
+     `((include ,(local-file "./config/sway/config"))))
    (feature-sway-run-on-tty
     #:sway-tty-number 2)
    (feature-sway-screenshot)
@@ -105,16 +110,19 @@
     #:system-packages
     (append
      (pkgs
+      "adwaita-icon-theme"
       "curl"
       "git"
       "vim"
       "blueman"
       "bluez"
+      "make"
       "mesa"
       "mesa-headers"
       "mesa-utils"
       "mesa-opencl"
       "mesa-opencl-icd"
+      "pulseaudio"
       "pavucontrol")))))
 
 (define %geekcave-filesystems
@@ -133,18 +141,16 @@
     #:host-name "geekcave"
     #:timezone  "Europe/Berlin"
     #:locale "en_US.utf8")
-   (feature-kernel
-    #:kernel linux-lts
-    #:kernel-arguments (list "quiet"
-                             "modprobe.blacklist=nouveau"
-                             "net.ifnames=0")
+  (feature-kernel
+    #:kernel linux-5.14
+    #:kernel-arguments (list "modprobe.blacklist=nouveau")
     #:initrd microcode-initrd
     #:firmware (list amdgpu-firmware linux-firmware))
    (feature-file-systems
     #:file-systems %geekcave-filesystems)
    (feature-hidpi)))
 
-(define-public main-config
+(define-public geekcave-config
   (rde-config
    (features
     (append
@@ -152,17 +158,16 @@
      %main-features
      %geekcave-features))))
 
-(define geekcave
-  (rde-config-operating-system main-config))
+(define geekcave-os
+  (rde-config-operating-system geekcave-config))
 
-(define he
-  (rde-config-home-environment main-config))
+(define geekcave-he
+  (rde-config-home-environment geekcave-config))
 
 (define (dispatcher)
   (let ((target (getenv "TARGET")))
     (match target
-	   ("home" he)
-	   ("geekcave" geekcave)
-	   (_ he))))
+	   ("geekcave-he" geekcave-he)
+	   ("geekcave-os" geekcave-os))))
 
 (dispatcher)
