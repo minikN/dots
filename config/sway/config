@@ -3,24 +3,13 @@
 
 default_border none
 
-# Logo key. Use Mod1 for Alt
-set $mod Mod4
-
 # Home row direction keys, like vim
 set $left h
 set $down j
 set $up k
 set $right l
 
-# Your preferred terminal emulator
-set $term run-emacs -c -e "(eshell)"
 set $emacs run-emacs -c
-
-# Your preferred application launcher
-# Note: pass the final command to swaymsg so that the resulting window can be opened
-# on the original workspace that the command was run on.
-set $menu bemenu-run | xargs swaymsg exec --
-#set $menu run-emacs -e "(app-launcher-run-app)"
 
 # Outputs
 output DP-2 pos 0 0
@@ -171,26 +160,5 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-bar {
-    swaybar_command waybar
-
-    # position top
-
-    # # When the status_command prints a new line to stdout, swaybar updates.
-    # # The default just shows the current date and time.
-    # status_command while date +'%Y-%m-%d %I:%M:%S %p'; do sleep 1; done
-
-    # colors {
-    #     statusline #ffffff
-    #     background #323232
-    #     inactive_workspace #32323200 #32323200 #5c5c5c
-    # }
-}
-
-input * {
-    xkb_layout "us"
-    xkb_options "ctrl:nocaps"
-}
-
 exec blueman-applet
-exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+#exec dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
