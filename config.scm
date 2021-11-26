@@ -1,4 +1,5 @@
 (define-module (config)
+  #:use-module (flat packages emacs)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages)
   #:use-module (gnu services dbus)
@@ -45,6 +46,26 @@
 (curve Ed25519)
 (q #7514F8D729DB1935470A581CE3851ED9FD6F1F9BAFE1D8BEC77A931ADB7A4337#)
 ))"))
+
+(define* (mail-lst id fqda urls)
+  "Make a simple mailing-list."
+  (mailing-list
+   (id   id)
+   (fqda fqda)
+   (config (l2md-repo
+            (name (symbol->string id))
+            (urls urls)))))
+
+(define mailbox-folder-mapping
+  '(("inbox"   . "INBOX")
+    ("sent"    . "Sent")
+    ("drafts"  . "Drafts")
+    ("trash"   . "Trash")
+    ("junk"    . "Junk")
+    ("archive" . "Archiv")))
+
+(define mailbox-isync-settings
+  (generate-isync-serializer "imap.mailbox.org" mailbox-folder-mapping))
 
 (define %db-features
   (list
@@ -105,6 +126,17 @@
    (feature-emacs-faces)
    (feature-emacs-git)
    (feature-emacs-message)
+
+   ;;;
+   ;;; Mail
+   ;;;
+   (feature-notmuch)
+   (feature-msmtp #:msmtp-provider-settings
+                  `((mailbox . ((host . "smtp.mailbox.org")
+                                (port . 587)))))
+   (feature-isync #:isync-verbose #t
+                  #:isync-serializers
+                  `((mailbox . ,mailbox-isync-settings)))
    
    ;;;
    ;;; WM
