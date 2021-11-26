@@ -108,6 +108,14 @@
    (feature-base-services #:guix-substitute-urls (list "https://mirror.brielmaier.net")
                           #:guix-authorized-keys (list %brielmaier-public-key))
    (feature-desktop-services)
+
+   ;;;
+   ;;; Fonts
+   ;;;
+   (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))
+
+   ;;;
+   ;;; Terminal, shell
    (feature-alacritty)
    (feature-zsh)
 
