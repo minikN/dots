@@ -33,6 +33,8 @@ for_window [app_id=".blueman-services-real"] floating enable
 for_window [app_id=".blueman-services-real"] border pixel
 for_window [app_id="pavucontrol"] floating enable
 for_window [app_id="pavucontrol"] border pixel
+for_window [app_id="pinentry-qt"] floating enable
+for_window [app_id="pinentry-qt"] border pixel
 
 # Start a terminal
 bindsym $mod+Return exec $emacs
