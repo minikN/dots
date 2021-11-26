@@ -48,82 +48,114 @@
 
 (define %db-features
   (list
-   (feature-user-info
-    #:user-name "db"
-    #:full-name "Demis Balbach"
-    #:email "db@minikn.xyz"
-    #:user-groups (list "wheel"
-                        "audio"
-                        "video"
-                        "input"
-                        "cdrom"
-                        "disk"
-                        "lp"))
+   (feature-user-info #:user-name "db"
+                      #:full-name "Demis Balbach"
+                      #:email "db@minikn.xyz"
+                      #:user-groups (list "wheel"
+                                          "audio"
+                                          "video"
+                                          "input"
+                                          "cdrom"
+                                          "disk"
+                                          "lp"))
+   (feature-mail-settings #:mail-accounts
+                          (list (mail-account
+                                 (id 'personal)
+                                 (fqda "db@minikn.xyz")
+                                 (type 'mailbox)
+                                 (pass-cmd "pass show Mail/Mailbox"))))
    (feature-ssh)
-   (feature-gnupg
-    #:gpg-primary-key "F17DDB98CC3C405C"
-    #:gpg-ssh-agent? #t
-    ;#:pinentry-flavor 'emacs
-    #:ssh-keys '(("E3FFA5A1B444A4F099E594758008C1D8845EC7C0")))
-   ;(feature-password-store
-   ; #:remote-password-store-url "ssh://git@gitlab.com:minikN/pass.git")
-   (feature-keyboard
-    #:keyboard-layout (keyboard-layout "us" "altgr-intl" #:options '("ctrl:nocaps")))))
+   (feature-gnupg #:gpg-primary-key "F17DDB98CC3C405C"
+                  #:gpg-ssh-agent? #t
+                  ;#:pinentry-flavor 'emacs
+                  #:ssh-keys '(("E3FFA5A1B444A4F099E594758008C1D8845EC7C0")))
+   (feature-password-store #:remote-password-store-url "git@gitlab.com:minikN/pass.git")
+   (feature-keyboard #:keyboard-layout
+                     (keyboard-layout "us" "altgr-intl" #:options '("ctrl:nocaps")))))
 
 (define %main-features
   (list
-   (feature-custom-services
-    #:system-services (list (simple-service 'dbus-services dbus-root-service-type (list blueman))
-                            (service bluetooth-service-type (bluetooth-configuration
-                                                             (auto-enable? #t)))))
-   (feature-base-services
-    #:guix-substitute-urls (list "https://mirror.brielmaier.net")
-    #:guix-authorized-keys (list %brielmaier-public-key))
+
+   ;;;
+   ;;; Services
+   ;;;
+   (feature-custom-services #:system-services
+                            (list
+                             (simple-service 'dbus-services dbus-root-service-type (list blueman))
+                             (service bluetooth-service-type (bluetooth-configuration
+                                                              (auto-enable? #t)))))
+   (feature-base-services #:guix-substitute-urls (list "https://mirror.brielmaier.net")
+                          #:guix-authorized-keys (list %brielmaier-public-key))
    (feature-desktop-services)
    (feature-alacritty)
    (feature-zsh)
-   (feature-git
-    #:sign-commits? #t
-    #:git-gpg-sign-key "F17DDB98CC3C405C")
-   (feature-bemenu
-    #:default-app-launcher? #t)
-   (feature-sway
-     #:xwayland? #t
-     #:extra-config
-     `((include ,(local-file "./config/sway/config"))))
-   (feature-sway-run-on-tty
-    #:sway-tty-number 2)
+
+   ;;;
+   ;;; Git
+   ;;;
+   (feature-git #:sign-commits? #t
+                #:git-gpg-sign-key "F17DDB98CC3C405C")
+
+   ;;;
+   ;;; Emacs
+   ;;;
+   (feature-emacs #:package emacs-pgtk-native-comp)
+   (feature-emacs-appearance)
+   (feature-emacs-completion #:mini-frame? #f)
+   (feature-emacs-faces)
+   (feature-emacs-git)
+   (feature-emacs-message)
+   
+   ;;;
+   ;;; WM
+   ;;;
+   (feature-bemenu #:default-app-launcher? #t)
+   (feature-sway #:xwayland? #t
+                 #:extra-config
+                 `((include ,(local-file "./config/sway/config"))))
+   (feature-sway-run-on-tty #:sway-tty-number 2)
    (feature-sway-screenshot)
    (feature-sway-statusbar)
-   (feature-xdg
-    #:xdg-user-directories-configuration
-    (home-xdg-user-directories-configuration
-     (music "$HOME/music")
-     (videos "$HOME/vids")
-     (pictures "$HOME/pics")
-     (documents "$HOME/docs")
-     (download "$HOME/dl")
-     (desktop "$HOME")
-     (publicshare "$HOME")
-     (templates "$HOME")))
-   (feature-base-packages
-    #:system-packages
-    (append
-     (pkgs
-      "adwaita-icon-theme"
-      "curl"
-      "git"
-      "vim"
-      "blueman"
-      "bluez"
-      "make"
-      "mesa"
-      "mesa-headers"
-      "mesa-utils"
-      "mesa-opencl"
-      "mesa-opencl-icd"
-      "pulseaudio"
-      "pavucontrol")))))
+   (feature-xdg #:xdg-user-directories-configuration
+                (home-xdg-user-directories-configuration
+                 (music "$HOME/music")
+                 (videos "$HOME/vids")
+                 (pictures "$HOME/pics")
+                 (documents "$HOME/docs")
+                 (download "$HOME/dl")
+                 (desktop "$HOME")
+                 (publicshare "$HOME")
+                 (templates "$HOME")))
+
+   ;;;
+   ;;; Packages
+   ;;;
+   (feature-base-packages #:system-packages
+                          (append
+                           (pkgs
+                            "adwaita-icon-theme"
+                            "curl"
+                            "git"
+                            "gst-libav"
+                            "gst-plugins-bad"
+                            "gst-plugins-good"
+                            "gst-plugins-base"
+                            "gst-plugins-ugly"
+                            "htop"
+                            "vim"
+                            "blueman"
+                            "bluez"
+                            "make"
+                            "mesa"
+                            "mesa-headers"
+                            "mesa-utils"
+                            "mesa-opencl"
+                            "mesa-opencl-icd"
+                            "nyxt"
+                            "ungoogled-chromium-wayland"
+                            "ublock-origin-chromium"
+                            "pulseaudio"
+                            "pavucontrol")))))
 
 (define %geekcave-filesystems
   (list (file-system ;; System partition
@@ -137,17 +169,14 @@
 
 (define %geekcave-features
   (list
-   (feature-host-info
-    #:host-name "geekcave"
-    #:timezone  "Europe/Berlin"
-    #:locale "en_US.utf8")
-  (feature-kernel
-    #:kernel linux-5.14
-    #:kernel-arguments (list "modprobe.blacklist=nouveau")
-    #:initrd microcode-initrd
-    #:firmware (list amdgpu-firmware linux-firmware))
-   (feature-file-systems
-    #:file-systems %geekcave-filesystems)
+   (feature-host-info #:host-name "geekcave"
+                      #:timezone  "Europe/Berlin"
+                      #:locale "en_US.utf8")
+   (feature-kernel #:kernel linux-5.14
+                   #:kernel-arguments (list "modprobe.blacklist=nouveau")
+                   #:initrd microcode-initrd
+                   #:firmware (list amdgpu-firmware linux-firmware))
+   (feature-file-systems #:file-systems %geekcave-filesystems)
    (feature-hidpi)))
 
 (define-public geekcave-config
@@ -169,5 +198,4 @@
     (match target
 	   ("geekcave-he" geekcave-he)
 	   ("geekcave-os" geekcave-os))))
-
 (dispatcher)
