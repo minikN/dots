@@ -156,6 +156,7 @@
    (feature-sway-run-on-tty #:sway-tty-number 2)
    (feature-sway-screenshot)
    (feature-sway-statusbar)
+   (feature-pipewire)
    (feature-xdg #:xdg-user-directories-configuration
                 (home-xdg-user-directories-configuration
                  (music "$HOME/music")
@@ -194,8 +195,12 @@
                             "nyxt"
                             "ungoogled-chromium-wayland"
                             "ublock-origin-chromium"
-                            "pulseaudio"
-                            "pavucontrol")))))
+                            "pavucontrol"))
+                          #:home-packages
+                          (append
+                           (pkgs
+                            "streamlink"
+                            "mpv")))))
 
 (define %geekcave-filesystems
   (list (file-system ;; System partition
