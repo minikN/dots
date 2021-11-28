@@ -33,7 +33,8 @@
   #:use-module (rde features xdg)
   #:use-module (rde features)
   #:use-module (rde packages)
-  #:use-module (features applauncher))
+  #:use-module (features applauncher)
+  #:use-module (features emacs-xyz))
 
 (define* (pkgs #:rest lst)
   (map specification->package+output lst))
@@ -128,12 +129,18 @@
    ;;;
    ;;; Emacs
    ;;;
-   (feature-emacs #:package emacs-pgtk-native-comp)
+   ;(feature-emacs #:package emacs-pgtk-native-comp)
+   (feature-emacs)
    (feature-emacs-appearance)
    (feature-emacs-completion #:mini-frame? #f)
+   (feature-emacs-evil)
    (feature-emacs-faces)
    (feature-emacs-git)
+   (feature-emacs-keybindings)
    (feature-emacs-message)
+   (feature-emacs-project)
+   (feature-emacs-syntax)
+   (feature-emacs-which-key)
 
    ;;;
    ;;; Mail
@@ -145,7 +152,7 @@
    (feature-isync #:isync-verbose #t
                   #:isync-serializers
                   `((mailbox . ,mailbox-isync-settings)))
-   
+
    ;;;
    ;;; WM
    ;;;
