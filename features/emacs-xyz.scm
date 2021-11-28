@@ -31,7 +31,11 @@
 
         ,@(when collection?
           `((require 'evil-collection))))
-      #:elisp-packages (list emacs-evil emacs-evil-collection))))
+      #:elisp-packages (append
+                        (if collection? (list emacs-evil-collection) '())
+                        (if (get-value 'emacs-git config)
+                            (list emacs-evil-magit) '())
+                        (list emacs-evil)))))
   
   (feature
    (name f-name)
