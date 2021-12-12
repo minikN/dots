@@ -35,6 +35,7 @@
   #:use-module (rde packages)
   #:use-module (features applauncher)
   #:use-module (features games)
+  #:use-module (features linux)
   #:use-module (features emacs-xyz))
 
 (define* (pkgs #:rest lst)
@@ -105,14 +106,14 @@
    ;;;
    ;;; Services
    ;;;
-   (feature-custom-services #:system-services
-                            (list
-                             (simple-service 'dbus-services dbus-root-service-type (list blueman))
-                             (service bluetooth-service-type (bluetooth-configuration
-                                                              (auto-enable? #t)))))
    (feature-base-services #:guix-substitute-urls (list "https://mirror.brielmaier.net")
                           #:guix-authorized-keys (list %brielmaier-public-key))
    (feature-desktop-services)
+
+   ;;;
+   ;;; Bluetooth
+   ;;;
+   (feature-bluetooth)
 
    ;;;
    ;;; Fonts
@@ -199,8 +200,7 @@
                             "gst-plugins-ugly"
                             "htop"
                             "vim"
-                            "blueman"
-                            "bluez"
+                            "jack2"
                             "make"
                             "mesa"
                             "mesa-headers"
