@@ -135,11 +135,10 @@
    ;;;
    ;;; Emacs
    ;;;
-   ;(feature-emacs #:package emacs-pgtk-native-comp)
    (feature-emacs)
    (feature-emacs-leader-keys)
    (feature-emacs-appearance)
-   (feature-emacs-completion #:mini-frame? #f)
+   (feature-emacs-completion #:mini-frame? #t)
    (feature-emacs-evil)
    (feature-emacs-faces)
    (feature-emacs-files)
