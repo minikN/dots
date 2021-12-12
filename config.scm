@@ -128,7 +128,8 @@
    ;;; Git
    ;;;
    (feature-git #:sign-commits? #t
-                #:git-gpg-sign-key "F17DDB98CC3C405C")
+                #:git-gpg-sign-key "F17DDB98CC3C405C"
+                #:git-send-email? #t)
 
    ;;;
    ;;; Emacs
@@ -142,6 +143,8 @@
    (feature-emacs-git)
    (feature-emacs-keybindings)
    (feature-emacs-message)
+   (feature-emacs-message #:message-signature
+                          "Best regards / Mit freundlichen Grüßen,\nDemis Balbach")
    (feature-emacs-project)
    (feature-emacs-syntax)
    (feature-emacs-which-key)
