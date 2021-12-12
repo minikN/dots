@@ -167,7 +167,6 @@
    ;;;
    ;;; WM
    ;;;
-   (feature-bemenu #:default-app-launcher? #t)
    (feature-sway #:xwayland? #t
                  #:extra-config
                  `((include ,(local-file "./config/sway/config"))))
