@@ -217,8 +217,9 @@
                           (append
                            (pkgs
                             "streamlink"
-                            "mpv")))))
-
+                            "carla"
+                            "youtube-dl"
+                            "mpv")))
    (feature-games-base)
    (feature-games-steam)))
 (define %geekcave-filesystems
