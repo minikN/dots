@@ -86,7 +86,10 @@
                                  (id 'personal)
                                  (fqda "db@minikn.xyz")
                                  (type 'mailbox)
-                                 (pass-cmd "pass show Mail/Mailbox"))))
+                                 (pass-cmd "pass show Mail/Mailbox")))
+                          #:mailing-lists
+                          (list (mail-lst 'guix-devel "guix-devel@gnu.org"
+                                    '("https://yhetil.org/guix-devel/0"))))
    (feature-ssh)
    (feature-gnupg #:gpg-primary-key "F17DDB98CC3C405C"
                   #:gpg-ssh-agent? #t
@@ -147,6 +150,7 @@
    ;;; Mail
    ;;;
    (feature-notmuch)
+   (feature-l2md)
    (feature-msmtp #:msmtp-provider-settings
                   `((mailbox . ((host . "smtp.mailbox.org")
                                 (port . 587)))))
