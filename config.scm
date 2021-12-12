@@ -263,4 +263,5 @@
     (match target
 	   ("geekcave-he" geekcave-he)
 	   ("geekcave-os" geekcave-os))))
+(pretty-print-rde-config geekcave-config)
 (dispatcher)
