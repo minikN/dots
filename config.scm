@@ -136,13 +136,13 @@
    ;;;
    ;(feature-emacs #:package emacs-pgtk-native-comp)
    (feature-emacs)
+   (feature-emacs-leader-keys)
    (feature-emacs-appearance)
    (feature-emacs-completion #:mini-frame? #f)
    (feature-emacs-evil)
    (feature-emacs-faces)
+   (feature-emacs-files)
    (feature-emacs-git)
-   (feature-emacs-keybindings)
-   (feature-emacs-message)
    (feature-emacs-message #:message-signature
                           "Best regards / Mit freundlichen Grüßen,\nDemis Balbach")
    (feature-emacs-project)
