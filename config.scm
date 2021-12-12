@@ -34,6 +34,7 @@
   #:use-module (rde features)
   #:use-module (rde packages)
   #:use-module (features applauncher)
+  #:use-module (features games)
   #:use-module (features emacs-xyz))
 
 (define* (pkgs #:rest lst)
@@ -209,6 +210,8 @@
                             "streamlink"
                             "mpv")))))
 
+   (feature-games-base)
+   (feature-games-steam)))
 (define %geekcave-filesystems
   (list (file-system ;; System partition
          (device (file-system-label "GUIX"))
