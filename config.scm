@@ -237,7 +237,7 @@
    (feature-host-info #:host-name "geekcave"
                       #:timezone  "Europe/Berlin"
                       #:locale "en_US.utf8")
-   (feature-kernel #:kernel linux-5.14
+   (feature-kernel #:kernel linux-5.15
                    #:kernel-arguments (list "modprobe.blacklist=nouveau")
                    #:initrd microcode-initrd
                    #:firmware (list amdgpu-firmware linux-firmware))
