@@ -87,7 +87,7 @@
                                  (id 'personal)
                                  (fqda "db@minikn.xyz")
                                  (type 'mailbox)
-                                 (pass-cmd "pass show Mail/Mailbox")))
+                                 (pass-cmd "pass show Mail/mailbox.org/db@minikn.xyz")))
                           #:mailing-lists
                           (list (mail-lst 'guix-devel "guix-devel@gnu.org"
                                     '("https://yhetil.org/guix-devel/0"))))
