@@ -94,7 +94,6 @@
    (feature-ssh)
    (feature-gnupg #:gpg-primary-key "F17DDB98CC3C405C"
                   #:gpg-ssh-agent? #t
-                  ;#:pinentry-flavor 'emacs
                   #:ssh-keys '(("E3FFA5A1B444A4F099E594758008C1D8845EC7C0")))
    (feature-password-store #:remote-password-store-url "git@gitlab.com:minikN/pass.git")
    (feature-keyboard #:keyboard-layout
