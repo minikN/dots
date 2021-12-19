@@ -86,137 +86,154 @@ with Emacs as an editor."
     (list
      (elisp-configuration-service
       emacs-f-name
-      `((setq rde-leader ,leader)
-        (setq rde-localleader ,localleader)
-        (define-prefix-command 'rde-global-map)
-        (define-key global-map (kbd rde-leader) 'rde-global-map)))))
+      `((eval-when-compile (require 'configure-rde-keymaps))
+        (with-eval-after-load
+         'configure-rde-keymaps
+         (defvar rde-global nil "Global rde keymap.")
+         (defvar rde-local nil "Local rde keymap.")
 
- (feature
+         ;; Define the global map (C-SPC)
+         (define-prefix-command 'rde-global nil "Global")
+         (define-key global-map (kbd ,leader) 'rde-global)
+
+         ;; Define the local map (C-SPC C-SPC)
+         (define-prefix-command 'rde-local nil "Local")
+         (define-key global-map (kbd ,localleader) 'rde-local)
+
+         ;; Assign default keymaps
+         (define-key rde-global (kbd "a") 'rde-apps)
+         (define-key rde-global (kbd "t") 'rde-toggles)))
+      #:elisp-packages
+      (append (list (get-value 'emacs-configure-rde-keymaps config))))))
+
+  (feature
    (name f-name)
-   (values `((emacs-leader . ,leader)
-             (emacs-localleader . ,localleader)))
+   (values `((emacs-leader-keys . #t)))
    (home-services-getter get-home-services)))
 
-(define* (feature-emacs-files
-          #:key
-          (keybindings? #t))
+(define* (feature-emacs-files)
   "Configure leader and localleader keys"
-  (ensure-pred boolean? keybindings?)
-  
   (define emacs-f-name 'files)
   (define f-name (symbol-append 'emacs- emacs-f-name))
 
-
   (define (get-home-services config)
-    (when keybindings? (require-value 'emacs-leader config))
     (list
      (elisp-configuration-service
       emacs-f-name
-      `((with-eval-after-load
-         ;;; TODO: Improve this. We need to load feature-emacs-leader-keys
-         ;;; first, otherwise we'll get a non-prefix key error.
-         'configure-leader-keys-autoloads
-         ,@(when keybindings?
-            `((let ((rde-leader ,(get-value 'emacs-leader config)))
-                (define-key rde-global-map "f" '("Find file" . find-file))))))))))
-  
+      `((eval-when-compile
+         (require 'configure-rde-keymaps))
+        (with-eval-after-load
+         'configure-leader-keys
+         (require 'tramp)
+         (defun rde-delete-this-file (&optional path force-p)
+           "Delete PATH, kill its buffers and expunge it from vc/magit cache.
+If PATH is not specified, default to the current buffer's file.
+If FORCE-P, delete without confirmation."
+           (interactive
+            (list (buffer-file-name (buffer-base-buffer))
+                  current-prefix-arg))
+           (let* ((path (or path (buffer-file-name (buffer-base-buffer))))
+                  (short-path (abbreviate-file-name path)))
+             (unless (and path (file-exists-p path))
+               (user-error "Buffer is not visiting any file"))
+             (unless (file-exists-p path)
+               (error "File doesn't exist: %s" path))
+             (unless (or force-p (y-or-n-p (format "Really delete %S?" short-path)))
+               (user-error "Aborted"))
+             (let ((buf (current-buffer)))
+               (unwind-protect
+                (progn (delete-file path t) t)
+                (if (file-exists-p path)
+                    (error "Failed to delete %S" short-path)
+                    (kill-this-buffer)
+                    (message "Deleted %S" short-path))))))
+
+        ;;; Source: https://github.com/hlissner/doom-emacs/blob/develop/core/autoload/files.el#L257
+         (defun rde-copy-this-file (new-path &optional force-p)
+           "Copy current buffer's file to NEW-PATH.
+If FORCE-P, overwrite the destination file if it exists, without confirmation."
+           (interactive
+            (list (read-file-name "Copy file to: ")
+                  current-prefix-arg))
+           (unless (and buffer-file-name (file-exists-p buffer-file-name))
+             (user-error "Buffer is not visiting any file"))
+           (let ((old-path (buffer-file-name (buffer-base-buffer)))
+                 (new-path (expand-file-name new-path)))
+             (make-directory (file-name-directory new-path) 't)
+             (copy-file old-path new-path (or force-p 1))
+             (message "File copied to %S" (abbreviate-file-name new-path))))
+
+        ;;; Source: https://github.com/hlissner/doom-emacs/blob/develop/core/autoload/files.el#L274
+         (defun rde-move-this-file (new-path &optional force-p)
+           "Move current buffer's file to NEW-PATH.
+If FORCE-P, overwrite the destination file if it exists, without confirmation."
+           (interactive
+            (list (read-file-name "Move file to: ")
+                  current-prefix-arg))
+           (unless (and buffer-file-name (file-exists-p buffer-file-name))
+             (user-error "Buffer is not visiting any file"))
+           (let ((old-path (buffer-file-name (buffer-base-buffer)))
+                 (new-path (expand-file-name new-path)))
+             (when (directory-name-p new-path)
+               (setq new-path (concat new-path (file-name-nondirectory old-path))))
+             (make-directory (file-name-directory new-path) 't)
+             (rename-file old-path new-path (or force-p 1))
+             (set-visited-file-name new-path t t)
+             (message "File moved to %S" (abbreviate-file-name new-path))))
+
+        ;;; Source: https://github.com/hlissner/doom-emacs/blob/develop/core/autoload/files.el#L293
+         (defun rde--sudo-file-path (file)
+           (let ((host (or (file-remote-p file 'host) "localhost")))
+             (concat "/" (when (file-remote-p file)
+                           (concat (file-remote-p file 'method) ":"
+                                   (if-let (user (file-remote-p file 'user))
+                                           (concat user "@" host)
+                                           host)
+                                   "|"))
+                     "sudo:root@" host
+                     ":" (or (file-remote-p file 'localname)
+                             file))))
+
+        ;;; Source: https://github.com/hlissner/doom-emacs/blob/develop/core/autoload/files.el#L306
+         (defun rde-sudo-find-file (file)
+           "Open FILE as root."
+           (interactive "FOpen file as root: ")
+           (find-file (rde--sudo-file-path file)))
+
+        ;;; Source: https://github.com/hlissner/doom-emacs/blob/develop/core/autoload/files.el#L312
+         (defun rde-sudo-this-file ()
+           "Open the current file as root."
+           (interactive)
+           (find-file
+            (rde--sudo-file-path
+             (or buffer-file-name
+                 (when (or (derived-mode-p 'dired-mode)
+                           (derived-mode-p 'wdired-mode))
+                   default-directory)))))
+
+         (defun rde/yank-buffer-path ()
+           "Copy the current buffer file name to the clipboard."
+           (interactive)
+           (let ((filename (if (equal major-mode 'dired-mode)
+                               default-directory
+                               (buffer-file-name))))
+             (when filename
+               (kill-new filename)
+               (message "Copied buffer file name '%s' to the clipboard." filename))))
+         (define-prefix-command 'rde-files nil "Files")
+         (define-key 'rde-global (kbd "f") '("Files" . rde-files))
+         (define-key 'rde-global (kbd "C-f") '("Find file" . find-file))
+         (define-key 'rde-files (kbd "d") '("Open dired" . dired))
+         (define-key 'rde-files (kbd "D") '("Delete this file" . rde-delete-this-file))
+         (define-key 'rde-files (kbd "c") '("Copt this file" . rde-copy-this-file))
+         (define-key 'rde-files (kbd "m") '("Move this file" . rde-move-this-file))
+         (define-key 'rde-files (kbd "m") '("Move this file" . rde-move-this-file))
+         (define-key 'rde-files (kbd "u") '("Sudo this file" . rde-sudo-this-file))
+         (define-key 'rde-files (kbd "U") '("Sudo find file" . rde-sudo-find-file))))
+      #:elisp-packages
+      (append (list (get-value 'emacs-configure-rde-keymaps config))))))
+
   (feature
    (name f-name)
    (values `((,f-name . #t)))
    (home-services-getter get-home-services)))
-
-;;         (defun rde/delete-this-file (&optional path force-p)
-;;           "Delete PATH, kill its buffers and expunge it from vc/magit cache.
-;; If PATH is not specified, default to the current buffer's file.
-;; If FORCE-P, delete without confirmation."
-;;           (interactive
-;;            (list (buffer-file-name (buffer-base-buffer))
-;;                  current-prefix-arg))
-;;           (let* ((path (or path (buffer-file-name (buffer-base-buffer))))
-;;                  (short-path (abbreviate-file-name path)))
-;;             (unless (and path (file-exists-p path))
-;;               (user-error "Buffer is not visiting any file"))
-;;             (unless (file-exists-p path)
-;;               (error "File doesn't exist: %s" path))
-;;             (unless (or force-p (y-or-n-p (format "Really delete %S?" short-path)))
-;;               (user-error "Aborted"))
-;;             (let ((buf (current-buffer)))
-;;               (unwind-protect
-;;                (progn (delete-file path t) t)
-;;                (if (file-exists-p path)
-;;                    (error "Failed to delete %S" short-path)
-;;                    (kill-this-buffer)
-;;                    (message "Deleted %S" short-path))))))
-
-;;         ;;; Source: https://github.com/hlissner/doom-emacs/blob/develop/core/autoload/files.el#L257
-;;         (defun rde/copy-this-file (new-path &optional force-p)
-;;           "Copy current buffer's file to NEW-PATH.
-;; If FORCE-P, overwrite the destination file if it exists, without confirmation."
-;;           (interactive
-;;            (list (read-file-name "Copy file to: ")
-;;                  current-prefix-arg))
-;;           (unless (and buffer-file-name (file-exists-p buffer-file-name))
-;;             (user-error "Buffer is not visiting any file"))
-;;           (let ((old-path (buffer-file-name (buffer-base-buffer)))
-;;                 (new-path (expand-file-name new-path)))
-;;             (make-directory (file-name-directory new-path) 't)
-;;             (copy-file old-path new-path (or force-p 1))
-;;             (message "File copied to %S" (abbreviate-file-name new-path))))
-
-;;         ;;; Source: https://github.com/hlissner/doom-emacs/blob/develop/core/autoload/files.el#L274
-;;         (defun rde/move-this-file (new-path &optional force-p)
-;;           "Move current buffer's file to NEW-PATH.
-;; If FORCE-P, overwrite the destination file if it exists, without confirmation."
-;;           (interactive
-;;            (list (read-file-name "Move file to: ")
-;;                  current-prefix-arg))
-;;           (unless (and buffer-file-name (file-exists-p buffer-file-name))
-;;             (user-error "Buffer is not visiting any file"))
-;;           (let ((old-path (buffer-file-name (buffer-base-buffer)))
-;;                 (new-path (expand-file-name new-path)))
-;;             (when (directory-name-p new-path)
-;;               (setq new-path (concat new-path (file-name-nondirectory old-path))))
-;;             (make-directory (file-name-directory new-path) 't)
-;;             (rename-file old-path new-path (or force-p 1))
-;;             (set-visited-file-name new-path t t)
-;;             (message "File moved to %S" (abbreviate-file-name new-path))))
-
-;;         ;;; Source: https://github.com/hlissner/doom-emacs/blob/develop/core/autoload/files.el#L293
-;;         (defun rde--sudo-file-path (file)
-;;           (let ((host (or (file-remote-p file 'host) "localhost")))
-;;             (concat "/" (when (file-remote-p file)
-;;                           (concat (file-remote-p file 'method) ":"
-;;                                   (if-let (user (file-remote-p file 'user))
-;;                                           (concat user "@" host)
-;;                                           host)
-;;                                   "|"))
-;;                     "sudo:root@" host
-;;                     ":" (or (file-remote-p file 'localname)
-;;                             file))))
-
-;;         ;;; Source: https://github.com/hlissner/doom-emacs/blob/develop/core/autoload/files.el#L306
-;;         (defun rde/sudo-find-file (file)
-;;           "Open FILE as root."
-;;           (interactive "FOpen file as root: ")
-;;           (find-file (rde--sudo-file-path file)))
-
-;;         ;;; Source: https://github.com/hlissner/doom-emacs/blob/develop/core/autoload/files.el#L312
-;;         (defun rde/sudo-this-file ()
-;;           "Open the current file as root."
-;;           (interactive)
-;;           (find-file
-;;            (rde--sudo-file-path
-;;             (or buffer-file-name
-;;                 (when (or (derived-mode-p 'dired-mode)
-;;                           (derived-mode-p 'wdired-mode))
-;;                   default-directory)))))
-
-;;         (defun rde/yank-buffer-path ()
-;;           "Copy the current buffer file name to the clipboard."
-;;           (interactive)
-;;           (let ((filename (if (equal major-mode 'dired-mode)
-;;                               default-directory
-;;                               (buffer-file-name))))
-;;             (when filename
-;;               (kill-new filename)
-;;               (message "Copied buffer file name '%s' to the clipboard." filename))))
