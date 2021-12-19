@@ -10,35 +10,33 @@
   #:export (feature-emacs-files)
   #:export (feature-emacs-syntax))
 
-(define* (feature-emacs-evil
-          #:key
-          (collection? #t))
+(define* (feature-emacs-evil)
   "Configure evil-mode in Emacs."
   (define emacs-f-name 'evil)
   (define f-name (symbol-append 'emacs- emacs-f-name))
-
-  (ensure-pred boolean? collection?)
 
   (define (get-home-services config)
     (list
      (elisp-configuration-service
       emacs-f-name
-      `((setq evil-want-keybinding nil
+      `((eval-when-compile
+         (require 'evil)
+         (require 'evil-collection))
+        (setq evil-want-keybinding nil
               evil-want-fine-undo t)
-        (require 'evil)
         (evil-mode 1)
 
         ;; Keybindings
         (evil-define-key 'normal prog-mode-map (kbd "<tab>") 'evil-jump-item)
 
-        ,@(when collection?
-          `((require 'evil-collection))))
-      #:elisp-packages (append
-                        (if collection?
-                            (list emacs-evil-collection)
-                            '())
-                        (list emacs-evil)))))
-  
+        ;; V for evil-visual-line in magit
+        ,@(when (get-value 'emacs-git config)
+            `((with-eval-after-load
+	       'magit
+	       (define-key magit-hunk-section-map (kbd "V") 'evil-visual-line)))))
+      #:elisp-packages (list emacs-evil
+                             emacs-evil-collection))))
+
   (feature
    (name f-name)
    (values `((,f-name . #t)))
