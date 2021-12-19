@@ -5,6 +5,7 @@
   #:use-module (gnu services dbus)
   #:use-module (gnu services desktop)
   #:use-module (gnu services)
+  #:use-module (gnu services nix)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system keyboard)
   #:use-module (gnu system mapped-devices)
@@ -105,6 +106,7 @@
    ;;;
    ;;; Services
    ;;;
+   (feature-custom-services #:system-services (list (service nix-service-type)))
    (feature-base-services #:guix-substitute-urls (list "https://mirror.brielmaier.net")
                           #:guix-authorized-keys (list %brielmaier-public-key))
    (feature-desktop-services)
