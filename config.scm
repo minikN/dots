@@ -149,7 +149,7 @@
                                     "/run/current-system/profile/sbin")))))
    (feature-emacs-leader-keys)
    (feature-emacs-appearance)
-   (feature-emacs-completion #:mini-frame? #t)
+   (feature-emacs-completion)
    (feature-emacs-evil)
    (feature-emacs-erc #:erc-server "minikn.xyz"
                       #:erc-port 6698
