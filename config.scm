@@ -213,7 +213,6 @@
                             "gst-plugins-ugly"
                             "htop"
                             "vim"
-                            "jack2"
                             "make"
                             "mesa"
                             "mesa-headers"
@@ -228,7 +227,13 @@
                           (append
                            (pkgs
                             "streamlink"
+                            "calf"
+                            "jack2"
+                            ;; "nautilus"
+                            ;; "guitarix"
+                            "guitarix-lv2"
                             "carla"
+                            "qjackctl"
                             "youtube-dl"
                             "mpv")))
    (feature-games-base)
