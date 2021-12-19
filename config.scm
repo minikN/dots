@@ -154,6 +154,7 @@
    (feature-emacs-erc #:erc-server "minikn.xyz"
                       #:erc-port 6698
                       #:erc-nick "db")
+   (feature-emacs-dired)
    (feature-emacs-faces)
    (feature-emacs-files)
    (feature-emacs-git)
