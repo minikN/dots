@@ -23,28 +23,6 @@
      (service
       bluetooth-service-type)
 
-;;      (simple-service
-;;       'bluetooth-add-config
-;;       etc-service-type
-;;       `(("bluetooth/audio.conf"
-;;          ,(plain-file
-;;            "audio.conf"
-;;            "[General]
-;; AutoConnect=true
-     ;; MultiProfile = multiple
-     ;; [Headset]
-     ;; HFP = false"))))
-     (extra-special-file
-      "/etc/bluetooth/audio.conf"
-      (plain-file
-        "audio.conf"
-        "[General]
-AutoConnect=true
-MultiProfile = multiple
-[Headset]
-HFP = false"))
-
-     
      (simple-service
       'bluetooth-add-packages
       profile-service-type
