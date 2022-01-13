@@ -136,17 +136,6 @@
    ;;;
    ;;; Emacs
    ;;;
-   (feature-emacs #:extra-init-el
-                  ;; https://lists.gnu.org/archive/html/help-guix/2016-10/msg00041.html
-                  `((require 'tramp)
-                    (setq tramp-remote-path
-                          (append tramp-remote-path
-                                  '("~/.guix-home/bin"
-                                    "~/.guix-home/sbin"
-                                    "~/.guix-profile/bin"
-                                    "~/.guix-profile/sbin"
-                                    "/run/current-system/profile/bin"
-                                    "/run/current-system/profile/sbin")))))
    (feature-emacs-leader-keys)
    (feature-emacs-appearance)
    (feature-emacs-completion)
