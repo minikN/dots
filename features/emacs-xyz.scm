@@ -52,24 +52,24 @@ with Emacs as an editor."
     (list
      (elisp-configuration-service
       emacs-f-name
-      `(;; smartparens
+      `((eval-when-compile
+         ;; smartparens
         (require 'smartparens-config)
         (add-hook 'prog-mode-hook 'smartparens-mode)
         (define-key smartparens-mode-map (kbd "M-<up>") 'sp-backward-up-sexp)
         (define-key smartparens-mode-map (kbd "M-<down>") 'sp-down-sexp)
         (define-key smartparens-mode-map (kbd "M-<left>") 'sp-backward-sexp)
         (define-key smartparens-mode-map (kbd "M-<right>") 'sp-next-sexp)
-        
 
         ;; smart-hungry-delete
         (require 'smart-hungry-delete)
         (smart-hungry-delete-add-default-hooks)
         (global-set-key (kbd "M-<backspace>") 'smart-hungry-delete-backward-char)
-        (global-set-key (kbd "M-<delete>") 'smart-hungry-delete-forward-char))
+        (global-set-key (kbd "M-<delete>") 'smart-hungry-delete-forward-char)))
       #:elisp-packages (list emacs-smartparens
                              emacs-smart-hungry-delete))))
 
- (feature
+  (feature
    (name f-name)
    (values `((,f-name . #t)))
    (home-services-getter get-home-services)))
