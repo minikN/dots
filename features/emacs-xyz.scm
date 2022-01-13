@@ -101,8 +101,8 @@ with Emacs as an editor."
          (define-key global-map (kbd ,localleader) 'rde-local)
 
          ;; Assign default keymaps
-         (define-key rde-global (kbd "a") 'rde-apps)
-         (define-key rde-global (kbd "t") 'rde-toggles)))
+         (define-key rde-global (kbd "a") 'rde-app-map)
+         (define-key rde-global (kbd "t") 'rde-toggle-map)))
       #:elisp-packages
       (append (list (get-value 'emacs-configure-rde-keymaps config))))))
 
