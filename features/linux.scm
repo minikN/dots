@@ -1,4 +1,5 @@
 (define-module (features linux)
+  #:use-module (gnu home services)
   #:use-module (gnu services)
   #:use-module (gnu services dbus)
   #:use-module (gnu services desktop)
@@ -15,20 +16,24 @@
 
   (define (get-system-services _)
     (list
+     (service bluetooth-service-type
+              (bluetooth-configuration
+               (auto-enable? #t)))
      (simple-service
       'dbus-services
       dbus-root-service-type
-      (list blueman))
+      (list blueman))))
 
-     (service
-      bluetooth-service-type)
+  (define (get-home-services _)
+    (list
 
      (simple-service
       'bluetooth-add-packages
-      profile-service-type
+      home-profile-service-type
       (append (list blueman bluez)))))
 
   (feature
    (name 'bluetooth)
    (values '((bluetooth . #t)))
-   (system-services-getter get-system-services)))
+   (system-services-getter get-system-services)
+   (home-services-getter get-home-services)))

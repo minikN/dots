@@ -221,7 +221,7 @@
                             "calf"
                             "jack2"
                             ;; "nautilus"
-                            ;; "guitarix"
+                            "guitarix"
                             "guitarix-lv2"
                             "carla"
                             "qjackctl"
