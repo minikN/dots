@@ -136,9 +136,11 @@
    ;;;
    ;;; Emacs
    ;;;
+   (feature-emacs)
    (feature-emacs-leader-keys)
    (feature-emacs-appearance)
-   (feature-emacs-completion)
+   (feature-emacs-completion #:mini-frame? #t)
+   (feature-emacs-vertico)
    (feature-emacs-evil)
    (feature-emacs-erc #:erc-server "minikn.xyz"
                       #:erc-port 6698
