@@ -1,4 +1,5 @@
 (define-module (config)
+  #:use-module (gnu home-services shells)
   #:use-module (gnu packages)
   #:use-module (gnu services nix)
   #:use-module (gnu services)
@@ -108,7 +109,11 @@
                      (keyboard-layout "us" "altgr-intl" #:options '("ctrl:nocaps")))
 
    ;;; Services
-   (feature-custom-services #:system-services (list (service nix-service-type)))
+   (feature-custom-services #:system-services (list (service nix-service-type)) ;; TODO: Move to own feature
+                            #:home-services (list (simple-service               ;; TODO: Move to own feature
+                                                   'setup-nix-on-login
+                                                   home-shell-profile-service-type
+                                                   (list "source /run/current-system/profile/etc/profile.d/nix.sh"))))
    (feature-base-services #:guix-substitute-urls (list "https://substitutes.nonguix.org")
                           #:guix-authorized-keys (list %nonguix-public-key))
    (feature-desktop-services)
