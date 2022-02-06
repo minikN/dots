@@ -1,14 +1,15 @@
-(define-module (features linux)
+(define-module (personal features linux)
   #:use-module (gnu home services)
-  #:use-module (gnu services)
+  #:use-module (gnu home-services wm)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages networking)
   #:use-module (gnu services dbus)
   #:use-module (gnu services desktop)
-  #:use-module (gnu packages networking)
-  #:use-module (gnu packages linux)
+  #:use-module (gnu services)
   #:use-module (guix gexp)
-  #:use-module (rde packages)
-  #:use-module (rde features)
   #:use-module (rde features predicates)
+  #:use-module (rde features)
+  #:use-module (rde packages)
   #:export (feature-bluetooth))
 
 (define* (feature-bluetooth)
@@ -24,13 +25,18 @@
       dbus-root-service-type
       (list blueman))))
 
-  (define (get-home-services _)
+  (define (get-home-services config)
     (list
-
      (simple-service
       'bluetooth-add-packages
       home-profile-service-type
-      (append (list blueman bluez)))))
+      (append (list blueman bluez)))
+     (when (get-value 'sway config)
+       (simple-service
+	'emacs-update-environment-variables-on-sway-start
+	home-sway-service-type
+	`((for_window "[app_id=\".blueman-manager-real\"]" floating enable, border pixel)
+          (for_window "[app_id=\".blueman-services-real\"]" floating enable, border pixel))))))
 
   (feature
    (name 'bluetooth)

@@ -1,21 +1,14 @@
 (define-module (config)
-  #:use-module (flat packages emacs)
-  #:use-module (gnu packages networking)
   #:use-module (gnu packages)
-  #:use-module (gnu services dbus)
-  #:use-module (gnu services desktop)
-  #:use-module (gnu services)
   #:use-module (gnu services nix)
-  #:use-module (gnu system file-systems)
+  #:use-module (gnu services)
   #:use-module (gnu system keyboard)
-  #:use-module (gnu system mapped-devices)
   #:use-module (guix gexp)
   #:use-module (ice-9 match)
-  #:use-module (nongnu packages linux)
-  #:use-module (nongnu system linux-initrd)
+  #:use-module (personal features emacs-xyz)
+  #:use-module (personal features linux)
+  #:use-module (personal geekcave)
   #:use-module (rde features base)
-  #:use-module (rde features bittorrent)
-  #:use-module (rde features docker)
   #:use-module (rde features emacs)
   #:use-module (rde features fontutils)
   #:use-module (rde features gnupg)
@@ -24,19 +17,12 @@
   #:use-module (rde features mail)
   #:use-module (rde features password-utils)
   #:use-module (rde features shells)
-  #:use-module (rde features shellutils)
   #:use-module (rde features ssh)
-  #:use-module (rde features system)
   #:use-module (rde features terminals)
-  #:use-module (rde features tmux)
   #:use-module (rde features version-control)
   #:use-module (rde features wm)
   #:use-module (rde features xdg)
-  #:use-module (rde features)
-  #:use-module (rde packages)
-  #:use-module (features games)
-  #:use-module (features linux)
-  #:use-module (features emacs-xyz))
+  #:use-module (rde features))
 
 (define* (pkgs #:rest lst)
   (map specification->package+output lst))
@@ -70,8 +56,14 @@
 (define mailbox-isync-settings
   (generate-isync-serializer "imap.mailbox.org" mailbox-folder-mapping))
 
-(define %db-features
+;;;
+;;; Common features
+;;; These include all features I need to be present
+;;; despite the machine we're dealing with.
+;;;
+(define %main-features
   (list
+   ;;; User info
    (feature-user-info #:user-name "db"
                       #:full-name "Demis Balbach"
                       #:email "db@minikn.xyz"
@@ -82,6 +74,8 @@
                                           "cdrom"
                                           "disk"
                                           "lp"))
+
+   ;;; Mail
    (feature-mail-settings #:mail-accounts
                           (list (mail-account
                                  (id 'personal)
@@ -91,51 +85,45 @@
                           #:mailing-lists
                           (list (mail-lst 'guix-devel "guix-devel@gnu.org"
                                     '("https://yhetil.org/guix-devel/0"))))
-   (feature-ssh)
+
+   ;;; GnuPG
    (feature-gnupg #:gpg-primary-key "F17DDB98CC3C405C"
                   #:gpg-ssh-agent? #t
                   #:ssh-keys '(("E3FFA5A1B444A4F099E594758008C1D8845EC7C0")))
+
+   ;;; SSH
+   (feature-ssh)
+
+   ;;; Git
+   (feature-git #:sign-commits? #t
+                #:git-gpg-sign-key "F17DDB98CC3C405C"
+                #:git-send-email? #t)
+
+   ;;; Passwords
    (feature-password-store #:remote-password-store-url "git@gitlab.com:minikN/pass.git")
+
+   ;;; Keyboard layout
    (feature-keyboard #:keyboard-layout
-                     (keyboard-layout "us" "altgr-intl" #:options '("ctrl:nocaps")))))
+                     (keyboard-layout "us" "altgr-intl" #:options '("ctrl:nocaps")))
 
-(define %main-features
-  (list
-
-   ;;;
    ;;; Services
-   ;;;
    (feature-custom-services #:system-services (list (service nix-service-type)))
    (feature-base-services #:guix-substitute-urls (list "https://substitutes.nonguix.org")
                           #:guix-authorized-keys (list %nonguix-public-key))
    (feature-desktop-services)
 
-   ;;;
    ;;; Bluetooth
-   ;;;
    (feature-bluetooth)
 
-   ;;;
    ;;; Fonts
-   ;;;
    (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))
 
-   ;;;
    ;;; Terminal, shell
    (feature-zsh)
    (feature-alacritty #:config-file (local-file "./config/alacritty/alacritty.yml")
                       #:default-terminal? #t)
 
-   ;;;
-   ;;; Git
-   ;;;
-   (feature-git #:sign-commits? #t
-                #:git-gpg-sign-key "F17DDB98CC3C405C"
-                #:git-send-email? #t)
-
-   ;;;
    ;;; Emacs
-   ;;;
    (feature-emacs)
    (feature-emacs-leader-keys)
    (feature-emacs-appearance)
@@ -155,9 +143,7 @@
    (feature-emacs-syntax)
    (feature-emacs-which-key)
 
-   ;;;
    ;;; Mail
-   ;;;
    (feature-notmuch)
    (feature-l2md)
    (feature-msmtp #:msmtp-provider-settings
@@ -167,12 +153,23 @@
                   #:isync-serializers
                   `((mailbox . ,mailbox-isync-settings)))
 
-   ;;;
    ;;; WM
-   ;;;
    (feature-sway #:xwayland? #t
                  #:extra-config
-                 `((include ,(local-file "./config/sway/config"))))
+                 `((default_border none)
+                   (output DP-2 pos 0 0)
+                   (output HDMI-A-1 pos 2560 0)
+                   (workspace 1 output DP-2)     ;; Browser
+                   (workspace 2 output HDMI-A-1) ;; Terminal
+                   (workspace 3 output HDMI-A-1) ;; Code
+                   (workspace 4 output HDMI-A-1) ;; Agenda
+                   (workspace 5 output DP-2)     ;; Music/Video
+                   (workspace 6 output DP-2)     ;; Chat
+                   (workspace 7 output DP-2)     ;; Games
+                   (assign "[app_id=\"Chromium-browser\"]" workspace 1) ;; TODO: Move
+                   (for_window "[app_id=\"pavucontrol\"]" floating enable, border pixel) ;; TODO: Move
+                   (for_window "[app_id=\"pinentry-qt\"]" floating enable, border pixel) ;; TODO: Move
+                   ))
    (feature-sway-run-on-tty #:sway-tty-number 2)
    (feature-sway-screenshot)
    (feature-sway-statusbar)
@@ -188,9 +185,7 @@
                  (publicshare "$HOME")
                  (templates "$HOME")))
 
-   ;;;
    ;;; Packages
-   ;;;
    (feature-base-packages #:system-packages
                           (append
                            (pkgs
@@ -227,42 +222,14 @@
                             "carla"
                             "qjackctl"
                             "youtube-dl"
-                            "mpv")))
-   (feature-games-base)
-   (feature-games-steam)))
-(define %geekcave-filesystems
-  (list (file-system ;; System partition
-         (device (file-system-label "GUIX"))
-         (mount-point "/")
-         (type "btrfs"))
-        (file-system ;; Games partition
-         (device (file-system-label "GAMES"))
-         (mount-point "/mnt/games")
-         (type "btrfs"))
-        (file-system ;; Boot partition
-         (device (file-system-label "BOOT"))
-         (mount-point "/boot/efi")
-         (type "vfat"))))
-
-(define %geekcave-features
-  (list
-   (feature-host-info #:host-name "geekcave"
-                      #:timezone  "Europe/Berlin"
-                      #:locale "en_US.utf8")
-   (feature-kernel #:kernel linux-5.15
-                   #:kernel-arguments (list "modprobe.blacklist=nouveau")
-                   #:initrd microcode-initrd
-                   #:firmware (list amdgpu-firmware linux-firmware))
-   (feature-file-systems #:file-systems %geekcave-filesystems)
-   (feature-hidpi)))
+                            "mpv")))))
 
 (define-public geekcave-config
   (rde-config
    (features
     (append
-     %db-features
      %main-features
-     %geekcave-features))))
+     geekcave-features))))
 
 (define geekcave-os
   (rde-config-operating-system geekcave-config))
@@ -275,5 +242,9 @@
     (match target
 	   ("geekcave-he" geekcave-he)
 	   ("geekcave-os" geekcave-os))))
-(pretty-print-rde-config geekcave-config)
+
+;;; Enable this to print the entire config object
+;;; to see what's enable for example
+;(pretty-print-rde-config geekcave-config)
+
 (dispatcher)

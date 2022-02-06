@@ -1,10 +1,10 @@
-(define-module (features emacs-xyz)
+(define-module (personal features emacs-xyz)
   #:use-module (gnu packages emacs-xyz)
   #:use-module (guix gexp)
   #:use-module (rde features)
   #:use-module (rde features predicates)
   #:use-module (rde features emacs)
-  
+
   #:export (feature-emacs-evil)
   #:export (feature-emacs-leader-keys)
   #:export (feature-emacs-files)
