@@ -235,6 +235,10 @@
          (device (file-system-label "GUIX"))
          (mount-point "/")
          (type "btrfs"))
+        (file-system ;; Games partition
+         (device (file-system-label "GAMES"))
+         (mount-point "/mnt/games")
+         (type "btrfs"))
         (file-system ;; Boot partition
          (device (file-system-label "BOOT"))
          (mount-point "/boot/efi")
