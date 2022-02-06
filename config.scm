@@ -139,7 +139,7 @@
    (feature-emacs)
    (feature-emacs-leader-keys)
    (feature-emacs-appearance)
-   (feature-emacs-completion #:mini-frame? #t)
+   (feature-emacs-completion #:mini-frame? #f)
    (feature-emacs-vertico)
    (feature-emacs-evil)
    (feature-emacs-erc #:erc-server "minikn.xyz"
