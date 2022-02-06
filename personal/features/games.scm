@@ -41,7 +41,9 @@
    (values '((games-base . #t)))
    (home-services-getter get-home-services)))
 
-(define* (feature-games-steam)
+(define* (feature-games-steam
+          #:key
+          (sandbox-location #f))
   "Install and configure steam."
 
   (define (get-home-services config)
@@ -52,6 +54,10 @@
       home-profile-service-type
       (append
        (list steam)))
+     (when sandbox-location
+       (simple-service 'steam-set-sandbox-location
+		       home-environment-variables-service-type
+		       `(("GUIX_SANDBOX_HOME" . ,sandbox-location))))
      (when (get-value 'sway config)
        (simple-service
 	'emacs-update-environment-variables-on-sway-start

@@ -16,7 +16,7 @@
          (type "btrfs"))
         (file-system ;; Games partition
          (device (file-system-label "GAMES"))
-         (mount-point "/mnt/games")
+         (mount-point "/home/db/games") ;; TODO: Fix mount point
          (type "btrfs"))
         (file-system ;; Boot partition
          (device (file-system-label "BOOT"))
@@ -44,5 +44,5 @@
 
    ;;; Games
    (feature-games-base)
-   (feature-games-steam)))
+   (feature-games-steam #:sandbox-location "~/games/steam-sandbox")))
 
