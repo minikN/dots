@@ -123,8 +123,9 @@
 
    ;;;
    ;;; Terminal, shell
-   (feature-alacritty)
    (feature-zsh)
+   (feature-alacritty #:config-file (local-file "./config/alacritty/alacritty.yml")
+                      #:default-terminal? #t)
 
    ;;;
    ;;; Git
