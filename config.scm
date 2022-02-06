@@ -195,6 +195,7 @@
                           (append
                            (pkgs
                             "adwaita-icon-theme"
+                            "hicolor-icon-theme"
                             "curl"
                             "git"
                             "gst-libav"
