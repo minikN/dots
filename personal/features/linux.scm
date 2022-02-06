@@ -36,7 +36,8 @@
 	'emacs-update-environment-variables-on-sway-start
 	home-sway-service-type
 	`((for_window "[app_id=\".blueman-manager-real\"]" floating enable, border pixel)
-          (for_window "[app_id=\".blueman-services-real\"]" floating enable, border pixel))))))
+          (for_window "[app_id=\".blueman-services-real\"]" floating enable, border pixel)
+          (exec blueman-applet))))))
 
   (feature
    (name 'bluetooth)
