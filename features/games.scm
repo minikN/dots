@@ -28,9 +28,9 @@
              spirv-headers
              spirv-tools
              vkd3d
-             dxvk-next
+             ;dxvk-next
              wine
-             wine-staging
+             ;wine-staging
              winetricks
              vulkan-loader
              vulkan-tools
