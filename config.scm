@@ -169,6 +169,8 @@
                    (assign "[app_id=\"Chromium-browser\"]" workspace 1) ;; TODO: Move
                    (for_window "[app_id=\"pavucontrol\"]" floating enable, border pixel) ;; TODO: Move
                    (for_window "[app_id=\"pinentry-qt\"]" floating enable, border pixel) ;; TODO: Move
+                   (bindsym $mod+grave exec $term) ;; TODO: Move
+                   (bindsym $mod+Shift+q kill) ;; TODO: Move
                    ))
    (feature-sway-run-on-tty #:sway-tty-number 2)
    (feature-sway-screenshot)
