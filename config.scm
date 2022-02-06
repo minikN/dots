@@ -34,7 +34,6 @@
   #:use-module (rde features xdg)
   #:use-module (rde features)
   #:use-module (rde packages)
-  #:use-module (features applauncher)
   #:use-module (features games)
   #:use-module (features linux)
   #:use-module (features emacs-xyz))
