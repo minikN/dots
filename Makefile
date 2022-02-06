@@ -1,5 +1,9 @@
 CONFIG_FILE = ./config.scm
-GLP = ./
+
+# Add ./ and ../rde to GUILE_LOAD_PATH
+RDE = ../rde
+GLP = ./:$(RDE)
+
 
 %-home-build:
 	GUILE_LOAD_PATH=$(GLP) TARGET=$*-he \
