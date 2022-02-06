@@ -108,16 +108,6 @@
    (feature-keyboard #:keyboard-layout
                      (keyboard-layout "us" "altgr-intl" #:options '("ctrl:nocaps")))
 
-   ;;; Services
-   (feature-custom-services #:system-services (list (service nix-service-type)) ;; TODO: Move to own feature
-                            #:home-services (list (simple-service               ;; TODO: Move to own feature
-                                                   'setup-nix-on-login
-                                                   home-shell-profile-service-type
-                                                   (list "source /run/current-system/profile/etc/profile.d/nix.sh"))))
-   (feature-base-services #:guix-substitute-urls (list "https://substitutes.nonguix.org")
-                          #:guix-authorized-keys (list %nonguix-public-key))
-   (feature-desktop-services)
-
    ;;; Bluetooth
    (feature-bluetooth)
 
@@ -181,6 +171,17 @@
    (feature-sway-run-on-tty #:sway-tty-number 2)
    (feature-sway-screenshot)
    (feature-sway-statusbar)
+
+   ;;; Services
+   (feature-custom-services #:system-services (list (service nix-service-type)) ;; TODO: Move to own feature
+                            #:home-services (list (simple-service               ;; TODO: Move to own feature
+                                                   'setup-nix-on-login
+                                                   home-shell-profile-service-type
+                                                   (list "source /run/current-system/profile/etc/profile.d/nix.sh"))))
+   (feature-base-services #:guix-substitute-urls (list "https://substitutes.nonguix.org")
+                          #:guix-authorized-keys (list %nonguix-public-key))
+   (feature-desktop-services)
+
    (feature-pipewire)
    (feature-rofi)
    (feature-xdg #:xdg-user-directories-configuration
