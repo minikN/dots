@@ -22,6 +22,7 @@
   #:use-module (rde features version-control)
   #:use-module (rde features wm)
   #:use-module (rde features xdg)
+  #:use-module (rde features xdisorg)
   #:use-module (rde features))
 
 (define* (pkgs #:rest lst)
@@ -176,6 +177,7 @@
    (feature-sway-screenshot)
    (feature-sway-statusbar)
    (feature-pipewire)
+   (feature-rofi)
    (feature-xdg #:xdg-user-directories-configuration
                 (home-xdg-user-directories-configuration
                  (music "$HOME/music")
