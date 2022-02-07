@@ -8,7 +8,93 @@
   #:export (feature-emacs-evil)
   #:export (feature-emacs-leader-keys)
   #:export (feature-emacs-files)
-  #:export (feature-emacs-syntax))
+  #:export (feature-emacs-syntax)
+  #:export (feature-emacs-lang-base)
+  #:export (feature-emacs-lang-javascript)
+  )
+
+(define* (feature-emacs-lang-base
+          #:key
+          (lsp? #t))
+  "Configure Emacs for programming."
+  (ensure-pred boolean? lsp?)
+  (define emacs-f-name 'lang-base)
+  (define f-name (symbol-append 'emacs- emacs-f-name))
+
+  (define (get-home-services config)
+    (list
+     (elisp-configuration-service
+      emacs-f-name
+      `((eval-when-compile
+         ,@(if lsp?
+               `((setq lsp-enable-folding nil
+                       lsp-enable-text-document-color nil
+                       lsp-enable-on-type-formatting nil
+                       lsp-headerline-breadcrumb-enable nil)
+                 (require 'lsp-mode))
+               ;; TODO: Add consult-lsp if emacs-consult is enabled.
+               ;; TODO: Add alternative to lsp-mode.
+               '())))
+      #:elisp-packages (append (if lsp?
+                                   (list emacs-lsp-mode)
+                                   '())))))
+  (feature
+   (name f-name)
+   (values `((,f-name . #t)
+             (lsp ' lsp?)))
+   (home-services-getter get-home-services)))
+
+(define* (feature-emacs-lang-javascript)
+  "Configure Emacs for javascript."
+  (define emacs-f-name 'lang-javascript)
+  (define f-name (symbol-append 'emacs- emacs-f-name))
+
+  (define (get-home-services config)
+    (let* ((lsp (get-value 'lsp config)))
+      (list
+       (elisp-configuration-service
+        emacs-f-name
+        `((with-eval-after-load
+           'js
+           (add-hook 'js-mode-hook 'js2-minor-mode)
+           ,@(if lsp
+                 `((add-hook 'js-mode-hook 'lsp))
+                 '()))
+          (with-eval-after-load
+           'js2-mode
+           (add-hook 'js2-minor-mode-hook 'js2-refactor-mode)
+           (setq js-chain-indent t
+                 js2-basic-offset 2
+                 js2-skip-preprocessor-directives t
+                 js2-mode-show-parse-errors nil
+                 js2-mode-show-strict-warnings nil
+                 js2-strict-missing-semi-warning nil
+                 js2-highlight-level 3
+                 js2-idle-timer-delay 0.15))
+          (define-derived-mode typescript-tsx-mode web-mode "TypeScript-tsx")
+          (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+          (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
+          (with-eval-after-load
+           'typescript-mode
+           ,@(if lsp
+                 `((add-hook 'typescript-mode-hook 'lsp))
+                 '()))
+          (with-eval-after-load
+           'web-mode
+           ,@(if lsp
+                 `((add-hook 'typescript-tsx-mode-hook 'lsp))
+                 '())))
+        #:elisp-packages (list emacs-js2-mode
+                               emacs-js2-refactor-el
+                               emacs-typescript-mode
+                               emacs-web-mode ;; TODO: Move to emacs-feature-lang-web?
+                               )))))
+  (feature
+   (name f-name)
+   (values `((,f-name . #t)
+             (typescript ' typescript?)))
+   (home-services-getter get-home-services)))
+
 
 (define* (feature-emacs-evil)
   "Configure evil-mode in Emacs."

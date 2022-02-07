@@ -140,6 +140,9 @@
    (feature-emacs-project)
    (feature-emacs-syntax)
    (feature-emacs-which-key)
+   (feature-emacs-lang-base)
+   (feature-emacs-lang-javascript)
+
    ;; direnv
    (feature-direnv)
 
