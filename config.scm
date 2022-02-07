@@ -18,6 +18,7 @@
   #:use-module (rde features mail)
   #:use-module (rde features password-utils)
   #:use-module (rde features shells)
+  #:use-module (rde features shellutils)
   #:use-module (rde features ssh)
   #:use-module (rde features terminals)
   #:use-module (rde features version-control)
@@ -138,6 +139,8 @@
    (feature-emacs-project)
    (feature-emacs-syntax)
    (feature-emacs-which-key)
+   ;; direnv
+   (feature-direnv)
 
    ;;; Mail
    (feature-notmuch)
