@@ -117,8 +117,9 @@
 
    ;;; Terminal, shell
    (feature-zsh)
+   (feature-vterm)
    (feature-alacritty #:config-file (local-file "./config/alacritty/alacritty.yml")
-                      #:default-terminal? #t)
+                      #:default-terminal? #f)
 
    ;;; Emacs
    (feature-emacs)
