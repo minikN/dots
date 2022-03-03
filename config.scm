@@ -9,6 +9,7 @@
   #:use-module (personal features emacs-xyz)
   #:use-module (personal features linux)
   #:use-module (personal geekcave)
+  #:use-module (personal workhorse)
   #:use-module (rde features base)
   #:use-module (rde features emacs)
   #:use-module (rde features fontutils)
@@ -257,15 +258,30 @@
      %main-features
      geekcave-features))))
 
+(define-public workhorse-config
+  (rde-config
+   (features
+    (append
+     %main-features
+     workhorse-features))))
+
 (define geekcave-os
   (rde-config-operating-system geekcave-config))
 
 (define geekcave-he
   (rde-config-home-environment geekcave-config))
 
+(define workhorse-os
+  (rde-config-operating-system workhorse-config))
+
+(define workhorse-he
+  (rde-config-home-environment workhorse-config))
+
 (define (dispatcher)
   (let ((target (getenv "TARGET")))
     (match target
+	   ("workhorse-he" workhorse-he)
+	   ("workhorse-os" workhorse-os)
 	   ("geekcave-he" geekcave-he)
 	   ("geekcave-os" geekcave-os))))
 
