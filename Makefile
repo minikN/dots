@@ -4,19 +4,25 @@ CONFIG_FILE = ./config.scm
 RDE = ../rde
 GLP = ./:$(RDE)
 
+.DEFAULT_GOAL := hr
 
-%-home-build:
-	GUILE_LOAD_PATH=$(GLP) TARGET=$*-he \
-			guix home build $(CONFIG_FILE)
+# hr: home reconfigure
+# hb: home build
+# sr: system reconfigure
+# sb: system build
 
-%-home-reconfigure:
-	GUILE_LOAD_PATH=$(GLP) TARGET=$*-he \
+hr:
+	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-he \
 			guix home reconfigure $(CONFIG_FILE)
 
-%-system-build:
-	GUILE_LOAD_PATH=$(GLP) TARGET=$*-os \
-			guix system build $(CONFIG_FILE)
+hb:
+	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-he \
+			guix home build $(CONFIG_FILE)
 
-%-system-reconfigure:
-	GUILE_LOAD_PATH=$(GLP) TARGET=$*-os \
-			sudo -E guix system reconfigure $(CONFIG_FILE)
+sr:
+	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-os \
+			guix system reconfigure $(CONFIG_FILE)
+
+sb:
+	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-os \
+			guix system build $(CONFIG_FILE)
