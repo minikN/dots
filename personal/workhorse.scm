@@ -27,15 +27,17 @@
    ;;; Host info
    (feature-host-info #:host-name "workhorse"
                       #:timezone  "Europe/Berlin"
-                      #:locale "en_US.utf8")
+                      #:locale "en_US.UTF-8")
 
    ;; Packages
    (feature-base-packages #:system-packages
-                          (append (pkgs "xf86-video-nouveau")))
+                          (append (pkgs "xf86-video-nouveau"
+                                        "wpa-supplicant")))
    
    ;;; Kernel
    (feature-kernel #:kernel linux-5.15
                    #:initrd microcode-initrd
+                   #:initrd-modules '("vmd")
                    #:firmware (list linux-firmware))
 
    ;;; File systems
