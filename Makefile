@@ -26,3 +26,10 @@ sr:
 sb:
 	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-os \
 			guix system build $(CONFIG_FILE)
+
+channels-pull:
+	guix pull -C channels/channels-lock.scm
+
+channels-update-lock:
+	guix time-machine -C channels/channels.scm -- \
+	describe -f channels > channels/channels-lock.scm
