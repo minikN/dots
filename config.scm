@@ -129,8 +129,9 @@
    (feature-emacs-vertico)
    (feature-emacs-evil)
    (feature-emacs-erc #:erc-server "minikn.xyz"
-                      #:erc-port 6698
-                      #:erc-nick "db")
+                      #:erc-port 6697
+                      #:erc-nick "minikN"
+                      #:extra-config `((setq erc-email-userid "minikN")))
    (feature-emacs-dired)
    (feature-emacs-faces)
    (feature-emacs-files)
