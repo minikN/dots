@@ -30,15 +30,19 @@
                       #:locale "en_US.UTF-8")
 
    ;;; Kernel
-   (feature-kernel #:kernel linux-5.15
+   (feature-kernel #:kernel linux
                    #:initrd microcode-initrd
                    #:initrd-modules '("vmd")
-                   #:firmware (list linux-firmware))
+                   #:firmware (list linux-firmware sof-firmware))
 
    ;;; File systems
    (feature-file-systems #:file-systems workhorse-filesystems)
 
    ;;; HiDPI
-   (feature-hidpi)))
+   (feature-hidpi)
+
+   ;;; Fonts
+   (feature-fonts #:font-monospace (font "Iosevka" #:size 13 #:weight 'semi-light))))
+
 
 
