@@ -110,9 +110,6 @@
    ;;; Bluetooth
    (feature-bluetooth)
 
-   ;;; Fonts
-   (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))
-
    ;;; Terminal, shell
    (feature-zsh)
    (feature-vterm)

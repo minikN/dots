@@ -7,10 +7,8 @@
   #:use-module (rde features base)
   #:use-module (rde features linux)
   #:use-module (rde features system)
+  #:use-module (rde features fontutils)
   #:export (workhorse-features))
-
-(define* (pkgs #:rest lst)
-  (map specification->package+output lst))
 
 (define workhorse-filesystems
   (list (file-system ;; System partition

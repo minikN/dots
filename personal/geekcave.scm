@@ -6,6 +6,7 @@
   #:use-module (rde features base)
   #:use-module (rde features linux)
   #:use-module (rde features system)
+  #:use-module (rde features fontutils)
   #:use-module (personal features games)
   #:export (geekcave-features))
 
@@ -41,6 +42,9 @@
 
    ;;; HiDPI
    (feature-hidpi)
+
+   ;;; Fonts
+   (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))
 
    ;;; Games
    (feature-games-base)
