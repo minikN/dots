@@ -181,6 +181,7 @@
                    (bindsym Right resize grow width 10px)
                    (bindsym Escape mode "default")
                    (})
+                   (exec nm-applet --indicator) ;; NetworkManager
                    ))
    (feature-sway-run-on-tty #:sway-tty-number 2)
    (feature-sway-screenshot)
