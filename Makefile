@@ -14,22 +14,22 @@ GLP = ./:$(RDE)
 hr:
 	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-he \
 			guix time-machine -C channels/channels-lock.scm -- \
-			guix home reconfigure $(CONFIG_FILE)
+			home reconfigure $(CONFIG_FILE)
 
 hb:
 	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-he \
 			guix time-machine -C channels/channels-lock.scm -- \
-			guix home build $(CONFIG_FILE)
+			home build $(CONFIG_FILE)
 
 sr:
 	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-os \
-			guix time-machine -C channels/channels-lock.scm -- \
-			guix system reconfigure $(CONFIG_FILE)
+			sudo -E guix time-machine -C channels/channels-lock.scm -- \
+			system reconfigure $(CONFIG_FILE)
 
 sb:
 	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-os \
 			guix time-machine -C channels/channels-lock.scm -- \
-			guix system build $(CONFIG_FILE)
+			system build $(CONFIG_FILE)
 
 channels-pull:
 	guix pull -C channels/channels-lock.scm
