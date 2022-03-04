@@ -28,9 +28,6 @@
   #:use-module (rde features xdisorg)
   #:use-module (rde features))
 
-(define* (pkgs #:rest lst)
-  (map specification->package+output lst))
-
 (define %nonguix-public-key
   (plain-file
    "nonguix-signing-key.pub"
@@ -210,60 +207,78 @@
                  (download "$HOME/dl")
                  (desktop "$HOME")
                  (publicshare "$HOME")
-                 (templates "$HOME")))
+                 (templates "$HOME")))))
 
-   ;;; Packages
-   (feature-base-packages #:system-packages
-                          (append
-                           (pkgs
-                            "adwaita-icon-theme"
-                            "hicolor-icon-theme"
-                            "curl"
-                            "git"
-                            "gst-libav"
-                            "gst-plugins-bad"
-                            "gst-plugins-good"
-                            "gst-plugins-base"
-                            "gst-plugins-ugly"
-                            "htop"
-                            "vim"
-                            "make"
-                            "mesa"
-                            "mesa-headers"
-                            "mesa-utils"
-                            "mesa-opencl"
-                            "mesa-opencl-icd"
-                            "nyxt"
-                            "ungoogled-chromium-wayland"
-                            "ublock-origin-chromium"
-                            "pavucontrol"))
-                          #:home-packages
-                          (append
-                           (pkgs
-                            "streamlink"
-                            "calf"
-                            "jack2"
-                            ;; "nautilus"
-                            "guitarix"
-                            "guitarix-lv2"
-                            "carla"
-                            "qjackctl"
-                            "youtube-dl"
-                            "mpv")))))
+(define* (pkgs lst)
+  (map specification->package+output lst))
+
+(define %base-home-packages
+  (list
+   "curl"
+   "git"
+   "htop"
+   "vim"
+   "make"
+   "ungoogled-chromium-wayland"
+   "ublock-origin-chromium"
+   "pavucontrol"
+   ;; "streamlink"
+   ;; "calf"
+   ;; "jack2"
+   ;; "guitarix"
+   ;; "guitarix-lv2"
+   ;; "carla"
+   ;; "qjackctl"
+   ;; "youtube-dl"
+   ;; "mpv"
+   ))
+
+(define %base-system-packages
+  (list
+   "adwaita-icon-theme"
+   "hicolor-icon-theme"
+   "gst-libav"
+   "gst-plugins-bad"
+   "gst-plugins-good"
+   "gst-plugins-base"
+   "gst-plugins-ugly"
+   ;; "mesa"
+   ;; "mesa-headers"
+   ;; "mesa-utils"
+   ;; "mesa-opencl"
+   ;; "mesa-opencl-icd"
+   ))
 
 (define-public geekcave-config
   (rde-config
    (features
     (append
      %main-features
-     geekcave-features))))
+     geekcave-features
+     (list
+      (feature-base-packages
+       #:system-packages
+       (append (pkgs %base-system-packages))
+       #:home-packages
+       (append (pkgs %base-home-packages))))))))
 
 (define-public workhorse-config
   (rde-config
    (features
     (append
      %main-features
-     workhorse-features))))
+     workhorse-features
+     (list
+      (feature-base-packages
+       #:system-packages
+       (append
+        (pkgs
+         (append
+          (list "wpa-supplicant"
+                "xf86-video-nouveau")
+          %base-system-packages)))
+       #:home-packages
+       (append (pkgs %base-home-packages))))))))
 
 (define geekcave-os
   (rde-config-operating-system geekcave-config))

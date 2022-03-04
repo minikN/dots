@@ -30,9 +30,9 @@
                       #:locale "en_US.UTF-8")
 
    ;; Packages
-   (feature-base-packages #:system-packages
-                          (append (pkgs "xf86-video-nouveau"
-                                        "wpa-supplicant")))
+   ;; (feature-base-packages #:system-packages
+   ;;                        (append (pkgs "xf86-video-nouveau"
+   ;;                                      "wpa-supplicant")))
    
    ;;; Kernel
    (feature-kernel #:kernel linux-5.15
