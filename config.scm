@@ -171,13 +171,11 @@
                    (bindsym $mod+grave exec $term) ;; TODO: Move
                    (bindsym $mod+Shift+q kill) ;; TODO: Move
                    (bindsym $mod+Shift+Ctrl+r mode "resize")
-                   (mode "resize" {)
-                   (bindsym Left resize shrink width 10px)
-                   (bindsym Down resize grow height 10px)
-                   (bindsym Up resize shrink height 10px)
-                   (bindsym Right resize grow width 10px)
-                   (bindsym Escape mode "default")
-                   (})
+                   (mode "resize" ((bindsym Left resize shrink width 10px)
+                                   (bindsym Down resize grow height 10px)
+                                   (bindsym Up resize shrink height 10px)
+                                   (bindsym Right resize grow width 10px)
+                                   (bindsym Escape mode "default")))
                    (exec nm-applet --indicator) ;; NetworkManager
                    ))
    (feature-sway-run-on-tty #:sway-tty-number 2)
