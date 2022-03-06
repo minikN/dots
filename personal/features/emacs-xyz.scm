@@ -223,6 +223,9 @@ with Emacs as an editor."
     `((eval-when-compile (require 'configure-rde-keymaps))
       (with-eval-after-load
        'configure-rde-keymaps
+       (defconst rde-leader ,leader "RDE leader key.")
+       (defconst rde-localleader ,localleader "RDE localleader key.")
+
        (defvar rde-global nil "Global rde keymap.")
        (defvar rde-local nil "Local rde keymap.")
 
@@ -242,7 +245,9 @@ with Emacs as an editor."
 
 (feature
  (name f-name)
- (values `((emacs-leader-keys . #t)))
+ (values `((emacs-leader-keys . #t)
+           (rde-leader . ,leader)
+           (rde-localleader . ,localleader)))
  (home-services-getter get-home-services)))
 
 (define* (feature-emacs-files)
