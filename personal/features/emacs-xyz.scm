@@ -4,6 +4,7 @@
   #:use-module (rde features)
   #:use-module (rde features predicates)
   #:use-module (rde features emacs)
+  #:use-module (personal packages)
 
   #:export (feature-emacs-evil)
   #:export (feature-emacs-leader-keys)
