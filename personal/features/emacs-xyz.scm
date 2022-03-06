@@ -23,10 +23,21 @@
     ((@@ (rde features emacs) rde-emacs-configuration-package)
      'rde-lsp
      `((eval-when-compile (require 'eglot))
+       ;; FIXME: Rethink keybinding structure
+       (add-hook 'eglot--managed-mode-hook
+                 (lambda ()
+                   (local-set-key (kbd (concat rde-leader "  c")) '("Code" . rde-lsp-map))))
+       (define-prefix-command 'rde-lsp-map nil "Code")
        (with-eval-after-load
         'eglot
-        ;; TODO: Add common eglot config here
-        ))
+        (define-key rde-lsp-map (kbd "S") '("Start" . eglot))
+        (define-key rde-lsp-map (kbd "R") '("Reconnect" . eglot-reconnect))
+        (define-key rde-lsp-map (kbd "k") '("Shutdown" . eglot-shutdown))
+        (define-key rde-lsp-map (kbd "K") '("Shutdown (all)" . eglot-shutdown-all))
+        (define-key rde-lsp-map (kbd "r") '("Rename symbol" . eglot-rename))
+        (define-key rde-lsp-map (kbd "f") '("Format buffer or region" . eglot-format))
+        (define-key rde-lsp-map (kbd "c") '("Code actions" . eglot-code-actions))
+        (define-key rde-lsp-map (kbd "h") '("Help" . eldoc))))
      #:elisp-packages (list emacs-eglot)
      #:summary "Basic LSP configuration using eglot."))
 
