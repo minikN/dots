@@ -86,49 +86,96 @@
   (define f-name (symbol-append 'emacs- emacs-f-name))
 
   (define (get-home-services config)
-    (list
-     (elisp-configuration-service
-      emacs-f-name
-      `(;; Common configuration
-        (define-derived-mode typescript-tsx-mode web-mode "TypeScript-tsx")
-        (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
-        (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
-        (with-eval-after-load
-         'js
-         (add-hook 'js-mode-hook 'js2-minor-mode))
-        (with-eval-after-load
-         'js2-mode
-         (add-hook 'js2-minor-mode-hook 'js2-refactor-mode))
-        (setq js-chain-indent t
-              js2-basic-offset 2
-              js2-skip-preprocessor-directives t
-              js2-mode-show-parse-errors nil
-              js2-mode-show-strict-warnings nil
-              js2-strict-missing-semi-warning nil
-              js2-highlight-level 3
-              js2-idle-timer-delay 0.15)
+    (let* ((leader (get-value 'rde-leader config))
+           (localleader (get-value 'rde-localleader config)))
+      (list
+       (elisp-configuration-service
+        emacs-f-name
+        `((eval-when-compile
+           (require 'js)
+           (require 'js2-mode)
+           (require 'typescript-mode)
+           (require 'npm-mode))
+          (when (fboundp 'web-mode)
+            (define-derived-mode typescript-tsx-mode web-mode "TypeScript-tsx")
+            (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode)))
 
-        ,@(when lsp? ;; eglot configuration
-            `((with-eval-after-load
-               'eglot
-               (add-to-list 'eglot-server-programs
-                            '(typescript-tsx-mode . ("typescript-language-server" "--stdio"))))
-              (add-hook 'js-mode-hook 'eglot-ensure)
-              (add-hook 'typescript-mode-hook 'eglot-ensure)
-              (add-hook 'typescript-tsx-mode-hook 'eglot-ensure)))
+          (with-eval-after-load
+           'typescript-mode
+           (add-hook 'typescript-mode-hook 'npm-mode)
+           (setq typescript-indent-level 2))
 
-        ,@(when capf? ;; corfu configuration
-            `((add-hook 'js-mode-hook 'corfu-mode)
-              (add-hook 'typescript-mode-hook 'corfu-mode)
-              (add-hook 'typescript-tsx-mode-hook 'corfu-mode))))
-     #:elisp-packages (list emacs-js2-mode
-                            emacs-js2-refactor-el
-                            emacs-typescript-mode
-                            emacs-web-mode ;; TODO: Move to emacs-feature-lang-web?
-                            (when lsp? (get-value 'emacs-configure-lsp config))
-                            (when capf? (get-value 'emacs-configure-capf config))))))
-(feature
- (name f-name)
+          (with-eval-after-load
+           'web-mode
+           (add-hook 'typescript-tsx-mode-hook 'npm-mode)
+           (setq web-mode-markup-indent-offset 2
+                 web-mode-css-indent-offset 2
+                 web-mode-code-indent-offset 2))
+
+          (with-eval-after-load
+           'js
+           (add-hook 'js-mode-hook 'js2-minor-mode)
+           (add-hook 'js-mode-hook 'npm-mode))
+          (with-eval-after-load
+           'js2-mode
+           ;; (add-hook 'js2-minor-mode-hook 'js2-refactor-mode)
+           (setq js-chain-indent t
+                 js2-basic-offset 2
+                 js2-skip-preprocessor-directives t
+                 js2-mode-show-parse-errors nil
+                 js2-mode-show-strict-warnings nil
+                 js2-strict-missing-semi-warning nil
+                 js2-highlight-level 3
+                 js2-idle-timer-delay 0.15))
+
+          ;; Keybindings
+          ;; FIXME: Rethink keybinding structure
+          (require 'configure-rde-keymaps)
+
+          ;; js2-refactor-el
+          ;; (add-hook
+          ;;  'js2-refactor-mode-hook
+          ;;  (lambda () (js2r-add-keybindings-with-prefix "C-SPC C-SPC j")))
+
+          (add-hook
+           'npm-mode-hook
+           (lambda ()
+             (define-prefix-command 'rde-npm-map nil "NPM")
+             (define-key 'rde-npm-map (kbd "d") '("Install (--save-dev)" . npm-mode-npm-install-save-dev))
+             (define-key 'rde-npm-map (kbd "i") '("Install" . npm-mode-npm-install))
+             (define-key 'rde-npm-map (kbd "l") '("List" . npm-mode-npm-list))
+             (define-key 'rde-npm-map (kbd "n") '("Init" . npm-mode-npm-init))
+             (define-key 'rde-npm-map (kbd "r") '("Run" . npm-mode-npm-run))
+             (define-key 'rde-npm-map (kbd "s") '("Install (--save)" . npm-mode-npm-install-save))
+             (define-key 'rde-npm-map (kbd "u") '("Uninstall" . npm-mode-npm-uninstall))
+             (define-key 'rde-npm-map (kbd "v") '("Visit package.json" . npm-mode-visit-project-file))
+             ,@(when localleader
+                 `((local-set-key (kbd (concat ,localleader " n")) '("NPM" . rde-npm-map))))))
+
+          ,@(when lsp? ;; eglot configuration
+              `((require 'configure-rde-lsp)
+                (eval-when-compile (require 'eglot))
+                (with-eval-after-load
+                 'eglot
+		 (add-to-list 'eglot-server-programs
+                              '(typescript-tsx-mode . ("typescript-language-server" "--stdio"))))
+                (dolist (hook
+                         '(js-mode-hook
+                           typescript-mode-hook
+                           typescript-tsx-mode-hook))
+                        (add-hook hook
+                                  (lambda ()
+                                    (eglot-ensure)
+                                    (eglot--code-action eglot-code-action-organize-imports-ts "source.organizeImports.ts")
+                                    (eglot--code-action eglot-code-action-add-missing-imports-ts "source.addMissingImports.ts")
+                                    (eglot--code-action eglot-code-action-removed-unused-ts "source.removedUnused.ts")
+		                    (eglot--code-action eglot-code-action-fix-all-ts "source.fixAll.ts")
+                                    ,@(when localleader
+                                        `((local-set-key (kbd (concat ,localleader " i")) '("Add missing imports" . eglot-code-action-add-missing-imports-ts))
+                                          (local-set-key (kbd (concat ,localleader " o")) '("Organize imports" . eglot-code-action-organize-imports-ts))
+                                          (local-set-key (kbd (concat ,localleader " r")) '("Remove unused symbols" . eglot-code-action-removed-unused-ts))
+                                          (local-set-key (kbd (concat ,localleader " f")) '("Fix all" . eglot-code-action-fix-all-ts)))))))))
+
           ,@(when capf? ;; corfu configuration
               `((require 'configure-rde-capf)
                 (add-hook 'js-mode-hook 'corfu-mode)
