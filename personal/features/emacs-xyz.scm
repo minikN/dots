@@ -176,36 +176,37 @@
  (home-services-getter get-home-services)))
 
 (define* (feature-emacs-syntax)
-"Configure multiple packages for working better
+  "Configure multiple packages for working better
 with Emacs as an editor."
-(define emacs-f-name 'syntax)
-(define f-name (symbol-append 'emacs- emacs-f-name))
+  (define emacs-f-name 'syntax)
+  (define f-name (symbol-append 'emacs- emacs-f-name))
 
-(define (get-home-services config)
-  (list
-   (elisp-configuration-service
-    emacs-f-name
-    `((eval-when-compile
-       ;; smartparens
-       (require 'smartparens-config)
-       (add-hook 'prog-mode-hook 'smartparens-mode)
-       (define-key smartparens-mode-map (kbd "M-<up>") 'sp-backward-up-sexp)
-       (define-key smartparens-mode-map (kbd "M-<down>") 'sp-down-sexp)
-       (define-key smartparens-mode-map (kbd "M-<left>") 'sp-backward-sexp)
-       (define-key smartparens-mode-map (kbd "M-<right>") 'sp-next-sexp)
+  (define (get-home-services config)
+    (list
+     (elisp-configuration-service
+      emacs-f-name
+      `((eval-when-compile (require 'smartparens-config))
+        (add-hook 'prog-mode-hook 'smartparens-mode)
+        (with-eval-after-load
+         'smartparens
+         (define-key smartparens-mode-map (kbd "M-<up>") 'sp-backward-up-sexp)
+         (define-key smartparens-mode-map (kbd "M-<down>") 'sp-down-sexp)
+         (define-key smartparens-mode-map (kbd "M-<left>") 'sp-backward-sexp)
+         (define-key smartparens-mode-map (kbd "M-<right>") 'sp-next-sexp))
 
-       ;; smart-hungry-delete
-       (require 'smart-hungry-delete)
-       (smart-hungry-delete-add-default-hooks)
-       (global-set-key (kbd "M-<backspace>") 'smart-hungry-delete-backward-char)
-       (global-set-key (kbd "M-<delete>") 'smart-hungry-delete-forward-char)))
-    #:elisp-packages (list emacs-smartparens
-                           emacs-smart-hungry-delete))))
+        ;; smart-hungry-delete
+        (eval-when-compile (require 'smart-hungry-delete))
+        (smart-hungry-delete-add-default-hooks)
+        (normal-erase-is-backspace-mode 0)
+        (define-key prog-mode-map (kbd "M-DEL") 'smart-hungry-delete-backward-char)
+        (define-key prog-mode-map (kbd "M-<delete>") 'smart-hungry-delete-forward-char))
+      #:elisp-packages (list emacs-smartparens
+                             emacs-smart-hungry-delete))))
 
-(feature
- (name f-name)
- (values `((,f-name . #t)))
- (home-services-getter get-home-services)))
+  (feature
+   (name f-name)
+   (values `((,f-name . #t)))
+   (home-services-getter get-home-services)))
 
 (define* (feature-emacs-leader-keys
           #:key
