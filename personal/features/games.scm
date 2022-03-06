@@ -5,6 +5,7 @@
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages wine)
+  #:use-module (gnu packages gl)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services)
   #:use-module (guix gexp)
@@ -24,17 +25,22 @@
       'steam-add-packages
       home-profile-service-type
       (append
-       (list spirv-cross
+       (list ;; dxvk-next
+             ;; wine-staging
+             mesa
+             mesa-headers
+             mesa-opencl
+             mesa-opencl-icd
+             mesa-utils
+             spirv-cross
              spirv-headers
              spirv-tools
              vkd3d
-             ;dxvk-next
-             wine
-             ;wine-staging
-             winetricks
+             vulkan-headers
              vulkan-loader
              vulkan-tools
-             vulkan-headers)))))
+             wine
+             winetricks)))))
 
   (feature
    (name 'games-base)

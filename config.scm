@@ -239,13 +239,7 @@
    "gst-plugins-bad"
    "gst-plugins-good"
    "gst-plugins-base"
-   "gst-plugins-ugly"
-   ;; "mesa"
-   ;; "mesa-headers"
-   ;; "mesa-utils"
-   ;; "mesa-opencl"
-   ;; "mesa-opencl-icd"
-   ))
+   "gst-plugins-ugly"))
 
 (define-public geekcave-config
   (rde-config
