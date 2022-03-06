@@ -41,21 +41,36 @@
               tab-always-indent 'complete)))
      #:elisp-packages (list emacs-corfu)
      #:summary "Basic CAPF configuration using corfu."))
-  
+
+  (define emacs-configure-capf-doc
+    ((@@ (rde features emacs) rde-emacs-configuration-package)
+     'rde-capf-doc
+     `((eval-when-compile (require 'corfu-doc))
+       (with-eval-after-load
+        'corfu-doc
+        (define-key corfu-map (kbd "M-p") 'corfu-doc-scroll-down)
+        (define-key corfu-map (kbd "M-n") 'corfu-doc-scroll-up)
+        (define-key corfu-map (kbd "M-d") 'corfu-doc-toggle)))
+       #:elisp-packages (list emacs-corfu-doc)
+     #:summary "Basic configuration for showing CAPF docs using corfu-doc."))
+
   (feature
    (name f-name)
    (values (make-feature-values
             emacs-configure-lsp
-            emacs-configure-capf))))
+            emacs-configure-capf
+            emacs-configure-capf-doc))))
 
 (define* (feature-emacs-lang-javascript
           #:key
           (lsp? #t)
-          (capf? #t))
+          (capf? #t)
+          (doc? #t))
   "Configure Emacs for JavaScript and TypeScript."
   (ensure-pred boolean? lsp?)
   (ensure-pred boolean? capf?)
-  
+  (ensure-pred boolean? doc?)
+
   (define emacs-f-name 'lang-javascript)
   (define f-name (symbol-append 'emacs- emacs-f-name))
 
@@ -103,6 +118,27 @@
                             (when capf? (get-value 'emacs-configure-capf config))))))
 (feature
  (name f-name)
+          ,@(when capf? ;; corfu configuration
+              `((require 'configure-rde-capf)
+                (add-hook 'js-mode-hook 'corfu-mode)
+                (add-hook 'typescript-mode-hook 'corfu-mode)
+                (add-hook 'typescript-tsx-mode-hook 'corfu-mode)
+                ,@(when doc?
+                    `((require 'configure-rde-capf-doc)
+                      (add-hook 'js-mode-hook 'corfu-doc-mode)
+                      (add-hook 'typescript-mode-hook 'corfu-doc-mode)
+                      (add-hook 'typescript-tsx-mode-hook 'corfu-doc-mode))))))
+        #:elisp-packages (list emacs-js2-mode
+                               ;; emacs-js2-refactor-el
+                               emacs-typescript-mode
+                               emacs-npm-mode
+                               emacs-web-mode ;; TODO: Move to emacs-feature-lang-web?
+                               (when lsp? (get-value 'emacs-configure-lsp config))
+                               (when capf? (get-value 'emacs-configure-capf config))
+                               (when doc? (get-value 'emacs-configure-capf-doc config))
+                               (get-value 'emacs-configure-rde-keymaps config))))))
+  (feature
+   (name f-name)
  (values `((,f-name . #t)))
  (home-services-getter get-home-services)))
 
