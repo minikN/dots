@@ -8,7 +8,20 @@
   #:use-module (rde features system)
   #:use-module (rde features fontutils)
   #:use-module (personal features games)
-  #:export (geekcave-features))
+  #:export (geekcave-features
+            geekcave-sway-config))
+
+(define geekcave-sway-config
+  `((output DP-2 pos 0 0)
+    (output HDMI-A-1 pos 2560 0)
+    (workspace 1 output DP-2)     ;; Browser
+    (workspace 2 output HDMI-A-1) ;; Terminal
+    (workspace 3 output HDMI-A-1) ;; Code
+    (workspace 4 output HDMI-A-1) ;; Agenda
+    (workspace 5 output DP-2)     ;; Music/Video
+    (workspace 6 output DP-2)     ;; Chat
+    (workspace 7 output DP-2)     ;; Games
+    ))
 
 (define geekcave-filesystems
   (list (file-system ;; System partition

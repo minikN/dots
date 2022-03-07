@@ -152,36 +152,6 @@
                   #:isync-serializers
                   `((mailbox . ,mailbox-isync-settings)))
 
-   ;;; WM
-   (feature-sway #:xwayland? #t
-                 #:extra-config
-                 `((default_border none)
-                   (output DP-2 pos 0 0)
-                   (output HDMI-A-1 pos 2560 0)
-                   (workspace 1 output DP-2)     ;; Browser
-                   (workspace 2 output HDMI-A-1) ;; Terminal
-                   (workspace 3 output HDMI-A-1) ;; Code
-                   (workspace 4 output HDMI-A-1) ;; Agenda
-                   (workspace 5 output DP-2)     ;; Music/Video
-                   (workspace 6 output DP-2)     ;; Chat
-                   (workspace 7 output DP-2)     ;; Games
-                   (assign "[app_id=\"Chromium-browser\"]" workspace 1) ;; TODO: Move
-                   (for_window "[app_id=\"pavucontrol\"]" floating enable, border pixel) ;; TODO: Move
-                   (for_window "[app_id=\"pinentry-qt\"]" floating enable, border pixel) ;; TODO: Move
-                   (bindsym $mod+grave exec $term) ;; TODO: Move
-                   (bindsym $mod+Shift+q kill) ;; TODO: Move
-                   (bindsym $mod+Shift+Ctrl+r mode "resize")
-                   (mode "resize" ((bindsym Left resize shrink width 10px)
-                                   (bindsym Down resize grow height 10px)
-                                   (bindsym Up resize shrink height 10px)
-                                   (bindsym Right resize grow width 10px)
-                                   (bindsym Escape mode "default")))
-                   (exec nm-applet --indicator) ;; NetworkManager
-                   ))
-   (feature-sway-run-on-tty #:sway-tty-number 2)
-   (feature-sway-screenshot)
-   (feature-sway-statusbar)
-
    ;;; Services
    (feature-custom-services #:system-services (list (service nix-service-type)) ;; TODO: Move to own feature
                             #:home-services (list (simple-service               ;; TODO: Move to own feature
@@ -204,6 +174,22 @@
                  (desktop "$HOME")
                  (publicshare "$HOME")
                  (templates "$HOME")))))
+
+(define base-sway-config
+  `((default_border none)
+    (assign "[app_id=\"Chromium-browser\"]" workspace 1) ;; TODO: Move
+    (for_window "[app_id=\"pavucontrol\"]" floating enable, border pixel) ;; TODO: Move
+    (for_window "[app_id=\"pinentry-qt\"]" floating enable, border pixel) ;; TODO: Move
+    (bindsym $mod+grave exec $term) ;; TODO: Move
+    (bindsym $mod+Shift+q kill) ;; TODO: Move
+    (bindsym $mod+Shift+Ctrl+r mode "resize")
+    (mode "resize" ((bindsym Left resize shrink width 10px)
+                    (bindsym Down resize grow height 10px)
+                    (bindsym Up resize shrink height 10px)
+                    (bindsym Right resize grow width 10px)
+                    (bindsym Escape mode "default")))
+    (exec nm-applet --indicator) ;; NetworkManager
+    ))
 
 (define* (pkgs lst)
   (map specification->package+output lst))
@@ -250,7 +236,15 @@
        #:system-packages
        (append (pkgs %base-system-packages))
        #:home-packages
-       (append (pkgs %base-home-packages))))))))
+       (append (pkgs %base-home-packages)))
+      (feature-sway
+       #:xwayland? #t
+       #:extra-config
+       (append base-sway-config
+               geekcave-sway-config))
+      (feature-sway-run-on-tty #:sway-tty-number 2)
+      (feature-sway-screenshot)
+      (feature-sway-statusbar))))))
 
 (define-public workhorse-config
   (rde-config
@@ -268,7 +262,15 @@
                 "xf86-video-nouveau")
           %base-system-packages)))
        #:home-packages
-       (append (pkgs %base-home-packages))))))))
+       (append (pkgs %base-home-packages)))
+      (feature-sway
+       #:xwayland? #t
+       #:extra-config
+       (append base-sway-config
+               workhorse-sway-config))
+   (feature-sway-run-on-tty #:sway-tty-number 2)
+   (feature-sway-screenshot)
+   (feature-sway-statusbar))))))
 
 (define geekcave-os
   (rde-config-operating-system geekcave-config))
