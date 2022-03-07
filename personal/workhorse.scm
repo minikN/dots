@@ -39,6 +39,9 @@
    ;;; HiDPI
    (feature-hidpi)
 
+   ;;; Backlight
+   (feature-backlight)
+   
    ;;; Fonts
    (feature-fonts #:font-monospace (font "Iosevka" #:size 13 #:weight 'semi-light))))
 
