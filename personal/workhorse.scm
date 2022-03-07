@@ -56,7 +56,7 @@
    (feature-backlight)
    
    ;;; Fonts
-   (feature-fonts #:font-monospace (font "Iosevka" #:size 13 #:weight 'semi-light))))
+   (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))))
 
 
 
