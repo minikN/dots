@@ -1,0 +1,8 @@
+local NPM_DIR="$(pwd)/global_node_modules"
+[ ! -D $NPM_DIR ] && mkdir -p $NPM_DIR
+
+export PATH="$PATH:$NPM_DIR/bin"
+export MANPATH="${MANPATH-$(manpath)}:$NPM_DIR/share/man"
+export npm_config_prefix=$NPM_DIR
+
+use_guixs node
