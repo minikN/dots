@@ -229,8 +229,6 @@
   (rde-config
    (features
     (append
-     %main-features
-     geekcave-features
      (list
       (feature-base-packages
        #:system-packages
@@ -244,14 +242,14 @@
                geekcave-sway-config))
       (feature-sway-run-on-tty #:sway-tty-number 2)
       (feature-sway-screenshot)
-      (feature-sway-statusbar))))))
+      (feature-sway-statusbar))
+     %main-features
+     geekcave-features))))
 
 (define-public workhorse-config
   (rde-config
    (features
     (append
-     %main-features
-     workhorse-features
      (list
       (feature-base-packages
        #:system-packages
@@ -268,9 +266,11 @@
        #:extra-config
        (append base-sway-config
                workhorse-sway-config))
-   (feature-sway-run-on-tty #:sway-tty-number 2)
-   (feature-sway-screenshot)
-   (feature-sway-statusbar))))))
+      (feature-sway-run-on-tty #:sway-tty-number 2)
+      (feature-sway-screenshot)
+      (feature-sway-statusbar))
+     workhorse-features
+     %main-features))))
 
 (define geekcave-os
   (rde-config-operating-system geekcave-config))
