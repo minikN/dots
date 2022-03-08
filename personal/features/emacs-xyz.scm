@@ -97,26 +97,25 @@
            (require 'js2-mode)
            (require 'typescript-mode)
            (require 'npm-mode))
-          (when (fboundp 'web-mode)
-            (define-derived-mode typescript-tsx-mode web-mode "TypeScript-tsx")
-            (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode)))
 
-          (with-eval-after-load
-           'typescript-mode
-           (add-hook 'typescript-mode-hook 'npm-mode)
-           (setq typescript-indent-level 2))
+          ;; electric-pair-mode
+          (defun rde--setup-electric-pairs-for-jsx-tsx ()
+            (electric-pair-local-mode)
+            (setq-local electric-pair-pairs
+                        (append electric-pair-pairs
+                                '((60 . 62)))) ;; <, >
+            (setq-local electric-pair-text-pairs electric-pair-pairs))
 
-          (with-eval-after-load
-           'web-mode
-           (add-hook 'typescript-tsx-mode-hook 'npm-mode)
-           (setq web-mode-markup-indent-offset 2
-                 web-mode-css-indent-offset 2
-                 web-mode-code-indent-offset 2))
-
+          ;; js-mode
           (with-eval-after-load
            'js
-           (add-hook 'js-mode-hook 'js2-minor-mode)
-           (add-hook 'js-mode-hook 'npm-mode))
+           (add-hook 'js-mode-hook
+                     (lambda ()
+                       (rde--setup-electric-pairs-for-jsx-tsx)
+                       (js2-minor-mode)
+                       (npm-mode))))
+
+          ;; js2-mode
           (with-eval-after-load
            'js2-mode
            ;; (add-hook 'js2-minor-mode-hook 'js2-refactor-mode)
@@ -129,14 +128,35 @@
                  js2-highlight-level 3
                  js2-idle-timer-delay 0.15))
 
+          ;; typescript-mode
+          (with-eval-after-load
+           'typescript-mode
+           (add-hook 'typescript-mode-hook 'npm-mode)
+           (setq typescript-indent-level 2))
+
+          ;; typescript-tsx-mode
+          (when (fboundp 'web-mode)
+            (define-derived-mode typescript-tsx-mode web-mode "TypeScript[TSX]")
+            (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode)))
+          (with-eval-after-load
+           'web-mode
+           (setq web-mode-markup-indent-offset 2
+                 web-mode-css-indent-offset 2
+                 web-mode-code-indent-offset 2)
+           (add-hook 'typescript-tsx-mode-hook
+                     (lambda ()
+                       (rde--setup-electric-pairs-for-jsx-tsx)
+                       (npm-mode))))
+
           ;; Keybindings
           ;; FIXME: Rethink keybinding structure
           (require 'configure-rde-keymaps)
 
           ;; js2-refactor-el
-          ;; (add-hook
-          ;;  'js2-refactor-mode-hook
-          ;;  (lambda () (js2r-add-keybindings-with-prefix "C-SPC C-SPC j")))
+          (add-hook
+           'js2-refactor-mode-hook
+           ,@(when localleader
+               `((lambda () (js2r-add-keybindings-with-prefix (concat ,localleader " j"))))))
 
           (add-hook
            'npm-mode-hook
