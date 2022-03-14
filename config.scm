@@ -151,6 +151,8 @@
    (feature-isync #:isync-verbose #t
                   #:isync-serializers
                   `((mailbox . ,mailbox-isync-settings)))
+   ;;; Fonts
+   (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))
 
    ;;; Services
    (feature-custom-services #:system-services (list (service nix-service-type)) ;; TODO: Move to own feature

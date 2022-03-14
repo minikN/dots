@@ -56,9 +56,6 @@
    ;;; HiDPI
    (feature-hidpi)
 
-   ;;; Fonts
-   (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))
-
    ;;; Games
    (feature-games-base)
    (feature-games-steam #:sandbox-location "~/games/steam-sandbox")))
