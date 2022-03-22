@@ -245,7 +245,17 @@
                geekcave-sway-config))
       (feature-sway-run-on-tty #:sway-tty-number 2)
       (feature-sway-screenshot)
-      (feature-sway-statusbar))
+      (feature-waybar #:waybar-modules
+                      (list
+                        (waybar-module-workspaces)
+                        (waybar-module-window)
+                        (waybar-module-disk)
+                        (waybar-module-cpu)
+                        (waybar-module-memory)
+                        (waybar-module-temperature)
+                        (waybar-tray)
+                        (waybar-module-audio)
+                        (waybar-clock #:format "{:%H:%M}"))))
      %main-features
      geekcave-features))))
 
@@ -271,7 +281,6 @@
                workhorse-sway-config))
       (feature-sway-run-on-tty #:sway-tty-number 2)
       (feature-sway-screenshot)
-      ;(feature-sway-statusbar)
       (feature-waybar #:waybar-modules
                       (list
                         (waybar-module-workspaces)
@@ -283,7 +292,8 @@
                         (waybar-tray)
                         (waybar-module-audio)
                         (waybar-battery)
-                        (waybar-clock #:format "{:%H:%M}"))))
+                        (waybar-clock #:format "{:%H:%M}")))
+      )
      workhorse-features
      %main-features))))
 
