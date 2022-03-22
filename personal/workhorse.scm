@@ -21,7 +21,7 @@
     (workspace 5 output HDMI-A-1) ;; Music/Video
     (workspace 6 output HDMI-A-1) ;; Chat
     (workspace 7 output HDMI-A-1) ;; Games
-    ))
+    (output eDP-1 scale 1.5)))
 
 (define workhorse-filesystems
   (list (file-system ;; System partition

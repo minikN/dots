@@ -8,6 +8,7 @@
   #:use-module (ice-9 match)
   #:use-module (personal features emacs-xyz)
   #:use-module (personal features linux)
+  #:use-module (personal features wm)
   #:use-module (personal geekcave)
   #:use-module (personal workhorse)
   #:use-module (rde features base)
@@ -270,7 +271,19 @@
                workhorse-sway-config))
       (feature-sway-run-on-tty #:sway-tty-number 2)
       (feature-sway-screenshot)
-      (feature-sway-statusbar))
+      ;(feature-sway-statusbar)
+      (feature-waybar #:waybar-modules
+                      (list
+                        (waybar-module-workspaces)
+                        (waybar-module-window)
+                        (waybar-module-disk)
+                        (waybar-module-cpu)
+                        (waybar-module-memory)
+                        (waybar-module-temperature)
+                        (waybar-tray)
+                        (waybar-module-audio)
+                        (waybar-battery)
+                        (waybar-clock #:format "{:%H:%M}"))))
      workhorse-features
      %main-features))))
 
