@@ -14,7 +14,7 @@
    (make-channel-introduction
     "46c1d8bcca674d3a71cd077c52dde9552a89873d"
     (openpgp-fingerprint
-     "2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5"))))
+     "8141 6036 E81A 5CF7 8F80  1071 ECFC 8398 8B4E 4B9F"))))
  (channel
   (name 'flat)
   (url "https://github.com/flatwhatson/guix-channel.git")
