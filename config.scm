@@ -252,6 +252,7 @@
                         (waybar-module-workspaces)
                         (waybar-module-window)
                         (waybar-module-disk)
+                        (waybar-module-disk-games)
                         (waybar-module-cpu)
                         (waybar-module-memory)
                         (waybar-module-temperature)

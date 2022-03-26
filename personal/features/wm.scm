@@ -6,6 +6,7 @@
             waybar-module-memory
             waybar-module-cpu
             waybar-module-disk
+            waybar-module-disk-games
             waybar-module-audio
             waybar-module-window))
 
@@ -54,6 +55,13 @@
    `(("interval" . 30)
      ("format" . " {percentage_used}%"))))
 
+(define* (waybar-module-disk-games)
+  ((@@ (rde features wm) waybar-module)
+   'disk#games
+   `(("interval" . 30)
+     ("format" . " {percentage_used}%")
+     ("path" . "/home/db/games"))))
+
 (define* (waybar-module-audio)
   ((@@ (rde features wm) waybar-module)
    'pulseaudio
@@ -76,3 +84,4 @@
       ((margin-left . 1em)
        (margin-right . 1em))))
    #:placement 'modules-center))
+
