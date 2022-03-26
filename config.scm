@@ -22,6 +22,7 @@
   #:use-module (rde features shells)
   #:use-module (rde features shellutils)
   #:use-module (rde features ssh)
+  #:use-module (rde features system)
   #:use-module (rde features terminals)
   #:use-module (rde features version-control)
   #:use-module (rde features wm)
@@ -176,7 +177,8 @@
                  (download "$HOME/dl")
                  (desktop "$HOME")
                  (publicshare "$HOME")
-                 (templates "$HOME")))))
+                 (templates "$HOME")))
+   (feature-bootloader)))
 
 (define base-sway-config
   `((default_border none)
