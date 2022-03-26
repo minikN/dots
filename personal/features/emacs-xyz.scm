@@ -277,8 +277,8 @@ with Emacs as an editor."
         (eval-when-compile (require 'smart-hungry-delete))
         (smart-hungry-delete-add-default-hooks)
         (normal-erase-is-backspace-mode 0)
-        (define-key prog-mode-map (kbd "M-DEL") 'smart-hungry-delete-backward-char)
-        (define-key prog-mode-map (kbd "M-<delete>") 'smart-hungry-delete-forward-char))
+        (define-key prog-mode-map (kbd "M-DEL") 'smart-hungry-delete-forward-char)
+        (define-key prog-mode-map (kbd "M-<delete>") 'smart-hungry-delete-backward-char))
       #:elisp-packages (list emacs-smartparens
                              emacs-smart-hungry-delete))))
 
