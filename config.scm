@@ -120,7 +120,6 @@
 
    ;;; Emacs
    (feature-emacs)
-   (feature-emacs-leader-keys)
    (feature-emacs-appearance)
    (feature-emacs-completion #:mini-frame? #f)
    (feature-emacs-vertico)
