@@ -209,36 +209,40 @@
 
 
 (define* (feature-emacs-evil)
-"Configure evil-mode in Emacs."
-(define emacs-f-name 'evil)
-(define f-name (symbol-append 'emacs- emacs-f-name))
+  "Configure evil-mode in Emacs."
+  (define emacs-f-name 'evil)
+  (define f-name (symbol-append 'emacs- emacs-f-name))
 
-(define (get-home-services config)
-  (list
-   (elisp-configuration-service
-    emacs-f-name
-    `((eval-when-compile
-       (require 'evil)
-       (require 'evil-collection))
-      (setq evil-want-keybinding nil
-            evil-want-fine-undo t)
-      (evil-mode 1)
+  (define (get-home-services config)
+    (list
+     (elisp-configuration-service
+      emacs-f-name
+      `((eval-when-compile
+         (require 'evil)
+         (require 'evil-collection))
+        (setq evil-want-keybinding nil
+              evil-want-fine-undo t)
+        (evil-mode 1)
 
-      ;; Keybindings
-      (evil-define-key 'normal prog-mode-map (kbd "<tab>") 'evil-jump-item)
+        ;; Keybindings
+        (evil-define-key 'normal prog-mode-map (kbd "<tab>") 'evil-jump-item)
 
-      ;; V for evil-visual-line in magit
-      ,@(when (get-value 'emacs-git config)
-          `((with-eval-after-load
-	     'magit
-	     (define-key magit-hunk-section-map (kbd "V") 'evil-visual-line)))))
-    #:elisp-packages (list emacs-evil
-                           emacs-evil-collection))))
+        ;; V for evil-visual-line in magit
+        ,@(when (get-value 'emacs-git config)
+            `((with-eval-after-load
+	       'magit
+	       (define-key magit-hunk-section-map (kbd "V") 'evil-visual-line))))
 
-(feature
- (name f-name)
- (values `((,f-name . #t)))
- (home-services-getter get-home-services)))
+        ;; Start vterm in insert mode
+        ,@(when (get-value 'emacs-vterm config)
+            `((add-to-list 'evil-insert-state-modes 'vterm-mode))))
+      #:elisp-packages (list emacs-evil
+                             emacs-evil-collection))))
+
+  (feature
+   (name f-name)
+   (values `((,f-name . #t)))
+   (home-services-getter get-home-services)))
 
 (define* (feature-emacs-syntax)
   "Configure multiple packages for working better
