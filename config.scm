@@ -137,7 +137,7 @@
    (feature-emacs-project)
    (feature-emacs-perspective)
    (feature-emacs-syntax)
-   (feature-emacs-which-key)
+   (feature-emacs-which-key #:min-height 5)
    (feature-emacs-lang-base)
    (feature-emacs-lang-javascript)
 
