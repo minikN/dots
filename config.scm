@@ -135,6 +135,7 @@
    (feature-emacs-message #:message-signature
                           "Best regards / Mit freundlichen Grüßen,\nDemis Balbach")
    (feature-emacs-project)
+   (feature-emacs-perspective)
    (feature-emacs-syntax)
    (feature-emacs-which-key)
    (feature-emacs-lang-base)
