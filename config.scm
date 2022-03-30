@@ -30,6 +30,9 @@
   #:use-module (rde features xdisorg)
   #:use-module (rde features))
 
+(define* (pkgs lst)
+  (map specification->package+output lst))
+
 (define %nonguix-public-key
   (plain-file
    "nonguix-signing-key.pub"
@@ -195,9 +198,6 @@
                     (bindsym Escape mode "default")))
     (exec nm-applet --indicator) ;; NetworkManager
     ))
-
-(define* (pkgs lst)
-  (map specification->package+output lst))
 
 (define %base-home-packages
   (list
