@@ -1,5 +1,8 @@
 (define-module (personal workhorse)
   #:use-module (gnu packages)
+  #:use-module (gnu services)
+  #:use-module (gnu home services)
+  #:use-module (gnu home-services shells)
   #:use-module (gnu system file-systems)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
@@ -9,6 +12,7 @@
   #:use-module (rde features system)
   #:use-module (rde features fontutils)
   #:export (workhorse-features
+	    workhorse-services
             workhorse-sway-config))
 
 (define workhorse-sway-config
@@ -23,38 +27,25 @@
     (workspace 7 output HDMI-A-1) ;; Games
     (output eDP-1 scale 1.5)))
 
-(define workhorse-filesystems
-  (list (file-system ;; System partition
-         (device (file-system-label "GUIX"))
-         (mount-point "/")
-         (type "btrfs"))
-        (file-system ;; Boot partition
-         (device (file-system-label "BOOT"))
-         (mount-point "/boot/efi")
-         (type "vfat"))))
+(define workhorse-services
+  (list
+   (simple-service
+    'setup-gnome-session
+    home-shell-profile-service-type
+    (list
+     "[ $XDG_SESSION_DESKTOP = \"gnome\" ] && export XDG_CURRENT_DESKTOP=GNOME"))
+   (simple-service
+    'setup-env-vars
+    home-environment-variables-service-type
+    `(("GUIX_LOCPATH" . "$HOME/.guix-home/profile/lib/locale") ;; requires glibc-locales
+      ("XDG_DATA_DIRS" . "$XDG_DATA_DIRS:$HOME/.guix-home/profile/share")
+      ("XDG_DATA_DIRS" . "$XDG_DATA_DIRS:$HOME/.nix-profile/share")
+      ("XDG_CONFIG_DIRS" . "$XDG_CONFIG_DIRS:/etc/xdg")   
+      ("XCURSOR_PATH" . "$XCURSOR_PATH:/usr/share/icons")))))
 
 (define workhorse-features
   (list
-   ;;; Host info
-   (feature-host-info #:host-name "workhorse"
-                      #:timezone  "Europe/Berlin"
-                      #:locale "en_US.UTF-8")
-
-   ;;; Kernel
-   (feature-kernel #:kernel linux
-                   #:initrd microcode-initrd
-                   #:initrd-modules '("vmd")
-                   #:firmware (list linux-firmware sof-firmware))
-
-   ;;; File systems
-   (feature-file-systems #:file-systems workhorse-filesystems)
-
    ;;; HiDPI
-   (feature-hidpi)
-
-   ;;; Backlight
-   (feature-backlight)
-   ))
-
+   (feature-hidpi)))
 
 
