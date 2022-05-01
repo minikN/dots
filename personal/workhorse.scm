@@ -33,14 +33,28 @@
     'setup-gnome-session
     home-shell-profile-service-type
     (list
-     "[ $XDG_SESSION_DESKTOP = \"gnome\" ] && export XDG_CURRENT_DESKTOP=GNOME"))
+     "if \
+[ \"$XDG_SESSION_DESKTOP\" = \"ubuntu-wayland\" ] || \
+[ \"$XDG_SESSION_DESKTOP\" = \"ubuntu\" ]; then
+	export XDG_CURRENT_DESKTOP=\"ubuntu:GNOME\"
+      	unset CLUTTER_BACKEND
+	unset RTC_USE_PIPEWIRE
+	unset SDL_VIDEODRIVER
+	unset MOZ_ENABLE_WAYLAND
+	unset ELM_ENGINE
+	unset ECORE_EVAS_ENGINE
+	unset QT_QPA_PLATFORM
+	unset _JAVA_AWT_WM_NONREPARENTING
+fi
+[ \"$XDG_SESSION_DESKTOP\" = \"ubuntu\" ] && \
+export XDG_SESSION_TYPE=\"x11\"
+"))
    (simple-service
     'setup-env-vars
     home-environment-variables-service-type
     `(("GUIX_LOCPATH" . "$HOME/.guix-home/profile/lib/locale") ;; requires glibc-locales
-      ("XDG_DATA_DIRS" . "$XDG_DATA_DIRS:$HOME/.guix-home/profile/share")
+      ;; TODO: Exlude in feature-nix
       ("XDG_DATA_DIRS" . "$XDG_DATA_DIRS:$HOME/.nix-profile/share")
-      ("XDG_CONFIG_DIRS" . "$XDG_CONFIG_DIRS:/etc/xdg")   
       ("XCURSOR_PATH" . "$XCURSOR_PATH:/usr/share/icons")))))
 
 (define workhorse-features

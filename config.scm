@@ -2,6 +2,7 @@
   #:use-module (gnu home-services shells)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages image)
   #:use-module (gnu services nix)
   #:use-module (gnu services)
   #:use-module (gnu system keyboard)
@@ -268,18 +269,39 @@
    (features
     (append
      (list
+      (feature-user-info #:user-name "db"
+                         #:full-name "Demis Balbach"
+                         #:email "db@minikn.xyz")
       (feature-base-packages
-       #:home-packages (list glibc-locales))
+       #:home-packages (append
+			 (list glibc-locales flameshot)
+			 (append (pkgs %base-home-packages))))
+      (feature-desktop-services)
       (feature-custom-services
-       #:home-services workhorse-services
-       )
+       #:home-services workhorse-services)
+      (feature-alacritty #:config-file (local-file "./config/alacritty/alacritty.yml")
+                      #:default-terminal? #f)
+      (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))
+      ;(feature-keyboard #:keyboard-layout
+      ;                  (keyboard-layout "us" "altgr-intl" #:options '("ctrl:nocaps")))
+
+      ;; Run manually:
+      ;; command -v zsh | sudo tee -a /etc/shells
+      ;; sudo chsh -s "$(command -v zsh)" "$USER"
+      (feature-zsh #:default-shell? #f)
+
+      (feature-pipewire)
+      (feature-backlight)
+      ;(feature-direnv)
+      ;(feature-emacs)
+      ;(feature-emacs-appearance)
       (feature-sway
        #:xwayland? #t
        #:extra-config
        (append base-sway-config
                workhorse-sway-config))
-      (feature-sway-screenshot)
-      (feature-sway-desktop-file)
+      ;(feature-sway-screenshot)
+      (feature-rofi)
       (feature-waybar #:waybar-modules
                       (list
                         (waybar-module-workspaces)
@@ -291,8 +313,10 @@
                         (waybar-tray)
                         (waybar-module-audio)
                         (waybar-battery)
-                        (waybar-clock #:format "{:%H:%M}"))))
-     workhorse-features))))
+                        (waybar-clock #:format "{:%H:%M}")))
+)
+    ; workhorse-features
+))))
 
 (define geekcave-os
   (rde-config-operating-system geekcave-config))
