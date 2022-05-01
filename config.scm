@@ -131,8 +131,7 @@
    (feature-emacs-evil)
    (feature-emacs-erc #:erc-server "minikn.xyz"
                       #:erc-port 6697
-                      #:erc-nick "minikN"
-                      #:extra-config `((setq erc-email-userid "minikN")))
+                      #:erc-nick "db")
    (feature-emacs-dired)
    (feature-emacs-faces)
    (feature-emacs-files)
