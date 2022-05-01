@@ -1,6 +1,7 @@
 (define-module (config)
   #:use-module (gnu home-services shells)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu services nix)
   #:use-module (gnu services)
   #:use-module (gnu system keyboard)
@@ -29,6 +30,9 @@
   #:use-module (rde features xdg)
   #:use-module (rde features xdisorg)
   #:use-module (rde features))
+
+(define* (pkgs lst)
+  (map specification->package+output lst))
 
 (define %nonguix-public-key
   (plain-file
@@ -195,9 +199,6 @@
     (exec nm-applet --indicator) ;; NetworkManager
     ))
 
-(define* (pkgs lst)
-  (map specification->package+output lst))
-
 (define %base-home-packages
   (list
    "curl"
@@ -267,22 +268,17 @@
     (append
      (list
       (feature-base-packages
-       #:system-packages
-       (append
-        (pkgs
-         (append
-          (list "wpa-supplicant"
-                "xf86-video-nouveau")
-          %base-system-packages)))
-       #:home-packages
-       (append (pkgs %base-home-packages)))
+       #:home-packages (list glibc-locales))
+      (feature-custom-services
+       #:home-services workhorse-services
+       )
       (feature-sway
        #:xwayland? #t
        #:extra-config
        (append base-sway-config
                workhorse-sway-config))
-      (feature-sway-run-on-tty #:sway-tty-number 2)
       (feature-sway-screenshot)
+      (feature-sway-desktop-file)
       (feature-waybar #:waybar-modules
                       (list
                         (waybar-module-workspaces)
@@ -294,10 +290,8 @@
                         (waybar-tray)
                         (waybar-module-audio)
                         (waybar-battery)
-                        (waybar-clock #:format "{:%H:%M}")))
-      )
-     workhorse-features
-     %main-features))))
+                        (waybar-clock #:format "{:%H:%M}"))))
+     workhorse-features))))
 
 (define geekcave-os
   (rde-config-operating-system geekcave-config))
