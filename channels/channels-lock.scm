@@ -3,7 +3,7 @@
         (url "https://github.com/flatwhatson/guix-channel.git")
         (branch "master")
         (commit
-          "81bd9f00e7e4677a4deaeb05415c901528521ba9")
+          "f43c67e47f1ca83d045f35c31772c5e4eb64b2a2")
         (introduction
           (make-channel-introduction
             "33f86a4b48205c0dc19d7c036c85393f0766f806"
@@ -14,7 +14,7 @@
         (url "https://gitlab.com/nonguix/nonguix")
         (branch "master")
         (commit
-          "d3a550dbf2cd099a1e20ed5407c443e396b5d44b")
+          "dae8645813454a687b24846a8126bd758fbdc8c9")
         (introduction
           (make-channel-introduction
             "46c1d8bcca674d3a71cd077c52dde9552a89873d"
@@ -25,7 +25,7 @@
         (url "https://git.savannah.gnu.org/git/guix.git")
         (branch "master")
         (commit
-          "2387adf60022799a8af144ed8dd2b7a46c155374")
+          "eb34ff16cc9038880e87e1a58a93331fca37ad92")
         (introduction
           (make-channel-introduction
             "9edb3f66fd807b096b48283debdcddccfea34bad"
