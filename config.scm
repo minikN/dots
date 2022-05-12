@@ -1,4 +1,4 @@
-(define-module (configi entry)
+(define-module (config)
   #:use-module (config geekcave)
   #:use-module (rde features))
 
