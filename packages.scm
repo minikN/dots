@@ -1,12 +1,13 @@
-(define-module (personal packages)
+(define-module (config packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages emacs-xyz)
   #:use-module (guix git-download)
   #:use-module (guix build-system emacs)
   #:use-module (guix packages)
-  #:use-module ((guix licenses) #:prefix license:))
+  #:use-module ((guix licenses) #:prefix license:)
+  #:export (emacs-corfu-doc))
 
-(define-public emacs-corfu-doc
+(define emacs-corfu-doc
   (let ((commit "8d8f9317dd75cc83f3a2ba04c2b372f7fb06b2fc")
         (revision "0")
         (version "0.1"))

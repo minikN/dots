@@ -1,4 +1,4 @@
-(define-module (personal features linux)
+(define-module (config features linux)
   #:use-module (gnu home services)
   #:use-module (gnu home-services wm)
   #:use-module (gnu packages linux)

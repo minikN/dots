@@ -1,4 +1,4 @@
-(define-module (personal features wm)
+(define-module (config features wm)
   #:use-module (gnu services)
   #:use-module (gnu home services)
   #:use-module (rde features)

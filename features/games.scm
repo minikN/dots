@@ -1,4 +1,4 @@
-(define-module (personal features games)
+(define-module (config features games)
   #:use-module (gnu home services)
   #:use-module (gnu home-services wm)
   #:use-module (gnu packages base)

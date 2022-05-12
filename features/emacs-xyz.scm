@@ -1,17 +1,16 @@
-(define-module (personal features emacs-xyz)
+(define-module (config features emacs-xyz)
   #:use-module (gnu packages emacs-xyz)
   #:use-module (guix gexp)
   #:use-module (rde features)
   #:use-module (rde features predicates)
   #:use-module (rde features emacs)
-  #:use-module (personal packages)
-
-  #:export (feature-emacs-evil)
-  #:export (feature-emacs-leader-keys)
-  #:export (feature-emacs-files)
-  #:export (feature-emacs-syntax)
-  #:export (feature-emacs-lang-base)
-  #:export (feature-emacs-lang-javascript))
+  #:use-module (config packages)
+  #:export (feature-emacs-evil
+            feature-emacs-leader-keys
+            feature-emacs-files
+            feature-emacs-syntax
+            feature-emacs-lang-base
+            feature-emacs-lang-javascript))
 
 
 (define* (feature-emacs-lang-base)
