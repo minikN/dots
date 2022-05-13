@@ -163,7 +163,11 @@
    ;;; Fonts
    (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))
 
+   ;;; Services
+   (feature-base-services #:guix-substitute-urls (list "https://substitutes.nonguix.org")
+                          #:guix-authorized-keys (list %nonguix-public-key))
    (feature-desktop-services)
+
    (feature-pipewire)
    (feature-rofi)
    (feature-xdg #:xdg-user-directories-configuration
