@@ -11,8 +11,8 @@
   #:use-module (ice-9 match)
   #:use-module (config features emacs-xyz)
   #:use-module (config features linux)
-  #:use-module (config geekcave)
-  #:use-module (config workhorse)
+  ;; #:use-module (config geekcave)
+  ;; #:use-module (config workhorse)
   #:use-module (rde features base)
   #:use-module (rde features emacs)
   #:use-module (rde features fontutils)
@@ -30,7 +30,8 @@
   #:use-module (rde features xdg)
   #:use-module (rde features xdisorg)
   #:use-module (rde features)
-  #:export (
+  #:export (pkgs
+
             %base-system-packages
             %base-home-packages
 
@@ -126,7 +127,7 @@
    ;;; Terminal, shell
    (feature-zsh)
    (feature-vterm)
-   (feature-alacritty #:config-file (local-file "./config/alacritty/alacritty.yml")
+   (feature-alacritty #:config-file (local-file "./alacritty/alacritty.yml")
                       #:default-terminal? #f)
 
    ;;; Emacs
@@ -166,6 +167,7 @@
    ;;; Fonts
    (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))
 
+   (feature-desktop-services)
    (feature-pipewire)
    (feature-rofi)
    (feature-xdg #:xdg-user-directories-configuration

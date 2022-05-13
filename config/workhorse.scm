@@ -1,4 +1,4 @@
-(define-module (personal workhorse)
+(define-module (config workhorse)
   #:use-module (gnu packages)
   #:use-module (gnu system file-systems)
   #:use-module (nongnu packages linux)

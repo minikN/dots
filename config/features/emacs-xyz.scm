@@ -91,8 +91,9 @@
 
   (define (get-home-services config)
     (list
-     (elisp-configuration-service
+     (rde-elisp-configuration-service
       emacs-f-name
+      config
       `((eval-when-compile
          (require 'js)
          (require 'js2-mode)
@@ -214,8 +215,9 @@
 
   (define (get-home-services config)
     (list
-     (elisp-configuration-service
+     (rde-elisp-configuration-service
       emacs-f-name
+      config
       `((eval-when-compile
          (require 'evil)
          (require 'evil-collection))
@@ -251,8 +253,9 @@ with Emacs as an editor."
 
   (define (get-home-services config)
     (list
-     (elisp-configuration-service
+     (rde-elisp-configuration-service
       emacs-f-name
+      config
       `((eval-when-compile (require 'smartparens-config))
         (add-hook 'prog-mode-hook 'smartparens-mode)
         (with-eval-after-load
@@ -283,8 +286,9 @@ with Emacs as an editor."
 
   (define (get-home-services config)
     (list
-     (elisp-configuration-service
+     (rde-elisp-configuration-service
       emacs-f-name
+      config
       `((require 'tramp)
         (defun rde-delete-this-file (&optional path force-p)
           "Delete PATH, kill its buffers and expunge it from vc/magit cache.

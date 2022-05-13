@@ -9,8 +9,8 @@
   #:use-module (rde features system)
   #:use-module (rde features fontutils)
   #:use-module (rde features wm)
-  #:use-module (personal features games)
-  #:use-module (personal features wm)
+  #:use-module (config features games)
+  #:use-module (config features wm)
   #:export (geekcave-config))
 
 (define geekcave-sway-config

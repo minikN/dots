@@ -1,5 +1,6 @@
 (define-module (config)
   #:use-module (config geekcave)
+  #:use-module (ice-9 match)
   #:use-module (rde features))
 
 (define geekcave-os
