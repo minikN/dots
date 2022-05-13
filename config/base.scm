@@ -11,8 +11,6 @@
   #:use-module (ice-9 match)
   #:use-module (config features emacs-xyz)
   #:use-module (config features linux)
-  ;; #:use-module (config geekcave)
-  ;; #:use-module (config workhorse)
   #:use-module (rde features base)
   #:use-module (rde features emacs)
   #:use-module (rde features fontutils)
@@ -30,13 +28,11 @@
   #:use-module (rde features xdg)
   #:use-module (rde features xdisorg)
   #:use-module (rde features)
-  #:export (pkgs
 
+  #:export (pkgs
             %base-system-packages
             %base-home-packages
-
             %base-features
-
             %base-sway-config))
 
 (define* (pkgs lst)
@@ -127,7 +123,7 @@
    ;;; Terminal, shell
    (feature-zsh)
    (feature-vterm)
-   (feature-alacritty #:config-file (local-file "./alacritty/alacritty.yml")
+   (feature-alacritty #:config-file (local-file "./applications/alacritty/alacritty.yml")
                       #:default-terminal? #f)
 
    ;;; Emacs
