@@ -1,5 +1,6 @@
 (define-module (config geekcave)
   #:use-module (config base)
+  #:use-module (config features package-management)
   #:use-module (gnu system file-systems)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
@@ -70,6 +71,10 @@
                          geekcave-sway-config))
    (feature-sway-run-on-tty #:sway-tty-number 2)
    (feature-sway-screenshot)
+
+   ;; Nix
+   ;;; TODO: Move this to base-features
+   (feature-nix)
 
    ;; Waybar
    (feature-waybar #:waybar-modules
