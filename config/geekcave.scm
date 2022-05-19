@@ -12,6 +12,7 @@
   #:use-module (rde features wm)
   #:use-module (config features games)
   #:use-module (config features wm)
+  
   #:export (geekcave-config))
 
 (define geekcave-sway-config
@@ -47,7 +48,7 @@
                       #:locale "en_US.utf8")
 
    ;;; Kernel
-   (feature-kernel #:kernel linux-5.15
+   (feature-kernel #:kernel linux-lts
                    #:kernel-arguments (list "modprobe.blacklist=nouveau")
                    #:initrd microcode-initrd
                    #:firmware (list amdgpu-firmware linux-firmware))
