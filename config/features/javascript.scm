@@ -22,11 +22,11 @@
 
   (define (get-home-services config)
     (define emacs-f-name 'javascript)
-    (define ts-binary
+    (define tsserver-library
       (if (any-package? typescript)
           (file-append typescript "/lib/")
           typescript))
-    (define js-lsp-binary
+    (define ts-lsp-executable
       (if (any-package? typescript-language-server)
           (file-append typescript-language-server
                        "/bin/typescript-language-server")
@@ -109,8 +109,8 @@
 	   (add-to-list 'eglot-server-programs
                         '((js-mode
                            typescript-mode
-                           typescript-tsx-mode) . (,js-lsp-binary
-                                                   "--tsserver-path" ,ts-binary
+                           typescript-tsx-mode) . (,ts-lsp-executable
+                                                   "--tsserver-path" ,tsserver-library
                                                    "--stdio"))))
           (dolist (hook
                    '(js-mode-hook
