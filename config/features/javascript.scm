@@ -36,7 +36,9 @@
        (rde-elisp-configuration-service
         emacs-f-name
         config
-        `(;; electric-pair-mode
+        `(;;; TODO: Remove after https://github.com/joaotavora/eglot/pull/871 is merged.
+          (eval-when-compile (require 'eglot))
+          ;; electric-pair-mode
           (defun rde--setup-electric-pairs-for-jsx-tsx ()
             (electric-pair-local-mode)
             (setq-local electric-pair-pairs
@@ -99,12 +101,17 @@
 
           (with-eval-after-load
            'eglot
+           ;;; TODO: Remove after https://github.com/joaotavora/eglot/pull/871 is merged.
+           (eglot--code-action eglot-code-action-organize-imports-ts "source.organizeImports.ts")
+           (eglot--code-action eglot-code-action-add-missing-imports-ts "source.addMissingImports.ts")
+           (eglot--code-action eglot-code-action-removed-unused-ts "source.removedUnused.ts")
+	   (eglot--code-action eglot-code-action-fix-all-ts "source.fixAll.ts")
 	   (add-to-list 'eglot-server-programs
                         '((js-mode
                            typescript-mode
                            typescript-tsx-mode) . (,js-lsp-binary
-                                                 "--tsserver-path" ,ts-binary
-                                                 "--stdio"))))
+                                                   "--tsserver-path" ,ts-binary
+                                                   "--stdio"))))
           (dolist (hook
                    '(js-mode-hook
                      typescript-mode-hook
@@ -112,16 +119,14 @@
                   (add-hook hook
                             (lambda ()
                               (eglot-ensure)
-                              (eglot--code-action eglot-code-action-organize-imports-ts "source.organizeImports.ts")
-                              (eglot--code-action eglot-code-action-add-missing-imports-ts "source.addMissingImports.ts")
-                              (eglot--code-action eglot-code-action-removed-unused-ts "source.removedUnused.ts")
-	                      (eglot--code-action eglot-code-action-fix-all-ts "source.fixAll.ts")
                               (local-set-key (kbd "C-c c i") '("Add missing imports" . eglot-code-action-add-missing-imports-ts))
                               (local-set-key (kbd "C-c c o") '("Organize imports" . eglot-code-action-organize-imports-ts))
                               (local-set-key (kbd "C-c c r") '("Remove unused symbols" . eglot-code-action-removed-unused-ts))
                               (local-set-key (kbd "C-c c f") '("Fix all" . eglot-code-action-fix-all-ts))))))
         #:elisp-packages (list emacs-js2-mode ;;emacs-js2-refactor-el
-                               emacs-typescript-mode emacs-npm-mode emacs-web-mode
+                               emacs-typescript-mode
+                               emacs-npm-mode
+                               emacs-web-mode
                                (get-value 'emacs-eglot config emacs-eglot))))))
 
   (feature
