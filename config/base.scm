@@ -149,6 +149,7 @@
    (feature-emacs-which-key #:min-height 5)
 
    ;; WIP
+   (feature-emacs-eglot)
    (feature-javascript #:typescript node-typescript
                        #:typescript-language-server node-typescript-language-server)
 

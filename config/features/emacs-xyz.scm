@@ -12,7 +12,6 @@
             feature-emacs-lang-base
             feature-emacs-lang-javascript))
 
-
 (define* (feature-emacs-lang-base)
   "Configure Emacs for programming."
   (define emacs-f-name 'lang-base)
@@ -75,6 +74,7 @@
             emacs-configure-lsp
             emacs-configure-capf
             emacs-configure-capf-doc))))
+
 
 (define* (feature-emacs-lang-javascript
           #:key
