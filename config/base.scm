@@ -10,7 +10,9 @@
   #:use-module (guix gexp)
   #:use-module (ice-9 match)
   #:use-module (config features emacs-xyz)
+  #:use-module (config features javascript)
   #:use-module (config features linux)
+  #:use-module (config packages node-xyz)
   #:use-module (rde features base)
   #:use-module (rde features emacs)
   #:use-module (rde features fontutils)
@@ -145,8 +147,10 @@
    (feature-emacs-perspective)
    (feature-emacs-syntax)
    (feature-emacs-which-key #:min-height 5)
-   (feature-emacs-lang-base)
-   (feature-emacs-lang-javascript)
+
+   ;; WIP
+   (feature-javascript #:typescript node-typescript
+                       #:typescript-language-server node-typescript-language-server)
 
    ;; direnv
    (feature-direnv)
