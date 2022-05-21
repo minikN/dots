@@ -32,10 +32,6 @@
                        "/bin/typescript-language-server")
           typescript-language-server))
     (list
-     (simple-service
-      'javascript-add-packages
-      home-profile-service-type
-      (list node-typescript node))
      (when (get-value 'emacs config)
        (rde-elisp-configuration-service
         emacs-f-name
