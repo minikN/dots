@@ -1,8 +1,11 @@
 (define-module (config packages node-xyz)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages node)
   #:use-module (gnu packages node-xyz)
   #:use-module (guix build-system node)
   #:use-module (guix download)
+  #:use-module (guix git-download)
+  #:use-module (ice-9 textual-ports)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
 
@@ -2289,8 +2292,278 @@
       "TypeScript is a language for application scale JavaScript development")
     (license license:asl2.0)))
 
+(define-public node-vscode-jsonrpc-8.0.0-next.8
+  (package
+    (name "node-vscode-jsonrpc")
+    (version "8.0.0-next.8")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-8.0.0-next.8.tgz")
+        (sha256
+          (base32
+            "05nk7xhn6gy4rs77w8v0y0f4vkrwmmvy8gi2035bpqqxjzjhaxx4"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://github.com/Microsoft/vscode-languageserver-node#readme")
+    (synopsis
+      "A json rpc implementation over streams")
+    (description
+      "A json rpc implementation over streams")
+    (license license:expat)))
+
+(define-public node-vscode-languageserver-types-3.17.0-next.12
+  (package
+    (name "node-vscode-languageserver-types")
+    (version "3.17.0-next.12")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-languageserver-types/-/vscode-languageserver-types-3.17.0-next.12.tgz")
+        (sha256
+          (base32
+            "1qm9xa8vxprfw7wgkgm2xp4cs0qblgc167y4n71jywz2i003fvki"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://github.com/Microsoft/vscode-languageserver-node#readme")
+    (synopsis
+      "Types used by the Language server for node")
+    (description
+      "Types used by the Language server for node")
+    (license license:expat)))
+
+(define-public node-vscode-languageserver-protocol-3.17.0-next.20
+  (package
+    (name "node-vscode-languageserver-protocol")
+    (version "3.17.0-next.20")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-languageserver-protocol/-/vscode-languageserver-protocol-3.17.0-next.20.tgz")
+        (sha256
+          (base32
+            "1fpdxiq1w75c2h042xrdm0kmfzgwykgnvrxx18gg7q2gsq6i8f6m"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (inputs
+      `(("node-vscode-languageserver-types"
+         ,node-vscode-languageserver-types-3.17.0-next.12)
+        ("node-vscode-jsonrpc"
+         ,node-vscode-jsonrpc-8.0.0-next.8)))
+    (home-page
+      "https://github.com/Microsoft/vscode-languageserver-node#readme")
+    (synopsis
+      "VSCode Language Server Protocol implementation")
+    (description
+      "VSCode Language Server Protocol implementation")
+    (license license:expat)))
+
+(define-public node-vscode-languageserver-8.0.0-next.14
+  (package
+    (name "node-vscode-languageserver")
+    (version "8.0.0-next.14")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-languageserver/-/vscode-languageserver-8.0.0-next.14.tgz")
+        (sha256
+          (base32
+            "0pq53lxsw8fpxwswcshsm1b8wbmy8lqxf8gdz3lgzb47g26jxxc9"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (inputs
+      `(("node-vscode-languageserver-protocol"
+         ,node-vscode-languageserver-protocol-3.17.0-next.20)))
+    (home-page
+      "https://github.com/Microsoft/vscode-languageserver-node#readme")
+    (synopsis
+      "Language server implementation for node")
+    (description
+      "Language server implementation for node")
+    (license license:expat)))
+
+(define-public node-types-node-17.0.35
+  (package
+    (name "node-types-node")
+    (version "17.0.35")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/@types/node/-/node-17.0.35.tgz")
+        (sha256
+          (base32
+            "0bfrsp0py2lzv04idxdha3jfp4wypp3yyn2f0n8846sscl6p3kb5"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node")
+    (synopsis "TypeScript definitions for Node.js")
+    (description
+      "TypeScript definitions for Node.js")
+    (license license:expat)))
+
+(define-public node-types-mocha-9.1.1
+  (package
+    (name "node-types-mocha")
+    (version "9.1.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/@types/mocha/-/mocha-9.1.1.tgz")
+        (sha256
+          (base32
+            "17cdm29js4swzrpyz6f54mqb6y1c005xgybcpv23fvp7kd3cp1v5"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/mocha")
+    (synopsis "TypeScript definitions for mocha")
+    (description "TypeScript definitions for mocha")
+    (license license:expat)))
+
+(define-public node-eslint-language-server
+  (package
+    (name "node-eslint-language-server")
+    (version "2.2.5")
+    (home-page "https://github.com/microsoft/vscode-eslint")
+    (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit "5cadee9357aab106ed6c5da116dea6dde480ca63")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1wziayv9gw013rk5f57jd1jkik2fajk96b2hiimfjkmxya6nw2w6"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests? #f
+        #:phases
+        (modify-phases
+         %standard-phases
+         (delete 'build)
+         (add-after 'unpack 'chdir
+                    (lambda _
+                      ;; We only need to build the server component of vscode-eslint
+                      ;; so lets chdir into it. The configure phase then will run
+                      ;; `npm install` inside the server folder.
+                      (chdir "server")
+
+                      ;; However, they do some weird stuff with its dependencies,
+                      ;; simply running `npm install` won't install all the necessary
+                      ;; dependencies. They symlink some from the parent module. See:
+                      ;; https://github.com/microsoft/vscode-eslint/blob/main/build/bin/symlink.js
+                      ;; We therefore need to manually add the missing deps as it's
+                      ;; currently not possible to recursively import npm packages
+                      ;; with their dev dependencies.
+                      ;;
+                      ;; This will only work if the dependencies are listed as inputs!
+                      ;;
+                      ;;; TODO: Find a better way of doing this.
+                      (substitute* "package.json"
+                                   (("\"dependencies\": \\{")
+                                    "\"dependencies\": {
+\"@types/node\": \"17.0.35\",
+\"vscode-jsonrpc\": \"8.0.0-next.8\",
+\"vscode-languageserver-protocol\": \"3.17.0-next.20\",
+\"vscode-languageserver-types\": \"3.17.0-next.12\","))))
+         (add-after 'configure 'build-server
+                    (lambda _
+                      (invoke "tsc" "-b" "tsconfig.json")))
+
+         ;; The server needs node 14+ to run properly. We therefore
+         ;; add note-lts as an input and create a shebang.
+         (add-after 'build-server 'add-shebang
+                    (lambda* (#:key inputs outpus #:allow-other-keys)
+                      (let ((node (string-append (assoc-ref inputs "node") "/bin/node"))
+                            (file "out/eslintServer.js"))
+                        (with-atomic-file-replacement file
+                          (lambda (in out)
+                            (display (string-append
+                                      "#!" node "\n"
+                                      ((@@ (ice-9 textual-ports) get-string-all) in))
+                                     out)))
+                        #t)))
+         (add-after 'install 'install-bin
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin")))
+                        (mkdir-p bin)
+                        (symlink "../lib/node_modules/eslint-server/out/eslintServer.js"
+                                 (string-append bin "/eslintServer"))
+                        (chmod (string-append out "/lib/node_modules/eslint-server/out/eslintServer.js") #o555)
+                        #t))))))
+    (inputs
+     `(("node-types-node" ,node-types-node-17.0.35)
+       ("node-typescript" ,node-typescript-4.6.4)
+       ("node-vscode-jsonrpc" ,node-vscode-jsonrpc-8.0.0-next.8)
+       ("node-vscode-languageserver-types"
+        ,node-vscode-languageserver-types-3.17.0-next.12)
+       ("node-vscode-languageserver-protocol"
+        ,node-vscode-languageserver-protocol-3.17.0-next.20)
+        ("node-vscode-languageserver-textdocument"
+         ,node-vscode-languageserver-textdocument-1.0.4)
+        ("node-vscode-languageserver"
+         ,node-vscode-languageserver-8.0.0-next.14)
+        ("vscode-uri" ,node-vscode-uri-3.0.3)))
+    (synopsis
+      "ESLint language server using VS Code ESLint extension")
+    (description
+     "Using the VSCode ESLint extension's integrated ESLint LSP server. Note: This package only
+builds the server component of the extension. Nothing else.")
+    (license license:expat)))
+
 (define-public node-typescript-language-server
   node-typescript-language-server-0.10.0)
 
 (define-public node-typescript
   node-typescript-4.6.4)
+
+(define-public node-types-node
+  node-types-node-17.0.35)
+
