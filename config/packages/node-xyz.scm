@@ -2559,6 +2559,496 @@
 builds the server component of the extension. Nothing else.")
    (license license:expat)))
 
+(define-public node-core-js-3.22.7
+  (package
+    (name "node-core-js")
+    (version "3.22.7")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/core-js/-/core-js-3.22.7.tgz")
+        (sha256
+          (base32
+            "06fzan56wngbxs9fkmv4h588aswdl3q2jxs3si8nxgkqxjfnbppr"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://github.com/zloirock/core-js#readme")
+    (synopsis "Standard library")
+    (description "Standard library")
+    (license license:expat)))
+
+(define-public node-regenerator-runtime-0.13.9
+  (package
+    (name "node-regenerator-runtime")
+    (version "0.13.9")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz")
+        (sha256
+          (base32
+            "1f4rs0pn4g14xidzbyf8vmsr8lgm021rzzdc2y45bijx44vm8sqs"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://www.npmjs.com/package/node-regenerator-runtime")
+    (synopsis
+      "Runtime for Regenerator-compiled generator and async functions.")
+    (description
+      "Runtime for Regenerator-compiled generator and async functions.")
+    (license license:expat)))
+
+(define-public node-request-light-0.5.8
+  (package
+    (name "node-request-light")
+    (version "0.5.8")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/request-light/-/request-light-0.5.8.tgz")
+        (sha256
+          (base32
+            "1fbm8gr69sr9nx2bna7svpkf1jxs0kwsb900ncsn8185z944nvab"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://github.com/microsoft/node-request-light#readme")
+    (synopsis
+      "Lightweight request library. Promise based, with proxy support.")
+    (description
+      "Lightweight request library. Promise based, with proxy support.")
+    (license license:expat)))
+
+(define-public node-typescript-4.7.2
+  (package
+    (name "node-typescript")
+    (version "4.7.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/typescript/-/typescript-4.7.2.tgz")
+        (sha256
+          (base32
+            "0r97nfdi28lw6r9bhi5majfxz939ixfcxp09ysgqflk9s3jhik4h"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page "https://www.typescriptlang.org/")
+    (synopsis
+      "TypeScript is a language for application scale JavaScript development")
+    (description
+      "TypeScript is a language for application scale JavaScript development")
+    (license license:asl2.0)))
+
+(define-public node-vscode-css-languageservice-5.4.2
+  (package
+    (name "node-vscode-css-languageservice")
+    (version "5.4.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-css-languageservice/-/vscode-css-languageservice-5.4.2.tgz")
+        (sha256
+          (base32
+            "0mk1gjbg3n9v9q1kx6ws51m60ij5q58acb0d9xm1aqjzvhnbg7a1"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (inputs
+      `(("node-vscode-uri" ,node-vscode-uri-3.0.3)
+        ("node-vscode-nls" ,node-vscode-nls-5.0.1)
+        ("node-vscode-languageserver-types"
+         ,node-vscode-languageserver-types-3.17.1)
+        ("node-vscode-languageserver-textdocument"
+         ,node-vscode-languageserver-textdocument-1.0.4)))
+    (home-page
+      "https://github.com/Microsoft/vscode-css-languageservice#readme")
+    (synopsis
+      "Language service for CSS, LESS and SCSS")
+    (description
+      "Language service for CSS, LESS and SCSS")
+    (license license:expat)))
+
+(define-public node-vscode-html-languageservice-4.2.5
+  (package
+    (name "node-vscode-html-languageservice")
+    (version "4.2.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-html-languageservice/-/vscode-html-languageservice-4.2.5.tgz")
+        (sha256
+          (base32
+            "06c8jz1fggg2gxbrc9fdjf8yav0gxb6x5icmixianhv15fz55p0c"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (inputs
+      `(("node-vscode-uri" ,node-vscode-uri-3.0.3)
+        ("node-vscode-nls" ,node-vscode-nls-5.0.1)
+        ("node-vscode-languageserver-types"
+         ,node-vscode-languageserver-types-3.17.1)
+        ("node-vscode-languageserver-textdocument"
+         ,node-vscode-languageserver-textdocument-1.0.4)))
+    (home-page
+      "https://github.com/Microsoft/vscode-html-languageservice#readme")
+    (synopsis "Language service for HTML")
+    (description "Language service for HTML")
+    (license license:expat)))
+
+(define-public node-jsonc-parser-3.0.0
+  (package
+    (name "node-jsonc-parser")
+    (version "3.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/jsonc-parser/-/jsonc-parser-3.0.0.tgz")
+        (sha256
+          (base32
+            "1a2xq8xwydf3wcf8kn9q2c2449w9yssls8gncl8iiin6h7km6z40"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://github.com/microsoft/node-jsonc-parser#readme")
+    (synopsis
+      "Scanner and parser for JSON with comments.")
+    (description
+      "Scanner and parser for JSON with comments.")
+    (license license:expat)))
+
+(define-public node-vscode-json-languageservice-4.2.1
+  (package
+    (name "node-vscode-json-languageservice")
+    (version "4.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-json-languageservice/-/vscode-json-languageservice-4.2.1.tgz")
+        (sha256
+          (base32
+            "0inm0da25qkj55q017i8sr7zyix5wdxrcrcivrrqmjaypcc3152i"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (inputs
+      `(("node-vscode-uri" ,node-vscode-uri-3.0.3)
+        ("node-vscode-nls" ,node-vscode-nls-5.0.1)
+        ("node-vscode-languageserver-types"
+         ,node-vscode-languageserver-types-3.17.1)
+        ("node-vscode-languageserver-textdocument"
+         ,node-vscode-languageserver-textdocument-1.0.4)
+        ("node-jsonc-parser" ,node-jsonc-parser-3.0.0)))
+    (home-page
+      "https://github.com/Microsoft/vscode-json-languageservice#readme")
+    (synopsis "Language service for JSON")
+    (description "Language service for JSON")
+    (license license:expat)))
+
+(define-public node-vscode-jsonrpc-8.0.1
+  (package
+    (name "node-vscode-jsonrpc")
+    (version "8.0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-8.0.1.tgz")
+        (sha256
+          (base32
+            "1qzz0wr7fayf4253vdg0baqq3vxhxhfjdm00lxy17lcm6i1zcs4d"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://github.com/Microsoft/vscode-languageserver-node#readme")
+    (synopsis
+      "A json rpc implementation over streams")
+    (description
+      "A json rpc implementation over streams")
+    (license license:expat)))
+
+(define-public node-vscode-languageserver-types-3.17.1
+  (package
+    (name "node-vscode-languageserver-types")
+    (version "3.17.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-languageserver-types/-/vscode-languageserver-types-3.17.1.tgz")
+        (sha256
+          (base32
+            "1m9zk900px4dyz6vpi843aryw3n9sp0zbg85lpp6a828pv2ki8vp"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://github.com/Microsoft/vscode-languageserver-node#readme")
+    (synopsis
+      "Types used by the Language server for node")
+    (description
+      "Types used by the Language server for node")
+    (license license:expat)))
+
+(define-public node-vscode-languageserver-protocol-3.17.1
+  (package
+    (name "node-vscode-languageserver-protocol")
+    (version "3.17.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-languageserver-protocol/-/vscode-languageserver-protocol-3.17.1.tgz")
+        (sha256
+          (base32
+            "136wqfq25g3ljvml8s4lz65svi5w8cfxrn00xl4p60wqbhscvycd"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (inputs
+      `(("node-vscode-languageserver-types"
+         ,node-vscode-languageserver-types-3.17.1)
+        ("node-vscode-jsonrpc"
+         ,node-vscode-jsonrpc-8.0.1)))
+    (home-page
+      "https://github.com/Microsoft/vscode-languageserver-node#readme")
+    (synopsis
+      "VSCode Language Server Protocol implementation")
+    (description
+      "VSCode Language Server Protocol implementation")
+    (license license:expat)))
+
+(define-public node-vscode-languageserver-8.0.1
+  (package
+    (name "node-vscode-languageserver")
+    (version "8.0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-languageserver/-/vscode-languageserver-8.0.1.tgz")
+        (sha256
+          (base32
+            "0lc0px64klvcpzqsvkisl560z1p4pkasjdm5mdhhd9w0z1lph03g"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (inputs
+      `(("node-vscode-languageserver-protocol"
+         ,node-vscode-languageserver-protocol-3.17.1)))
+    (home-page
+      "https://github.com/Microsoft/vscode-languageserver-node#readme")
+    (synopsis
+      "Language server implementation for node")
+    (description
+      "Language server implementation for node")
+    (license license:expat)))
+
+(define-public node-vscode-languageserver-textdocument-1.0.4
+  (package
+    (name "node-vscode-languageserver-textdocument")
+    (version "1.0.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-languageserver-textdocument/-/vscode-languageserver-textdocument-1.0.4.tgz")
+        (sha256
+          (base32
+            "08im7izycg36qyhbhz7i4jvrzh5ickxd07kqw1m348q3j6b16h4n"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://github.com/Microsoft/vscode-languageserver-node#readme")
+    (synopsis
+      "A simple text document implementation for Node LSP servers")
+    (description
+      "A simple text document implementation for Node LSP servers")
+    (license license:expat)))
+
+(define-public node-vscode-nls-5.0.1
+  (package
+    (name "node-vscode-nls")
+    (version "5.0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-nls/-/vscode-nls-5.0.1.tgz")
+        (sha256
+          (base32
+            "1warkarbxhi6snw18rffq8ab58rhrg42ym2njn848znfghq6xb50"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://github.com/Microsoft/vscode-nls#readme")
+    (synopsis
+      "NPM module to externalize and localize VSCode extensions")
+    (description
+      "NPM module to externalize and localize VSCode extensions")
+    (license license:expat)))
+
+(define-public node-vscode-uri-3.0.3
+  (package
+    (name "node-vscode-uri")
+    (version "3.0.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-uri/-/vscode-uri-3.0.3.tgz")
+        (sha256
+          (base32
+            "0xh3qkg5c6p4dwi0y3yjw3vzxr1nvnz6c1q5z1qyd42f1j2daqr6"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (home-page
+      "https://github.com/microsoft/vscode-uri#readme")
+    (synopsis
+      "The URI implementation that is used by VS Code and its extensions")
+    (description
+      "The URI implementation that is used by VS Code and its extensions")
+    (license license:expat)))
+
+(define-public node-vscode-langservers-extracted-4.2.1
+  (package
+    (name "node-vscode-langservers-extracted")
+    (version "4.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://registry.npmjs.org/vscode-langservers-extracted/-/vscode-langservers-extracted-4.2.1.tgz")
+        (sha256
+          (base32
+            "03j0mrbfixyx34f4f0igq40r8iarpsmc8mz7gg16gy8r1fhwmvfl"))))
+    (build-system node-build-system)
+    (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+          %standard-phases
+          (delete 'configure)
+          (delete 'build))))
+    (inputs
+      `(("node-vscode-uri" ,node-vscode-uri-3.0.3)
+        ("node-vscode-nls" ,node-vscode-nls-5.0.1)
+        ("node-vscode-languageserver-textdocument"
+         ,node-vscode-languageserver-textdocument-1.0.4)
+        ("node-vscode-languageserver"
+         ,node-vscode-languageserver-8.0.1)
+        ("node-vscode-json-languageservice"
+         ,node-vscode-json-languageservice-4.2.1)
+        ("node-vscode-html-languageservice"
+         ,node-vscode-html-languageservice-4.2.5)
+        ("node-vscode-css-languageservice"
+         ,node-vscode-css-languageservice-5.4.2)
+        ("node-typescript" ,node-typescript-4.7.2)
+        ("node-request-light" ,node-request-light-0.5.8)
+        ("node-regenerator-runtime"
+         ,node-regenerator-runtime-0.13.9)
+        ("node-jsonc-parser" ,node-jsonc-parser-3.0.0)
+        ("node-core-js" ,node-core-js-3.22.7)))
+    (home-page
+      "https://github.com/hrsh7th/vscode-langservers-extracted#readme")
+    (synopsis
+      "HTML/CSS/JSON language servers extracted from [vscode](https://github.com/Microsoft/vscode).")
+    (description
+      "HTML/CSS/JSON language servers extracted from [vscode](https://github.com/Microsoft/vscode).")
+    (license license:expat)))
+
 (define-public node-typescript-language-server
   node-typescript-language-server-0.10.0)
 
@@ -2567,3 +3057,6 @@ builds the server component of the extension. Nothing else.")
 
 (define-public node-types-node
   node-types-node-17.0.35)
+
+(define-public node-vscode-langservers-extracted
+  node-vscode-langservers-extracted-4.2.1)
