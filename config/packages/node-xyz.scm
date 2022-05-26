@@ -5,6 +5,7 @@
   #:use-module (guix build-system node)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (ice-9 textual-ports)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
@@ -2482,9 +2483,10 @@
          "1wziayv9gw013rk5f57jd1jkik2fajk96b2hiimfjkmxya6nw2w6"))))
     (build-system node-build-system)
     (arguments
-      `(#:tests? #f
+     (list
+      #:tests? #f
         #:phases
-        (modify-phases
+        #~(modify-phases
          %standard-phases
          (delete 'build)
          (add-after 'unpack 'chdir
@@ -2522,13 +2524,14 @@
                     (lambda* (#:key inputs outpus #:allow-other-keys)
                       (let ((node (string-append (assoc-ref inputs "node") "/bin/node"))
                             (file "out/eslintServer.js"))
-                        (with-atomic-file-replacement file
-                          (lambda (in out)
-                            (display (string-append
-                                      "#!" node "\n"
-                                      ((@@ (ice-9 textual-ports) get-string-all) in))
-                                     out)))
-                        #t)))
+                        (with-atomic-file-replacement
+                         file
+                         (lambda (in out)
+                           (display
+                            (string-append
+                             "#!" node "\n"
+                             ((@@ (ice-9 textual-ports) get-string-all) in))
+                            out))))))
          (add-after 'install 'install-bin
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
@@ -2536,23 +2539,21 @@
                         (mkdir-p bin)
                         (symlink "../lib/node_modules/eslint-server/out/eslintServer.js"
                                  (string-append bin "/eslintServer"))
-                        (chmod (string-append out "/lib/node_modules/eslint-server/out/eslintServer.js") #o555)
-                        #t))))))
+                        (chmod (string-append
+                                out
+                                "/lib/node_modules/eslint-server/out/eslintServer.js") #o555)))))))
     (inputs
-     `(("node-types-node" ,node-types-node-17.0.35)
-       ("node-typescript" ,node-typescript-4.6.4)
-       ("node-vscode-jsonrpc" ,node-vscode-jsonrpc-8.0.0-next.8)
-       ("node-vscode-languageserver-types"
-        ,node-vscode-languageserver-types-3.17.0-next.12)
-       ("node-vscode-languageserver-protocol"
-        ,node-vscode-languageserver-protocol-3.17.0-next.20)
-        ("node-vscode-languageserver-textdocument"
-         ,node-vscode-languageserver-textdocument-1.0.4)
-        ("node-vscode-languageserver"
-         ,node-vscode-languageserver-8.0.0-next.14)
-        ("vscode-uri" ,node-vscode-uri-3.0.3)))
+     (list
+      node-types-node-17.0.35
+      node-typescript-4.6.4
+      node-vscode-jsonrpc-8.0.0-next.8
+      node-vscode-languageserver-types-3.17.0-next.12
+      node-vscode-languageserver-protocol-3.17.0-next.20
+      node-vscode-languageserver-textdocument-1.0.4
+      node-vscode-languageserver-8.0.0-next.14
+      node-vscode-uri-3.0.3))
     (synopsis
-      "ESLint language server using VS Code ESLint extension")
+     "ESLint language server using VS Code ESLint extension")
     (description
      "Using the VSCode ESLint extension's integrated ESLint LSP server. Note: This package only
 builds the server component of the extension. Nothing else.")
@@ -2566,4 +2567,3 @@ builds the server component of the extension. Nothing else.")
 
 (define-public node-types-node
   node-types-node-17.0.35)
-
