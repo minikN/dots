@@ -2468,96 +2468,96 @@
 
 (define-public node-eslint-language-server
   (package
-    (name "node-eslint-language-server")
-    (version "2.2.5")
-    (home-page "https://github.com/microsoft/vscode-eslint")
-    (source
-      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url home-page)
-             (commit "5cadee9357aab106ed6c5da116dea6dde480ca63")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1wziayv9gw013rk5f57jd1jkik2fajk96b2hiimfjkmxya6nw2w6"))))
-    (build-system node-build-system)
-    (arguments
-     (list
-      #:tests? #f
-        #:phases
-        #~(modify-phases
-         %standard-phases
-         (delete 'build)
-         (add-after 'unpack 'chdir
-                    (lambda _
-                      ;; We only need to build the server component of vscode-eslint
-                      ;; so lets chdir into it. The configure phase then will run
-                      ;; `npm install` inside the server folder.
-                      (chdir "server")
+   (name "node-eslint-language-server")
+   (version "2.2.5")
+   (home-page "https://github.com/microsoft/vscode-eslint")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url home-page)
+           (commit "5cadee9357aab106ed6c5da116dea6dde480ca63")))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32
+       "1wziayv9gw013rk5f57jd1jkik2fajk96b2hiimfjkmxya6nw2w6"))))
+   (build-system node-build-system)
+   (arguments
+    (list
+     #:tests? #f
+     #:phases
+     #~(modify-phases
+        %standard-phases
+        (delete 'build)
+        (add-after 'unpack 'chdir
+                   (lambda _
+                     ;; We only need to build the server component of vscode-eslint
+                     ;; so lets chdir into it. The configure phase then will run
+                     ;; `npm install` inside the server folder.
+                     (chdir "server")
 
-                      ;; However, they do some weird stuff with its dependencies,
-                      ;; simply running `npm install` won't install all the necessary
-                      ;; dependencies. They symlink some from the parent module. See:
-                      ;; https://github.com/microsoft/vscode-eslint/blob/main/build/bin/symlink.js
-                      ;; We therefore need to manually add the missing deps as it's
-                      ;; currently not possible to recursively import npm packages
-                      ;; with their dev dependencies.
-                      ;;
-                      ;; This will only work if the dependencies are listed as inputs!
-                      ;;
+                     ;; However, they do some weird stuff with its dependencies,
+                     ;; simply running `npm install` won't install all the necessary
+                     ;; dependencies. They symlink some from the parent module. See:
+                     ;; https://github.com/microsoft/vscode-eslint/blob/main/build/bin/symlink.js
+                     ;; We therefore need to manually add the missing deps as it's
+                     ;; currently not possible to recursively import npm packages
+                     ;; with their dev dependencies.
+                     ;;
+                     ;; This will only work if the dependencies are listed as inputs!
+                     ;;
                       ;;; TODO: Find a better way of doing this.
-                      (substitute* "package.json"
-                                   (("\"dependencies\": \\{")
-                                    "\"dependencies\": {
+                     (substitute* "package.json"
+                                  (("\"dependencies\": \\{")
+                                   "\"dependencies\": {
 \"@types/node\": \"17.0.35\",
 \"vscode-jsonrpc\": \"8.0.0-next.8\",
 \"vscode-languageserver-protocol\": \"3.17.0-next.20\",
 \"vscode-languageserver-types\": \"3.17.0-next.12\","))))
-         (add-after 'configure 'build-server
-                    (lambda _
-                      (invoke "tsc" "-b" "tsconfig.json")))
+        (add-after 'configure 'build-server
+                   (lambda _
+                     (invoke "tsc" "-b" "tsconfig.json")))
 
-         ;; The server needs node 14+ to run properly. We therefore
-         ;; add note-lts as an input and create a shebang.
-         (add-after 'build-server 'add-shebang
-                    (lambda* (#:key inputs outpus #:allow-other-keys)
-                      (let ((node (string-append (assoc-ref inputs "node") "/bin/node"))
-                            (file "out/eslintServer.js"))
-                        (with-atomic-file-replacement
-                         file
-                         (lambda (in out)
-                           (display
-                            (string-append
-                             "#!" node "\n"
-                             ((@@ (ice-9 textual-ports) get-string-all) in))
-                            out))))))
-         (add-after 'install 'install-bin
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (bin (string-append out "/bin")))
-                        (mkdir-p bin)
-                        (symlink "../lib/node_modules/eslint-server/out/eslintServer.js"
-                                 (string-append bin "/eslintServer"))
-                        (chmod (string-append
-                                out
-                                "/lib/node_modules/eslint-server/out/eslintServer.js") #o555)))))))
-    (inputs
-     (list
-      node-types-node-17.0.35
-      node-typescript-4.6.4
-      node-vscode-jsonrpc-8.0.0-next.8
-      node-vscode-languageserver-types-3.17.0-next.12
-      node-vscode-languageserver-protocol-3.17.0-next.20
-      node-vscode-languageserver-textdocument-1.0.4
-      node-vscode-languageserver-8.0.0-next.14
-      node-vscode-uri-3.0.3))
-    (synopsis
-     "ESLint language server using VS Code ESLint extension")
-    (description
-     "Using the VSCode ESLint extension's integrated ESLint LSP server. Note: This package only
+        ;; The server needs node 14+ to run properly. We therefore
+        ;; add note-lts as an input and create a shebang.
+        (add-after 'build-server 'add-shebang
+                   (lambda* (#:key inputs outpus #:allow-other-keys)
+                     (let ((node (string-append (assoc-ref inputs "node") "/bin/node"))
+                           (file "out/eslintServer.js"))
+                       (with-atomic-file-replacement
+                        file
+                        (lambda (in out)
+                          (display
+                           (string-append
+                            "#!" node "\n"
+                            ((@@ (ice-9 textual-ports) get-string-all) in))
+                           out))))))
+        (add-after 'install 'install-bin
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (let* ((out (assoc-ref outputs "out"))
+                            (bin (string-append out "/bin")))
+                       (mkdir-p bin)
+                       (symlink "../lib/node_modules/eslint-server/out/eslintServer.js"
+                                (string-append bin "/eslintServer"))
+                       (chmod (string-append
+                               out
+                               "/lib/node_modules/eslint-server/out/eslintServer.js") #o555)))))))
+   (inputs
+    (list
+     node-types-node-17.0.35
+     node-typescript-4.6.4
+     node-vscode-jsonrpc-8.0.0-next.8
+     node-vscode-languageserver-types-3.17.0-next.12
+     node-vscode-languageserver-protocol-3.17.0-next.20
+     node-vscode-languageserver-textdocument-1.0.4
+     node-vscode-languageserver-8.0.0-next.14
+     node-vscode-uri-3.0.3))
+   (synopsis
+    "ESLint language server using VS Code ESLint extension")
+   (description
+    "Using the VSCode ESLint extension's integrated ESLint LSP server. Note: This package only
 builds the server component of the extension. Nothing else.")
-    (license license:expat)))
+   (license license:expat)))
 
 (define-public node-typescript-language-server
   node-typescript-language-server-0.10.0)
