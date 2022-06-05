@@ -40,6 +40,9 @@
          (mount-point "/boot/efi")
          (type "vfat"))))
 
+(define geekcave-packages
+  (list "cura"))
+
 (define geekcave-features
   (list
    ;;; Host info
@@ -60,7 +63,8 @@
    (feature-base-packages #:system-packages
                           (append (pkgs %base-system-packages))
                           #:home-packages
-                          (append (pkgs %base-home-packages)))
+                          (append (pkgs %base-home-packages)
+                                  (pkgs geekcave-packages)))
    ;;; HiDPI
    (feature-hidpi)
 
