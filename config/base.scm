@@ -150,9 +150,9 @@
 
    ;; WIP
    (feature-emacs-eglot)
-   (feature-javascript #:typescript node-typescript
-                       #:typescript-language-server node-typescript-language-server
-                       #:eslint-language-server node-vscode-langservers-extracted)
+   (feature-javascript #:typescript node-typescript-4.7.3
+                       #:typescript-language-server node-typescript-language-server-0.11.1
+                       #:eslint-language-server node-vscode-langservers-extracted-4.2.1)
 
    ;; direnv
    (feature-direnv)
