@@ -15,12 +15,10 @@
 (define* (feature-javascript
           #:key
           (typescript #f)
-          (typescript-language-server #f)
-          (eslint-language-server #f))
+          (typescript-language-server #f))
   "Setup and configure environment for JavaScript."
   (ensure-pred maybe-file-like? typescript)
   (ensure-pred maybe-file-like? typescript-language-server)
-  (ensure-pred maybe-file-like? eslint-language-server)
 
   (define (get-home-services config)
     (define emacs-f-name 'javascript)
@@ -33,11 +31,6 @@
           (file-append typescript-language-server
                        "/bin/typescript-language-server")
           typescript-language-server))
-    (define eslint-lsp-executable
-      (if (any-package? eslint-language-server)
-          (file-append eslint-language-server
-                       "/bin/vscode-eslint-language-server")
-          eslint-language-server))
     (list
      (when (get-value 'emacs config)
        (rde-elisp-configuration-service
@@ -113,21 +106,12 @@
            (eglot--code-action eglot-code-action-add-missing-imports-ts "source.addMissingImports.ts")
            (eglot--code-action eglot-code-action-removed-unused-ts "source.removedUnused.ts")
 	   (eglot--code-action eglot-code-action-fix-all-ts "source.fixAll.ts")
-           ;; (add-to-list 'eglot-server-programs
-           ;;              '((js-mode
-           ;;                 typescript-mode
-           ;;                 typescript-tsx-mode) . (,ts-lsp-executable
-           ;;                                         "--tsserver-path" ,tsserver-library
-           ;;                                         "--stdio")))
-	   ;; (add-to-list 'eglot-server-programs
-           ;;              `((js-mode
-           ;;                 typescript-mode
-           ;;                 typescript-tsx-mode) . ,(eglot-alternatives '((,ts-lsp-executable
-           ;;                                                                "--tsserver-path" ,tsserver-library
-           ;;                                                                "--stdio")
-           ;;                                                               (,eslint-lsp-executable
-           ;;                                                                "--stdio")))))
-           )
+           (add-to-list 'eglot-server-programs
+                        '((js-mode
+                           typescript-mode
+                           typescript-tsx-mode) . (,ts-lsp-executable
+                                                   "--tsserver-path" ,tsserver-library
+                                                   "--stdio"))))
           (dolist (hook
                    '(js-mode-hook
                      typescript-mode-hook
