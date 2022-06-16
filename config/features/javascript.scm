@@ -113,14 +113,21 @@
            (eglot--code-action eglot-code-action-add-missing-imports-ts "source.addMissingImports.ts")
            (eglot--code-action eglot-code-action-removed-unused-ts "source.removedUnused.ts")
 	   (eglot--code-action eglot-code-action-fix-all-ts "source.fixAll.ts")
-	   ,#~(add-to-list 'eglot-server-programs
-                        '((js-mode
-                           typescript-mode
-                           typescript-tsx-mode) . ,(eglot-alternatives '((#$ts-lsp-executable
-                                                                         "--tsserver-path" #$tsserver-library
-                                                                         "--stdio")
-                                                                        (#$eslint-lsp-executable
-                                                                         "--stdio"))))))
+           ;; (add-to-list 'eglot-server-programs
+           ;;              '((js-mode
+           ;;                 typescript-mode
+           ;;                 typescript-tsx-mode) . (,ts-lsp-executable
+           ;;                                         "--tsserver-path" ,tsserver-library
+           ;;                                         "--stdio")))
+	   ;; (add-to-list 'eglot-server-programs
+           ;;              `((js-mode
+           ;;                 typescript-mode
+           ;;                 typescript-tsx-mode) . ,(eglot-alternatives '((,ts-lsp-executable
+           ;;                                                                "--tsserver-path" ,tsserver-library
+           ;;                                                                "--stdio")
+           ;;                                                               (,eslint-lsp-executable
+           ;;                                                                "--stdio")))))
+           )
           (dolist (hook
                    '(js-mode-hook
                      typescript-mode-hook
