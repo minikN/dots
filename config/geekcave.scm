@@ -41,7 +41,11 @@
          (type "vfat"))))
 
 (define geekcave-packages
-  (list "cura"))
+  (list
+   ;; Needs copying material, variants and
+   ;; quality from source repos to
+   ;; ~/.local/share/cura/master/resources
+   "cura"))
 
 (define geekcave-features
   (list
