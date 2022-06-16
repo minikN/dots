@@ -151,7 +151,8 @@
    ;; WIP
    (feature-emacs-eglot)
    (feature-javascript #:typescript node-typescript-4.7.3
-                       #:typescript-language-server node-typescript-language-server-0.11.1)
+                       #:typescript-language-server node-typescript-language-server-0.11.1
+                       #:eslint node-eslint-8.17.0)
    
    ;; direnv
    (feature-direnv)

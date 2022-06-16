@@ -5,6 +5,7 @@
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages node)
   #:use-module (config packages node-xyz)
+  #:use-module (emacs packages melpa)
   #:use-module (rde features)
   #:use-module (rde features emacs)
   #:use-module (rde features predicates)
@@ -15,10 +16,12 @@
 (define* (feature-javascript
           #:key
           (typescript #f)
-          (typescript-language-server #f))
+          (typescript-language-server #f)
+          (eslint #f))
   "Setup and configure environment for JavaScript."
   (ensure-pred maybe-file-like? typescript)
   (ensure-pred maybe-file-like? typescript-language-server)
+  (ensure-pred maybe-file-like? eslint)
 
   (define (get-home-services config)
     (define emacs-f-name 'javascript)
@@ -31,6 +34,10 @@
           (file-append typescript-language-server
                        "/bin/typescript-language-server")
           typescript-language-server))
+    (define eslint-executable
+      (if (any-package? eslint)
+          (file-append eslint "/bin/eslint")
+          eslint))
     (list
      (when (get-value 'emacs config)
        (rde-elisp-configuration-service
@@ -106,6 +113,13 @@
            (eglot--code-action eglot-code-action-add-missing-imports-ts "source.addMissingImports.ts")
            (eglot--code-action eglot-code-action-removed-unused-ts "source.removedUnused.ts")
 	   (eglot--code-action eglot-code-action-fix-all-ts "source.fixAll.ts")
+
+           ;; We need to add other flymake checkers
+           ;; Therefore disable automatic integration
+           (add-to-list 'eglot-stay-out-of 'flymake)
+           (add-hook 'flymake-diagnostic-functions 'eglot-flymake-backend nil t)
+           (add-hook 'eglot-managed-mode-hook (lambda () (flymake-mode t)))
+
            (add-to-list 'eglot-server-programs
                         '((js-mode
                            typescript-mode
@@ -119,14 +133,26 @@
                   (add-hook hook
                             (lambda ()
                               (eglot-ensure)
+                              ;; (flymake-eslint-enable)
+                              (require 'flymake-eslint)
+                              (add-hook 'flymake-diagnostic-functions 'flymake-eslint--checker nil t)
+                              (local-set-key (kbd "M-C-S-p") 'eslint-fix)
                               (local-set-key (kbd "C-c c i") '("Add missing imports" . eglot-code-action-add-missing-imports-ts))
                               (local-set-key (kbd "C-c c o") '("Organize imports" . eglot-code-action-organize-imports-ts))
                               (local-set-key (kbd "C-c c r") '("Remove unused symbols" . eglot-code-action-removed-unused-ts))
-                              (local-set-key (kbd "C-c c f") '("Fix all" . eglot-code-action-fix-all-ts))))))
+                              (local-set-key (kbd "C-c c f") '("Fix all" . eglot-code-action-fix-all-ts)))))
+          (with-eval-after-load
+           'flymake-eslint
+           (setq flymake-eslint-executable-name ,eslint-executable))
+          (with-eval-after-load
+           'eslint-fix
+           (setq eslint-fix-executable ,eslint-executable)))
         #:elisp-packages (list emacs-js2-mode ;;emacs-js2-refactor-el
                                emacs-typescript-mode
                                emacs-npm-mode
                                emacs-web-mode
+                               emacs-flymake-eslint
+                               emacs-eslint-fix
                                (get-value 'emacs-eglot config emacs-eglot))))))
 
   (feature
