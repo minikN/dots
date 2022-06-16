@@ -211,6 +211,7 @@
    "htop"
    "vim"
    "make"
+   "firefox"
    "ungoogled-chromium-wayland"
    "ublock-origin-chromium"
    "pavucontrol"
