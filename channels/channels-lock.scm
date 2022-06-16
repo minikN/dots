@@ -1,9 +1,20 @@
 (list (channel
+        (name 'emacs)
+        (url "https://github.com/babariviere/guix-emacs")
+        (branch "master")
+        (commit
+          "2fa5e54bbdc900da3a239cba20094ad09d2ec7c6")
+        (introduction
+          (make-channel-introduction
+            "72ca4ef5b572fea10a4589c37264fa35d4564783"
+            (openpgp-fingerprint
+              "261C A284 3452 FB01 F6DF  6CF4 F9B7 864F 2AB4 6F18"))))
+      (channel
         (name 'flat)
         (url "https://github.com/flatwhatson/guix-channel.git")
         (branch "master")
         (commit
-          "f43c67e47f1ca83d045f35c31772c5e4eb64b2a2")
+          "657da22f0229b978b7bf4e4d476f59f17f6a175f")
         (introduction
           (make-channel-introduction
             "33f86a4b48205c0dc19d7c036c85393f0766f806"
@@ -14,7 +25,7 @@
         (url "https://gitlab.com/nonguix/nonguix")
         (branch "master")
         (commit
-          "dae8645813454a687b24846a8126bd758fbdc8c9")
+          "0d38919a2ee9cd355394d8709d39d62dbb1022dc")
         (introduction
           (make-channel-introduction
             "46c1d8bcca674d3a71cd077c52dde9552a89873d"
@@ -25,7 +36,7 @@
         (url "https://git.savannah.gnu.org/git/guix.git")
         (branch "master")
         (commit
-          "eb34ff16cc9038880e87e1a58a93331fca37ad92")
+          "ab82dd3f58d7dfd88511705e871e9a41d9185aba")
         (introduction
           (make-channel-introduction
             "9edb3f66fd807b096b48283debdcddccfea34bad"

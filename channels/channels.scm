@@ -22,4 +22,12 @@
    (make-channel-introduction
     "33f86a4b48205c0dc19d7c036c85393f0766f806"
     (openpgp-fingerprint
-     "736A C00E 1254 378B A982  7AF6 9DBE 8265 81B6 4490")))))
+     "736A C00E 1254 378B A982  7AF6 9DBE 8265 81B6 4490"))))
+(channel
+  (name 'emacs)
+  (url "https://github.com/babariviere/guix-emacs")
+  (introduction
+   (make-channel-introduction
+    "72ca4ef5b572fea10a4589c37264fa35d4564783"
+    (openpgp-fingerprint
+     "261C A284 3452 FB01 F6DF  6CF4 F9B7 864F 2AB4 6F18")))))
