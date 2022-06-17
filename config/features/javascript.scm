@@ -138,7 +138,10 @@
                               ,@(when eslint
                                   '((require 'flymake-eslint)
                                     (add-hook 'flymake-diagnostic-functions 'flymake-eslint--checker nil t)
-                                    (local-set-key (kbd "M-C-S-p") 'eslint-fix)))
+                                    (local-set-key (kbd "M-C-S-p") '(lambda ()
+                                                                       (interactive)
+                                                                       (save-buffer)
+                                                                       (eslint-fix)))))
                               (local-set-key (kbd "C-c c i") '("Add missing imports" . eglot-code-action-add-missing-imports-ts))
                               (local-set-key (kbd "C-c c o") '("Organize imports" . eglot-code-action-organize-imports-ts))
                               (local-set-key (kbd "C-c c r") '("Remove unused symbols" . eglot-code-action-removed-unused-ts))
