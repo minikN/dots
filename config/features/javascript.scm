@@ -1,5 +1,4 @@
 (define-module (config features javascript)
-  ;;#:use-module (config packages node-xyz)
   #:use-module (gnu services)
   #:use-module (gnu home services)
   #:use-module (gnu packages emacs-xyz)
@@ -95,6 +94,9 @@
                        (rde--setup-electric-pairs-for-jsx-tsx)
                        (npm-mode))))
 
+          ;; jsdoc
+          ;; TODO: Implement after https://issues.guix.gnu.org/issue/49946 is merged.
+
           ;; npm-mode
           (with-eval-after-load
            'npm-mode
@@ -133,20 +135,21 @@
                   (add-hook hook
                             (lambda ()
                               (eglot-ensure)
-                              ;; (flymake-eslint-enable)
-                              (require 'flymake-eslint)
-                              (add-hook 'flymake-diagnostic-functions 'flymake-eslint--checker nil t)
-                              (local-set-key (kbd "M-C-S-p") 'eslint-fix)
+                              ,@(when eslint
+                                  '((require 'flymake-eslint)
+                                    (add-hook 'flymake-diagnostic-functions 'flymake-eslint--checker nil t)
+                                    (local-set-key (kbd "M-C-S-p") 'eslint-fix)))
                               (local-set-key (kbd "C-c c i") '("Add missing imports" . eglot-code-action-add-missing-imports-ts))
                               (local-set-key (kbd "C-c c o") '("Organize imports" . eglot-code-action-organize-imports-ts))
                               (local-set-key (kbd "C-c c r") '("Remove unused symbols" . eglot-code-action-removed-unused-ts))
                               (local-set-key (kbd "C-c c f") '("Fix all" . eglot-code-action-fix-all-ts)))))
-          (with-eval-after-load
-           'flymake-eslint
-           (setq flymake-eslint-executable-name ,eslint-executable))
-          (with-eval-after-load
-           'eslint-fix
-           (setq eslint-fix-executable ,eslint-executable)))
+          ,@(when eslint
+              `((with-eval-after-load
+                 'flymake-eslint
+                 (setq flymake-eslint-executable-name ,eslint-executable))
+                (with-eval-after-load
+                 'eslint-fix
+                 (setq eslint-fix-executable ,eslint-executable)))))
         #:elisp-packages (list emacs-js2-mode ;;emacs-js2-refactor-el
                                emacs-typescript-mode
                                emacs-npm-mode
