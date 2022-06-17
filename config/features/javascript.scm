@@ -4,6 +4,7 @@
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages node)
   #:use-module (config packages node-xyz)
+  #:use-module (config features emacs-xyz)
   #:use-module (emacs packages melpa)
   #:use-module (rde features)
   #:use-module (rde features emacs)
@@ -108,6 +109,7 @@
           ;; (js2r-add-keybindings-with-prefix "C-c r")
           ;; (define-key js2-refactor-mode-map (kbd "C-c r f") 'js2r-extract-function)
 
+          ;; eglot
           (with-eval-after-load
            'eglot
            ;;; TODO: Remove after https://github.com/joaotavora/eglot/pull/871 is merged.
@@ -128,6 +130,7 @@
                            typescript-tsx-mode) . (,ts-lsp-executable
                                                    "--tsserver-path" ,tsserver-library
                                                    "--stdio"))))
+          ;; general
           (dolist (hook
                    '(js-mode-hook
                      typescript-mode-hook
@@ -135,6 +138,7 @@
                   (add-hook hook
                             (lambda ()
                               (eglot-ensure)
+                              (corfu-mode)
                               ,@(when eslint
                                   '((require 'flymake-eslint)
                                     (add-hook 'flymake-diagnostic-functions 'flymake-eslint--checker nil t)
@@ -159,6 +163,7 @@
                                emacs-web-mode
                                emacs-flymake-eslint
                                emacs-eslint-fix
+                               (get-value 'emacs-corfu config emacs-corfu)
                                (get-value 'emacs-eglot config emacs-eglot))))))
 
   (feature
