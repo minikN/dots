@@ -118,6 +118,26 @@
            (eglot--code-action eglot-code-action-removed-unused-ts "source.removedUnused.ts")
 	   (eglot--code-action eglot-code-action-fix-all-ts "source.fixAll.ts")
 
+           ;; keybindings
+           (defvar eglot-command-map
+             (let ((map (make-sparse-keymap)))
+               (define-key map (kbd "S") '("Start" . eglot))
+               (define-key map (kbd "R") '("Reconnect" . eglot-reconnect))
+               (define-key map (kbd "k") '("Shutdown" . eglot-shutdown))
+               (define-key map (kbd "K") '("Shutdown (all)" . eglot-shutdown-all))
+               (define-key map (kbd "r") '("Rename symbol" . eglot-rename))
+               (define-key map (kbd "f") '("Format buffer or region" . eglot-format))
+               (define-key map (kbd "c") '("Code actions" . eglot-code-actions))
+               (define-key map (kbd "h") '("Help" . eldoc))
+               map)
+             "Keymap for eglot.")
+           (fset 'eglot-command-map eglot-command-map)
+           (define-key eglot-mode-map (kbd "C-c c") '("code" . eglot-command-map))
+           (define-key eglot-mode-map (kbd "M-RET") '("code actions" . eglot-code-actions))
+           (define-key eglot-mode-map (kbd "M-,") '("Go a ref backward" . xref-go-back))
+           (define-key eglot-mode-map (kbd "M-.") '("Go a ref forward" . xref-go-forward))
+           (define-key eglot-mode-map (kbd "C-.") '("Go to definition" . xref-find-definitions))
+
            ;; We need to add other flymake checkers
            ;; Therefore disable automatic integration
            (add-to-list 'eglot-stay-out-of 'flymake)
