@@ -256,15 +256,18 @@
      (rde-elisp-configuration-service
       emacs-f-name
       config
-      `((eval-when-compile
-         (require 'evil)
-         (require 'evil-collection))
+      `((eval-when-compile (require 'evil))
         (setq evil-want-keybinding nil
               evil-want-fine-undo t)
         (evil-mode 1)
 
         ;; Keybindings
-        (evil-define-key 'normal prog-mode-map (kbd "<tab>") 'evil-jump-item)
+        (with-eval-after-load
+         'evil
+         (evil-define-key 'normal prog-mode-map (kbd "<tab>") 'evil-jump-item)
+         (define-key evil-normal-state-map (kbd "M-.") nil)
+         (define-key evil-normal-state-map (kbd "M-,") nil)
+         (define-key evil-normal-state-map (kbd "C-.") nil)
 
         ;; V for evil-visual-line in magit
         ,@(when (get-value 'emacs-git config)
@@ -274,9 +277,8 @@
 
         ;; Start vterm in insert mode
         ,@(when (get-value 'emacs-vterm config)
-            `((add-to-list 'evil-insert-state-modes 'vterm-mode))))
-      #:elisp-packages (list emacs-evil
-                             emacs-evil-collection))))
+            `((add-to-list 'evil-insert-state-modes 'vterm-mode)))))
+      #:elisp-packages (list emacs-evil))))
 
   (feature
    (name f-name)
