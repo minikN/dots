@@ -12,6 +12,7 @@
   #:use-module (config features emacs-xyz)
   #:use-module (config features javascript)
   #:use-module (config features linux)
+  #:use-module (config packages)
   #:use-module (config packages node-xyz)
   #:use-module (rde features base)
   #:use-module (rde features emacs)
@@ -149,6 +150,7 @@
    (feature-emacs-which-key #:min-height 5)
 
    ;; WIP
+   (feature-emacs-corfu #:emacs-corfu-doc emacs-corfu-doc)
    (feature-emacs-eglot)
    (feature-javascript #:typescript node-typescript-4.7.3
                        #:typescript-language-server node-typescript-language-server-0.11.1

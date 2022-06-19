@@ -9,7 +9,7 @@
             feature-emacs-leader-keys
             feature-emacs-files
             feature-emacs-syntax
-            emacs-configure-capf
+            feature-emacs-corfu
             ;; feature-emacs-lang-base
             ;; feature-emacs-lang-javascript
             ))
@@ -222,9 +222,12 @@
 ;;    #:elisp-packages (list emacs-corfu)
 ;;    #:summary "Basic CAPF configuration using corfu."))
 
-(define* (feature-emacs-corfu)
+(define* (feature-emacs-corfu
+          #:key
+          (emacs-corfu emacs-corfu)
+          (emacs-corfu-doc #f))
   "Basic CAPF configuration using corfu."
-
+  
   (define emacs-f-name 'corfu)
   (define f-name (symbol-append 'emacs- emacs-f-name))
 
@@ -233,17 +236,30 @@
      (rde-elisp-configuration-service
       emacs-f-name
       config
-      `((eval-when-compile (require 'corfu))
-     (with-eval-after-load
-      'corfu
-      (setq corfu-auto t
-            corfu-quit-no-match 'separator
-            tab-always-indent 'complete)))
-      #:elisp-packages (list emacs-corfu))))
-
+      `((with-eval-after-load
+         'corfu
+         (setq corfu-auto t
+               corfu-quit-no-match 'separator
+               tab-always-indent 'complete))
+        ,@(if emacs-corfu-doc
+            '((with-eval-after-load
+               'corfu-doc
+               (define-key corfu-map (kbd "M-p") 'corfu-doc-scroll-down)
+               (define-key corfu-map (kbd "M-n") 'corfu-doc-scroll-up)
+               (define-key corfu-map (kbd "M-d") 'corfu-doc-toggle)))
+            '()))
+      #:elisp-packages (append
+                        (list emacs-corfu)
+                        (if emacs-corfu-doc
+                            (list (get-value 'emacs-corfu-doc config))
+                            '())))))
   (feature
    (name f-name)
-   (values `((,f-name . ,emacs-corfu)))
+   (values (append
+            `((,f-name . ,emacs-corfu))
+            (if emacs-corfu-doc
+                `((emacs-corfu-doc . ,emacs-corfu-doc))
+                '())))
    (home-services-getter get-home-services)))
 
 (define* (feature-emacs-evil)

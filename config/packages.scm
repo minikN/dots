@@ -10,9 +10,9 @@
             ))
 
 (define emacs-corfu-doc
-  (let ((commit "8d8f9317dd75cc83f3a2ba04c2b372f7fb06b2fc")
+  (let ((commit "5dd2a2987a9e470112151d89be3f35d95c633be5")
         (revision "0")
-        (version "0.1"))
+        (version "0.7"))
     (package
      (name "emacs-corfu-doc")
      (version (git-version version revision commit))
@@ -23,7 +23,7 @@
              (url "https://github.com/galeo/corfu-doc")
              (commit commit)))
        (sha256
-        (base32 "1bd97zv4w6hafqvxlaw9wkl4ang8mcj53pr28a38iy2y2adrksgw"))
+        (base32 "01j7cpbijldfg0kdynw8ap2hvcdb7m36n2g7zbkxz56qdhl2s71n"))
        (file-name (git-file-name name version))))
      (build-system emacs-build-system)
      (propagated-inputs (list emacs-corfu))

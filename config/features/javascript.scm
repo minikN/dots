@@ -158,33 +158,44 @@
                   (add-hook hook
                             (lambda ()
                               (eglot-ensure)
-                              (corfu-mode)
-                              ,@(when eslint
-                                  '((require 'flymake-eslint)
-                                    (add-hook 'flymake-diagnostic-functions 'flymake-eslint--checker nil t)
-                                    (local-set-key (kbd "M-C-S-p") '(lambda ()
-                                                                       (interactive)
-                                                                       (save-buffer)
-                                                                       (eslint-fix)))))
+                              ,@(if (get-value 'emacs-corfu config)
+                                    '((corfu-mode)) '())
+                              ,@(if (get-value 'emacs-corfu-doc config)
+                                    '((corfu-doc-mode)) '())
+                              ,@(if eslint
+                                    '((require 'flymake-eslint)
+                                      (add-hook 'flymake-diagnostic-functions 'flymake-eslint--checker nil t)
+                                      (local-set-key (kbd "M-C-S-p") '(lambda ()
+                                                                        (interactive)
+                                                                        (save-buffer)
+                                                                        (eslint-fix))))
+                                    '())
                               (local-set-key (kbd "C-c c i") '("Add missing imports" . eglot-code-action-add-missing-imports-ts))
                               (local-set-key (kbd "C-c c o") '("Organize imports" . eglot-code-action-organize-imports-ts))
                               (local-set-key (kbd "C-c c r") '("Remove unused symbols" . eglot-code-action-removed-unused-ts))
                               (local-set-key (kbd "C-c c f") '("Fix all" . eglot-code-action-fix-all-ts)))))
-          ,@(when eslint
-              `((with-eval-after-load
-                 'flymake-eslint
-                 (setq flymake-eslint-executable-name ,eslint-executable))
-                (with-eval-after-load
-                 'eslint-fix
-                 (setq eslint-fix-executable ,eslint-executable)))))
-        #:elisp-packages (list emacs-js2-mode ;;emacs-js2-refactor-el
-                               emacs-typescript-mode
-                               emacs-npm-mode
-                               emacs-web-mode
-                               emacs-flymake-eslint
-                               emacs-eslint-fix
-                               (get-value 'emacs-corfu config emacs-corfu)
-                               (get-value 'emacs-eglot config emacs-eglot))))))
+          ,@(if eslint
+                `((with-eval-after-load
+                   'flymake-eslint
+                   (setq flymake-eslint-executable-name ,eslint-executable))
+                  (with-eval-after-load
+                   'eslint-fix
+                   (setq eslint-fix-executable ,eslint-executable)))
+                '()))
+        #:elisp-packages (append
+                          (if (get-value 'emacs-corfu config)
+                              (list (get-value 'emacs-corfu config))
+                              '())
+                          (if (get-value 'emacs-corfu-doc config)
+                              (list (get-value 'emacs-corfu-doc config))
+                              '())
+                          (list emacs-js2-mode ;;emacs-js2-refactor-el
+                                emacs-typescript-mode
+                                emacs-npm-mode
+                                emacs-web-mode
+                                emacs-flymake-eslint
+                                emacs-eslint-fix
+                                (get-value 'emacs-eglot config emacs-eglot)))))))
 
   (feature
    (name 'javascript)
