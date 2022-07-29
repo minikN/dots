@@ -3,7 +3,7 @@
         (url "https://github.com/babariviere/guix-emacs")
         (branch "master")
         (commit
-          "2fa5e54bbdc900da3a239cba20094ad09d2ec7c6")
+          "aac105e495b8b8712f981e12b7c5d1ed64a6f9df")
         (introduction
           (make-channel-introduction
             "72ca4ef5b572fea10a4589c37264fa35d4564783"
@@ -14,7 +14,7 @@
         (url "https://github.com/flatwhatson/guix-channel.git")
         (branch "master")
         (commit
-          "657da22f0229b978b7bf4e4d476f59f17f6a175f")
+          "d95204cc50de4c3a7abcbff86cfec7d5eed43a7e")
         (introduction
           (make-channel-introduction
             "33f86a4b48205c0dc19d7c036c85393f0766f806"
@@ -25,7 +25,7 @@
         (url "https://gitlab.com/nonguix/nonguix")
         (branch "master")
         (commit
-          "0d38919a2ee9cd355394d8709d39d62dbb1022dc")
+          "ec7c7b852c024095e4f34523452230406a3b4549")
         (introduction
           (make-channel-introduction
             "46c1d8bcca674d3a71cd077c52dde9552a89873d"
@@ -36,7 +36,7 @@
         (url "https://git.savannah.gnu.org/git/guix.git")
         (branch "master")
         (commit
-          "ab82dd3f58d7dfd88511705e871e9a41d9185aba")
+          "69eb84094516b56d7784aa1b8809cce0936e173e")
         (introduction
           (make-channel-introduction
             "9edb3f66fd807b096b48283debdcddccfea34bad"
