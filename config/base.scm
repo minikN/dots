@@ -217,7 +217,7 @@
    "ungoogled-chromium-wayland"
    "ublock-origin-chromium"
    "pavucontrol"
-   ;; "streamlink"
+   "gimp"
    ;; "calf"
    ;; "jack2"
    ;; "guitarix"
@@ -225,7 +225,6 @@
    ;; "carla"
    ;; "qjackctl"
    ;; "youtube-dl"
-   ;; "mpv"
    ))
 
 (define %base-system-packages
