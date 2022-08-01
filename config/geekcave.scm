@@ -100,7 +100,8 @@
 
    ;;; Games
    (feature-games-base)
-   (feature-games-steam #:sandbox-location "~/games/steam-sandbox")))
+   (feature-games-steam #:sandbox-location "~/games/steam-sandbox"
+                        #:steamos? #t)))
 
 (define geekcave-config
   (rde-config
