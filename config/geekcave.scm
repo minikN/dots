@@ -1,5 +1,6 @@
 (define-module (config geekcave)
   #:use-module (config base)
+  #:use-module (config packages)
   #:use-module (config features package-management)
   #:use-module (gnu system file-systems)
   #:use-module (nongnu packages linux)
@@ -45,7 +46,9 @@
    ;; Needs copying material, variants and
    ;; quality from source repos to
    ;; ~/.local/share/cura/master/resources
-   "cura"))
+   ;"cura"
+   rofi-ttv
+   ))
 
 (define geekcave-features
   (list
@@ -68,7 +71,7 @@
                           (append (pkgs %base-system-packages))
                           #:home-packages
                           (append (pkgs %base-home-packages)
-                                  (pkgs geekcave-packages)))
+                                  geekcave-packages))
    ;;; HiDPI
    (feature-hidpi)
 
