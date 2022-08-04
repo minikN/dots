@@ -1,22 +1,49 @@
 (define-module (config features games)
+  #:use-module (config packages)
+  #:use-module (config packages steam-client)
   #:use-module (gnu home services)
   #:use-module (gnu home-services shells)
   #:use-module (gnu home-services wm)
   #:use-module (gnu packages base)
-  #:use-module (gnu packages package-management)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages wine)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu services base)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services)
+  #:use-module (guix download)
   #:use-module (guix gexp)
-  #:use-module (nongnu packages steam-client)
+  #:use-module (guix packages)
   #:use-module (nongnu packages wine)
   #:use-module (rde features predicates)
   #:use-module (rde features)
   #:export (feature-games-base
             feature-games-steam))
+
+;; Source:
+;; https://github.com/podiki/dot.me/blob/master/guix/.config/guix/config.scm#L57
+(define %steam-input-udev-rules
+  (file->udev-rule
+    "60-steam-input.rules"
+    (let ((version "8a3f1a0e2d208b670aafd5d65e216c71f75f1684"))
+      (origin
+       (method url-fetch)
+       (uri (string-append "https://raw.githubusercontent.com/ValveSoftware/"
+                           "steam-devices/" version "/60-steam-input.rules"))
+       (sha256
+        (base32 "1k6sa9y6qb9vh7qsgvpgfza55ilcsvhvmli60yfz0mlks8skcd1f"))))))
+
+(define %steam-vr-udev-rules
+  (file->udev-rule
+    "60-steam-vr.rules"
+    (let ((version "13847addfd56ef70dee98c1f7e14c4b4079e2ce8"))
+      (origin
+       (method url-fetch)
+       (uri (string-append "https://raw.githubusercontent.com/ValveSoftware/"
+                           "steam-devices/" version "/60-steam-vr.rules"))
+       (sha256
+        (base32 "0f05w4jp2pfp948vwwqa17ym2ps7sgh3i6sdc69ha76jlm49rp0z"))))))
 
 (define* (feature-games-base)
   "Install and configure base packages for gaming."
@@ -52,9 +79,9 @@
 (define* (feature-games-steam
           #:key
           (steam steam)
-          (sandbox-location #f)
           (steamos? #f)
           (steamos-tty-number 3)
+          (sandbox-location #f)
           (gpu-driver xf86-video-amdgpu))
   "Install and configure steam."
 
@@ -91,7 +118,8 @@
                               "#!/bin/sh\nDIR=$HOME/.guix-home/profile\n"
                               #$(file-append xinit "/bin/xinit" " ")
                               #$(file-append coreutils "/bin/env" " " "-u" " " "SDL_VIDEODRIVER" " ")
-                              #$(file-append steam "/bin/steam" " " "-bigpicture")
+                              ;#$(file-append steam "/bin/steam" " " "-bigpicture")
+                              #$(file-append steamos-compositor-plus "/bin/steamos-session" " ")
                               " -- "
                               #$(file-append xorg-server "/bin/Xorg" " " ":1" " " "vt")
                               #$(number->string steamos-tty-number)
@@ -118,7 +146,14 @@
 	`((assign "[class=\"Steam\"]" workspace 7)
           (assign "[class=\"^steam_.$\"]" workspace 7))))))
 
+  (define (get-system-services config)
+    (list
+     ;; Add udev rules for steam input devices.
+     (udev-rules-service 'steam-input %steam-input-udev-rules)
+     (udev-rules-service 'steam-vr %steam-vr-udev-rules)))
+
   (feature
    (name 'games-steam)
    (values '((games-steam . #t)))
-   (home-services-getter get-home-services)))
+   (home-services-getter get-home-services)
+   (system-services-getter get-system-services)))
