@@ -103,7 +103,9 @@
 
    ;;; Games
    (feature-games-base)
-   (feature-games-steam #:sandbox-location "~/games/steam-sandbox"
+   (feature-games-steam #:sandbox-location (string-append
+                                            (getenv "HOME")
+                                            "/games/steam-standbox")
                         #:steamos? #t)))
 
 (define geekcave-config
