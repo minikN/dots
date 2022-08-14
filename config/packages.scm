@@ -120,7 +120,7 @@
                          (substitute* "./usr/bin/steamos-session"
                                       ;; No need to export scripts to PATH.
                                       (("export.+\\{PATH\\}" line) (string-append "#" line))
-                                      (("export.+so" line) (string-append "export" " " modeswitch-inhibitor))
+                                      (("export.+so" line) (string-append "export" " " "LD_PRELOAD=" modeswitch-inhibitor))
                                       (("set_hd_mode.sh") (string-append bin "/scripts/set_hd_mode.sh"))
                                       (("loadargb_cursor") (string-append bin "/loadargb_cursor"))
                                       (("cp") "ln -s")
