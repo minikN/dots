@@ -172,7 +172,8 @@
    (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))
 
    ;;; Services
-   (feature-base-services #:guix-substitute-urls (list "https://substitutes.nonguix.org")
+   (feature-base-services #:guix-substitute-urls (list "https://bordeaux.guix.gnu.org"
+                                                       "https://substitutes.nonguix.org")
                           #:guix-authorized-keys (list %nonguix-public-key))
    (feature-desktop-services)
 
