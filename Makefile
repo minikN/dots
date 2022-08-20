@@ -1,8 +1,9 @@
 CONFIG_FILE = ./config.scm
 
 # Add ./ and ../rde to GUILE_LOAD_PATH
-RDE = ../rde
-GLP = ./:$(RDE)
+RDE 	:=	../rde
+GLP 	:=	./:$(RDE)
+NPROCS	:=	$(shell grep -c ^processor /proc/cpuinfo)
 
 .DEFAULT_GOAL := hr
 
@@ -14,22 +15,23 @@ GLP = ./:$(RDE)
 hr:
 	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-he \
 			guix time-machine -C channels/channels-lock.scm -- \
-			home reconfigure $(CONFIG_FILE)
-
-hb:
-	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-he \
-			guix time-machine -C channels/channels-lock.scm -- \
-			home build $(CONFIG_FILE)
+			home reconfigure --cores=$(NPROCS) $(CONFIG_FILE)
 
 sr:
 	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-os \
 			sudo -E guix time-machine -C channels/channels-lock.scm -- \
-			system reconfigure $(CONFIG_FILE)
+			system reconfigure --cores=$(NPROCS) $(CONFIG_FILE)
+
+hb:
+	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-he \
+			guix time-machine -C channels/channels-lock.scm -- \
+			home build --cores=$(NPROCS) $(CONFIG_FILE)
+
 
 sb:
 	GUILE_LOAD_PATH=$(GLP) TARGET=${HOSTNAME}-os \
 			guix time-machine -C channels/channels-lock.scm -- \
-			system build $(CONFIG_FILE)
+			system build --cores=$(NPROCS) $(CONFIG_FILE)
 
 channels-pull:
 	guix pull -C channels/channels-lock.scm
