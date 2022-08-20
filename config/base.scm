@@ -150,7 +150,7 @@
    (feature-emacs-which-key #:min-height 5)
 
    ;; WIP
-   (feature-emacs-corfu #:emacs-corfu-doc emacs-corfu-doc)
+   (feature-emacs-corfu)
    (feature-emacs-eglot)
    (feature-javascript #:typescript node-typescript-4.7.3
                        #:typescript-language-server node-typescript-language-server-0.11.1

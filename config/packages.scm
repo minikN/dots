@@ -23,29 +23,6 @@
             steamos-compositor-plus
             rofi-ttv))
 
-(define emacs-corfu-doc
-  (let ((commit "5dd2a2987a9e470112151d89be3f35d95c633be5")
-        (revision "0")
-        (version "0.7"))
-    (package
-     (name "emacs-corfu-doc")
-     (version (git-version version revision commit))
-     (source
-      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/galeo/corfu-doc")
-             (commit commit)))
-       (sha256
-        (base32 "01j7cpbijldfg0kdynw8ap2hvcdb7m36n2g7zbkxz56qdhl2s71n"))
-       (file-name (git-file-name name version))))
-     (build-system emacs-build-system)
-     (propagated-inputs (list emacs-corfu))
-     (home-page "https://github.com/galeo/corfu-doc")
-     (synopsis "Display a documentation popup for completion candidate when using Corfu.")
-     (description "Display a documentation popup for completion candidate when using Corfu.")
-     (license license:gpl3+))))
-
 (define steamos-modeswitch-inhibitor
   (package
    (name "steamos-modeswitch-inhibitor")
