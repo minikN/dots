@@ -38,7 +38,7 @@
             %base-features
             %base-sway-config))
 
-(define* (pkgs lst)
+(define* (pkgs #:rest lst)
   (map specification->package+output lst))
 
 (define %nonguix-public-key
@@ -208,28 +208,31 @@
     ))
 
 (define %base-home-packages
-  (list
-   "curl"
-   "git"
-   "htop"
-   "vim"
-   "make"
-   "firefox"
-   "ungoogled-chromium-wayland"
-   "ublock-origin-chromium"
-   "pavucontrol"
-   "gimp"
-   ;; "calf"
-   ;; "jack2"
-   ;; "guitarix"
-   ;; "guitarix-lv2"
-   ;; "carla"
-   ;; "qjackctl"
-   ;; "youtube-dl"
+  (append
+   (pkgs
+    "curl"
+    "git"
+    "htop"
+    "vim"
+    "make"
+    "firefox"
+    "ungoogled-chromium-wayland"
+    "ublock-origin-chromium"
+    "pavucontrol"
+    "gimp"
+    ;; "calf"
+    ;; "jack2"
+    ;; "guitarix"
+    ;; "guitarix-lv2"
+    ;; "carla"
+    ;; "qjackctl"
+    ;; "youtube-dl"
+    )
+   ;(list chromium-web-store)
    ))
 
 (define %base-system-packages
-  (list
+  (pkgs
    "adwaita-icon-theme"
    "hicolor-icon-theme"
    "gst-libav"

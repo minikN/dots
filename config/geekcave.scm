@@ -68,9 +68,9 @@
 
    ;;; Packages
    (feature-base-packages #:system-packages
-                          (append (pkgs %base-system-packages))
+                          (append %base-system-packages)
                           #:home-packages
-                          (append (pkgs %base-home-packages)
+                          (append %base-home-packages
                                   geekcave-packages))
    ;;; HiDPI
    (feature-hidpi)
