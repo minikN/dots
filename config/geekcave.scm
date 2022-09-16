@@ -48,6 +48,7 @@
    ;; ~/.local/share/cura/master/resources
    ;"cura"
    rofi-ttv
+   ;;chromium-web-store-chromium
    ))
 
 (define geekcave-features
