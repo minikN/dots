@@ -1,6 +1,5 @@
 (define-module (config features games)
   #:use-module (config packages)
-  #:use-module (config packages steam-client)
   #:use-module (gnu home services)
   #:use-module (gnu home-services shells)
   #:use-module (gnu home-services wm)
@@ -8,6 +7,7 @@
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages wine)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages xorg)
   #:use-module (gnu services base)
   #:use-module (gnu services shepherd)
@@ -16,6 +16,7 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (nongnu packages wine)
+  #:use-module (nongnu packages steam-client)
   #:use-module (rde features predicates)
   #:use-module (rde features)
   #:export (feature-games-base
@@ -105,6 +106,9 @@
            (list xorg-server
                  xinit
                  xf86-input-libinput
+                 xf86-input-keyboard
+                 xf86-input-mouse
+                 xf86-input-joystick
                  xf86-video-fbdev
                  gpu-driver)
            '())))
@@ -116,10 +120,12 @@
                             (display
                              (string-append
                               "#!/bin/sh\nDIR=$HOME/.guix-home/profile\n"
+                              ;; #$(file-append pulseaudio "/bin/pactl" " " "load-module module-null-sink sink_name=dummy && ")
+                              ;; #$(file-append pulseaudio "/bin/pactl" " " "load-module module-loopback && ")
                               #$(file-append xinit "/bin/xinit" " ")
                               #$(file-append coreutils "/bin/env" " " "-u" " " "SDL_VIDEODRIVER" " ")
-                              ;#$(file-append steam "/bin/steam" " " "-bigpicture")
-                              #$(file-append steamos-compositor-plus "/bin/steamos-session" " ")
+                              ;; #$(file-append steam "/bin/steam" " " "-tenfoot -steamos -fulldesktopres -nointro")
+                              #$(file-append steamos-compositor-plus "/bin/steamos-session")
                               " -- "
                               #$(file-append xorg-server "/bin/Xorg" " " ":1" " " "vt")
                               #$(number->string steamos-tty-number)
@@ -148,6 +154,15 @@
 
   (define (get-system-services config)
     (list
+     ;; (when (get-value 'pipewire config)
+     ;;   (simple-service
+     ;;    'pipewire-add-config
+     ;;    etc-service-type
+     ;;    (list
+     ;;     `("pipewire/pipewire.conf"
+     ;;       ,(plain-file
+     ;;         "pipewire.conf"
+     ;;         "default.clock.allowed-rates = [ 48000 ]\n")))))
      ;; Add udev rules for steam input devices.
      (udev-rules-service 'steam-input %steam-input-udev-rules)
      (udev-rules-service 'steam-vr %steam-vr-udev-rules)))
