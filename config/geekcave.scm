@@ -50,7 +50,7 @@
    guitarix
    guitarix-lv2
    carla
-   jack-2
+   jack-1
    qjackctl))
 
 (define geekcave-features
