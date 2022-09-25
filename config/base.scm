@@ -16,6 +16,7 @@
   #:use-module (config packages node-xyz)
   #:use-module (rde features base)
   #:use-module (rde features emacs)
+  #:use-module (rde features emacs-xyz)
   #:use-module (rde features fontutils)
   #:use-module (rde features gnupg)
   #:use-module (rde features keyboard)
@@ -130,7 +131,7 @@
                       #:default-terminal? #f)
 
    ;;; Emacs
-   (feature-emacs)
+   (feature-emacs #:additional-elisp-packages (pkgs "emacs-yasnippet"))
    (feature-emacs-appearance)
    (feature-emacs-completion #:mini-frame? #f)
    (feature-emacs-vertico)
@@ -146,8 +147,9 @@
                           "Best regards / Mit freundlichen Grüßen,\nDemis Balbach")
    (feature-emacs-project)
    (feature-emacs-perspective)
-   (feature-emacs-syntax)
+   ;(feature-emacs-smartparens)
    (feature-emacs-which-key #:min-height 5)
+   (feature-emacs-geiser)
 
    ;; WIP
    (feature-emacs-corfu)
