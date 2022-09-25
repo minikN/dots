@@ -1,11 +1,14 @@
 (define-module (config features wm)
   #:use-module (gnu services)
   #:use-module (gnu home services)
+  #:use-module (gnu home services xdg)
+  #:use-module (gnu packages engineering)
   #:use-module (rde features)
+  #:use-module (rde features predicates)
   #:use-module (rde features wm)
+  #:use-module (guix build utils)
   #:use-module (guix gexp)
-  #:export (feature-sway-desktop-file
-	    waybar-module-workspaces
+  #:export (waybar-module-workspaces
             waybar-module-temperature
             waybar-module-memory
             waybar-module-cpu
@@ -13,32 +16,6 @@
             waybar-module-disk-games
             waybar-module-audio
             waybar-module-window))
-
-(define* (feature-sway-desktop-file)
-  (define (get-home-services config)
-    (let ((sway (get-value 'sway config)))
-      (list
-       (simple-service
-	'setup-sway-desktop-file
-	home-files-service-type
-	(list
-	 `("config/sway/sway.desktop"
-	   ,(mixed-text-file "sway.desktop" "\
-[Desktop Entry]
-Name=Sway (RDE)
-Comment=This session logs you into Sway
-Exec="
-			     (file-append sway "/bin/sway")
-			     "\nTryExec="
-			     (file-append sway "/bin/sway")
-			     "\nType=Application
-DesktopNames=sway
-X-GDM-SessionRegisters=true")))))))
-  
-  (feature
-   (name 'sway-desktop-file)
-   (values `(('sway-desktop-file . #t)))
-   (home-services-getter get-home-services))) 
 
 (define* (waybar-module-workspaces)
   (waybar-sway-workspaces
@@ -115,3 +92,4 @@ X-GDM-SessionRegisters=true")))))))
        (margin-right . 1em))))
    #:placement 'modules-center))
 
+feature-cura
