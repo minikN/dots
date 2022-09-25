@@ -3,6 +3,9 @@
   #:use-module (config packages)
   #:use-module (config features package-management)
   #:use-module (gnu system file-systems)
+  #:use-module (gnu packages audio)
+  #:use-module (gnu packages engineering)
+  #:use-module (gnu packages music)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
   #:use-module (rde features)
@@ -13,7 +16,6 @@
   #:use-module (rde features wm)
   #:use-module (config features games)
   #:use-module (config features wm)
-  
   #:export (geekcave-config))
 
 (define geekcave-sway-config
@@ -43,13 +45,13 @@
 
 (define geekcave-packages
   (list
-   ;; Needs copying material, variants and
-   ;; quality from source repos to
-   ;; ~/.local/share/cura/master/resources
-   ;"cura"
    rofi-ttv
-   ;;chromium-web-store-chromium
-   ))
+   chromium-web-store/chromium
+   guitarix
+   guitarix-lv2
+   carla
+   jack-2
+   qjackctl))
 
 (define geekcave-features
   (list
@@ -107,7 +109,9 @@
    (feature-games-steam #:sandbox-location (string-append
                                             (getenv "HOME")
                                             "/games/steam-standbox")
-                        #:steamos? #t)))
+                        #:steamos? #t)
+   ;(feature-cura)
+   ))
 
 (define geekcave-config
   (rde-config
@@ -115,4 +119,3 @@
     (append
      %base-features
      geekcave-features))))
-

@@ -196,6 +196,7 @@
     (assign "[app_id=\"Chromium-browser\"]" workspace 1) ;; TODO: Move
     (for_window "[app_id=\"pavucontrol\"]" floating enable, border pixel) ;; TODO: Move
     (for_window "[app_id=\"pinentry-qt\"]" floating enable, border pixel) ;; TODO: Move
+    (for_window "[app_id=\"org.rncbc.qjackctl\"]" floating enable, border pixel) ;; TODO: Move
     (bindsym $mod+grave exec $term) ;; TODO: Move
     (bindsym $mod+Shift+q kill) ;; TODO: Move
     (bindsym $mod+Shift+Ctrl+r mode "resize")
@@ -219,17 +220,7 @@
     "ungoogled-chromium-wayland"
     "ublock-origin-chromium"
     "pavucontrol"
-    "gimp"
-    ;; "calf"
-    ;; "jack2"
-    ;; "guitarix"
-    ;; "guitarix-lv2"
-    ;; "carla"
-    ;; "qjackctl"
-    ;; "youtube-dl"
-    )
-   ;(list chromium-web-store)
-   ))
+    "gimp")))
 
 (define %base-system-packages
   (pkgs
@@ -240,3 +231,4 @@
    "gst-plugins-good"
    "gst-plugins-base"
    "gst-plugins-ugly"))
+
