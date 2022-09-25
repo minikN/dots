@@ -2,29 +2,33 @@
   #:use-module (gnu build chromium-extension)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages emacs-xyz)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages stb)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages wm)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg)
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system emacs)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix packages)
-  #:use-module ((guix licenses) #:prefix license:)
-  #:export (emacs-corfu-doc
-            ;;emacs-jsdoc
-            steamos-compositor-plus
-            rofi-ttv))
+  #:use-module ((guix licenses) #:prefix license:))
 
-(define steamos-modeswitch-inhibitor
+(define-public steamos-modeswitch-inhibitor
   (package
    (name "steamos-modeswitch-inhibitor")
    (version "1.10")
@@ -53,7 +57,7 @@
    (description "Shared library which fakes any mode switch attempts to prevent full screen apps from changing resolution.")
    (license license:gpl3+)))
 
-(define steamos-compositor-plus
+(define-public steamos-compositor-plus
   (let ((commit "7c0011cf91e87c30c2a630fee915ead58ef9dcf5")
         (revision "0")
         (version "1.3.0"))
@@ -95,6 +99,9 @@
                               (modeswitch-inhibitor (string-append
                                                      (assoc-ref inputs "steamos-modeswitch-inhibitor")
                                                      "/lib/libmodeswitch_inhibitor.so")))
+                         ;; We could replace STEAMCMD="steam ..." with a steam package we add as an
+                         ;; input. But we want the package to use the already installed steam pkg,
+                         ;; don't we?
                          (substitute* "./usr/bin/steamos-session"
                                       ;; No need to export scripts to PATH.
                                       (("export.+\\{PATH\\}" line) (string-append "#" line))
@@ -171,7 +178,68 @@ and probably others.")
 ;; Type inference is quite primitive.")
 ;;      (license license:gpl3+))))
 
-(define rofi-ttv
+
+;; (define-public gamescope
+;;   ;; (let ((commit "3122d1aabec4d8f7df79edb1b76e136c0dd5ffbf")
+;;   (let ((commit "ae7fcc5ba75abe3aed700407c8ce6e2496327029")
+;;         (revision "0")
+;;         (version "3.11.33-jupiter-3.3-1"))
+;;     (package
+;;      (name "gamescope")
+;;      (version (git-version version revision commit))
+;;      (source
+;;       (origin
+;;        (method git-fetch)
+;;        (uri (git-reference
+;;              (url "https://github.com/Plagman/gamescope")
+;;              (commit commit)
+;;              (recursive? #t)))
+;;        (sha256
+;;         (base32 "19ri8s0x6nxyi77qx05grl08f05pxz1wzjvnkn5fix9ic9fhsb4w"))
+;;        (file-name (git-file-name name version))))
+;;      (build-system meson-build-system)
+;;      (arguments
+;;       `(#:phases
+;;         (modify-phases
+;;          %standard-phases
+;;          (add-after 'unpack 'patch-deps
+;;                     (lambda* (#:key inputs outputs #:allow-other-keys)
+;;                       (let* ((out (assoc-ref outputs "out"))
+;;                              (stb-image (string-append (assoc-ref inputs "stb-image") "/include")))
+;;                         (substitute* "./meson.build"
+;;                                      (("stb_dep = dependency\\('stb'\\)") "")
+;;                                      ((", stb_dep,") ""))
+;;                         (invoke "cat" "-n" "./meson.build")))))))
+;;      (native-inputs
+;;       (list cmake
+;;             pkg-config
+;;             stb-image
+;;             glslang))
+;;      (inputs
+;;       (list libx11
+;;             libxdamage
+;;             libxcomposite
+;;             libxrender
+;;             libxext
+;;             libxxf86vm
+;;             libxtst
+;;             libxres
+;;             libxkbcommon
+;;             libcap
+;;             libdrm
+;;             sdl2
+;;             stb-image
+;;             pipewire-0.3
+;;             vulkan-loader
+;;             wayland
+;;             wayland-protocols
+;;             wlroots-0.14.0))
+;;      (home-page "https://github.com/isamert/jsdoc.el")
+;;      (synopsis "Gamescope: The micro-compositor formerly known as steamcompmgr.")
+;;      (description "")
+;;      (license license:gpl3+))))
+
+(define-public rofi-ttv
   (let ((commit "e9c722481b740196165f840771b3ae58b7291694")
         (revision "0")
         (version "0.1"))
