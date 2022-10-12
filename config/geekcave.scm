@@ -14,8 +14,8 @@
   #:use-module (rde features system)
   #:use-module (rde features fontutils)
   #:use-module (rde features wm)
+  ;; #:use-module (config features engineering)
   #:use-module (config features games)
-  #:use-module (config features wm)
   #:export (geekcave-config))
 
 (define geekcave-sway-config
@@ -92,15 +92,37 @@
    ;; Waybar
    (feature-waybar #:waybar-modules
                    (list
-                    (waybar-module-workspaces)
-                    (waybar-module-window)
-                    (waybar-module-disk)
-                    (waybar-module-disk-games)
-                    (waybar-module-cpu)
-                    (waybar-module-memory)
-                    (waybar-module-temperature)
+                    (waybar-sway-workspaces
+                     #:format-icons
+                     '(("1" . )
+                       ("2" . )
+                       ("3" . )
+                       ("4" . )
+                       ("5" . )
+                       ("6" . )
+                       ("7" . )
+                       ("urgent" . )
+                       ("focused" . )
+                       ("default" . ))
+                     #:persistent-workspaces
+                     '(("1" . #())
+                       ("2" . #())
+                       ("3" . #())
+                       ("4" . #())
+                       ("5" . #())
+                       ("6" . #())
+                       ("7" . #())))
+                    (waybar-sway-window)
+                    (waybar-cpu)
+                    (waybar-memory)
+                    (waybar-disk)
+                    (waybar-disk #:name 'games
+                                 #:path "/home/db/games"
+                                 #:disk-icon "")
+                    (waybar-temperature)
+                    (waybar-volume #:show-percentage? #t
+                                   #:scroll-step 5)
                     (waybar-tray)
-                    (waybar-module-audio)
                     (waybar-clock #:format "{:%H:%M}")))
 
    ;;; Games
