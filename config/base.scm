@@ -131,7 +131,8 @@
                       #:default-terminal? #f)
 
    ;;; Emacs
-   (feature-emacs #:additional-elisp-packages (pkgs "emacs-yasnippet"))
+   (feature-emacs #:additional-elisp-packages (pkgs "emacs-yasnippet")
+                  #:default-application-launcher? #f)
    (feature-emacs-appearance)
    (feature-emacs-completion #:mini-frame? #f)
    (feature-emacs-vertico)
@@ -157,7 +158,7 @@
    (feature-javascript #:typescript node-typescript-4.7.3
                        #:typescript-language-server node-typescript-language-server-0.11.1
                        #:eslint node-eslint-8.17.0)
-   
+
    ;; direnv
    (feature-direnv)
 
