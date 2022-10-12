@@ -46,7 +46,6 @@
 (define geekcave-packages
   (list
    rofi-ttv
-   chromium-web-store/chromium
    guitarix
    guitarix-lv2
    carla

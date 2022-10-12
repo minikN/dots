@@ -213,6 +213,7 @@
 
 (define %base-home-packages
   (append
+   (list chromium-web-store/chromium)
    (pkgs
     "curl"
     "git"
