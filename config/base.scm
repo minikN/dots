@@ -199,6 +199,8 @@
     (assign "[app_id=\"Chromium-browser\"]" workspace 1) ;; TODO: Move
     (for_window "[app_id=\"pavucontrol\"]" floating enable, border pixel) ;; TODO: Move
     (for_window "[app_id=\"pinentry-qt\"]" floating enable, border pixel) ;; TODO: Move
+    (for_window "[app_id=\"thunar\"]" floating enable, border pixel) ;; TODO: Move
+    (for_window "[app_id=\"org.kde.krename\"]" floating enable, border pixel) ;; TODO: Move
     (for_window "[app_id=\"org.rncbc.qjackctl\"]" floating enable, border pixel) ;; TODO: Move
     (bindsym $mod+grave exec $term) ;; TODO: Move
     (bindsym $mod+Shift+q kill) ;; TODO: Move
@@ -221,6 +223,7 @@
     "vim"
     "make"
     "firefox"
+    "thunar"
     "ungoogled-chromium-wayland"
     "ublock-origin-chromium"
     "pavucontrol"
