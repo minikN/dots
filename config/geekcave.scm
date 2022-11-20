@@ -121,12 +121,6 @@
                     (waybar-tray)
                     (waybar-clock #:format "{:%H:%M}")))
 
-   ;;; Games
-   (feature-games-base)
-   (feature-games-steam #:sandbox-location (string-append
-                                            (getenv "HOME")
-                                            "/games/steam-standbox")
-                        #:steamos? #t)
    ;(feature-cura)
    ))
 
