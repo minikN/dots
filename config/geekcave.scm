@@ -86,40 +86,57 @@
    (feature-nix)
 
    ;; Waybar
-   (feature-waybar #:waybar-modules
+   (feature-waybar
+    #:output 'DP-1
+    #:height 30
+    #:extra-config '(((position . top)
+                      (layer . top)
+                      (height . 30)
+                      (name . right)
+                      (output . DP-2)))
+    #:waybar-modules
                    (list
                     (waybar-sway-workspaces
                      #:format-icons
-                     '(("1" . )
-                       ("2" . )
-                       ("3" . )
-                       ("4" . )
-                       ("5" . )
-                       ("6" . )
-                       ("7" . )
+                     '(("1" . " WWW")
+                       ("5" . " MUSIC")
+                       ("6" . " CHAT")
+                       ("7" . " GAMES")
                        ("urgent" . )
                        ("focused" . )
                        ("default" . ))
                      #:persistent-workspaces
                      '(("1" . #())
-                       ("2" . #())
-                       ("3" . #())
-                       ("4" . #())
                        ("5" . #())
                        ("6" . #())
                        ("7" . #())))
+                    (waybar-sway-workspaces
+                     #:bar-id 'right
+                     #:format-icons
+                     '(("2" . " TERM")
+                       ("3" . " CODE")
+                       ("4" . " AGENDA")
+                       ("urgent" . )
+                       ("focused" . )
+                       ("default" . ))
+                      #:persistent-workspaces
+                     '(("2" . #())
+                       ("3" . #())
+                       ("4" . #())))
                     (waybar-sway-window)
-                    (waybar-cpu)
-                    (waybar-memory)
-                    (waybar-disk)
-                    (waybar-disk #:name 'games
-                                 #:path "/home/db/games"
-                                 #:disk-icon "")
-                    (waybar-temperature)
-                    (waybar-volume #:show-percentage? #t
-                                   #:scroll-step 5)
-                    (waybar-tray)
-                    (waybar-clock #:format "{:%H:%M}")))
+                    (waybar-sway-window #:bar-id 'right)
+                    (waybar-cpu #:bar-id 'right)
+                    (waybar-memory #:bar-id 'right)
+                    (waybar-disk #:bar-id 'right)
+                    (waybar-temperature #:bar-id 'right)
+                    (waybar-volume
+                     #:bar-id 'right
+                     #:show-percentage? #t
+                     #:scroll-step 5)
+                    (waybar-tray #:bar-id 'right)
+                    (waybar-clock
+                     #:bar-id 'right
+                     #:format "{:%H:%M}")))
 
    ;(feature-cura)
    ))
