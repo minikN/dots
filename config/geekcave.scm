@@ -56,7 +56,7 @@
                       #:locale "en_US.utf8")
 
    ;;; Kernel
-   (feature-kernel #:kernel linux-lts
+   (feature-kernel #:kernel linux
                    #:kernel-arguments (list "modprobe.blacklist=nouveau")
                    #:initrd microcode-initrd
                    #:firmware (list amdgpu-firmware linux-firmware))
