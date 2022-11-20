@@ -139,7 +139,6 @@
 
    ;;; Mail
    (feature-notmuch)
-   ;(feature-l2md)
    (feature-msmtp)
    (feature-isync)
 
