@@ -51,26 +51,6 @@
 (q #C1FD53E5D4CE971933EC50C9F307AE2171A2D3B52C804642A7A35F84F3A4EA98#)
 ))"))
 
-(define* (mail-lst id fqda urls)
-  "Make a simple mailing-list."
-  (mailing-list
-   (id   id)
-   (fqda fqda)
-   (config (l2md-repo
-            (name (symbol->string id))
-            (urls urls)))))
-
-(define mailbox-folder-mapping
-  '(("inbox"   . "INBOX")
-    ("sent"    . "Sent")
-    ("drafts"  . "Drafts")
-    ("trash"   . "Trash")
-    ("junk"    . "Junk")
-    ("archive" . "Archiv")))
-
-(define mailbox-isync-settings
-  (generate-isync-serializer "imap.mailbox.org" mailbox-folder-mapping))
-
 ;;;
 ;;; Common features
 ;;; These include all features I need to be present
@@ -96,10 +76,7 @@
                                  (id 'personal)
                                  (fqda "db@minikn.xyz")
                                  (type 'mailbox)
-                                 (pass-cmd "pass show Mail/mailbox.org/db@minikn.xyz")))
-                          #:mailing-lists
-                          (list (mail-lst 'guix-devel "guix-devel@gnu.org"
-                                    '("https://yhetil.org/guix-devel/0"))))
+                                 (pass-cmd "pass show Mail/mailbox.org/db@minikn.xyz"))))
 
    ;;; GnuPG
    (feature-gnupg #:gpg-primary-key "F17DDB98CC3C405C"
@@ -164,13 +141,10 @@
 
    ;;; Mail
    (feature-notmuch)
-   (feature-l2md)
-   (feature-msmtp #:msmtp-provider-settings
-                  `((mailbox . ((host . "smtp.mailbox.org")
-                                (port . 587)))))
-   (feature-isync #:isync-verbose #t
-                  #:isync-serializers
-                  `((mailbox . ,mailbox-isync-settings)))
+   ;(feature-l2md)
+   (feature-msmtp)
+   (feature-isync)
+
    ;;; Fonts
    (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))
 
