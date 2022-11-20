@@ -7,6 +7,7 @@
   #:use-module (gnu services cups)
   #:use-module (gnu services nix)
   #:use-module (gnu system keyboard)
+  #:use-module (nongnu packages mozilla)
   #:use-module (guix gexp)
   #:use-module (ice-9 match)
   #:use-module (config features emacs-xyz)
@@ -14,6 +15,7 @@
   #:use-module (config features linux)
   #:use-module (config packages)
   #:use-module (config packages node-xyz)
+  #:use-module (rde packages)
   #:use-module (rde features base)
   #:use-module (rde features emacs)
   #:use-module (rde features emacs-xyz)
@@ -33,14 +35,10 @@
   #:use-module (rde features xdisorg)
   #:use-module (rde features)
 
-  #:export (pkgs
-            %base-system-packages
+  #:export (%base-system-packages
             %base-home-packages
             %base-features
             %base-sway-config))
-
-(define* (pkgs #:rest lst)
-  (map specification->package+output lst))
 
 (define %nonguix-public-key
   (plain-file
@@ -190,13 +188,13 @@
 (define %base-home-packages
   (append
    (list chromium-web-store/chromium)
-   (pkgs
+   (strings->packages
     "curl"
     "git"
     "htop"
     "vim"
     "make"
-    "firefox"
+    "firefox-wayland"
     "thunar"
     "ungoogled-chromium-wayland"
     "ublock-origin-chromium"
@@ -204,7 +202,7 @@
     "gimp")))
 
 (define %base-system-packages
-  (pkgs
+  (strings->packages
    "adwaita-icon-theme"
    "hicolor-icon-theme"
    "gst-libav"
