@@ -10,6 +10,7 @@
   #:use-module (rde features linux)
   #:use-module (rde features system)
   #:use-module (rde features fontutils)
+  #:use-module (rde features wm)
   #:export (workhorse-config))
 
 (define workhorse-sway-config
