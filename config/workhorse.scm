@@ -140,7 +140,7 @@
      (waybar-tray #:bar-id 'right)
      (waybar-clock
       #:bar-id 'right
-      #:format "{:%H:%M}")))))))
+      #:format "{:%H:%M}")))))
 
 (define workhorse-config
   (rde-config
