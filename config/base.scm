@@ -112,7 +112,7 @@
    (feature-emacs-appearance)
    (feature-emacs-completion #:mini-frame? #f)
    (feature-emacs-vertico)
-   (feature-emacs-evil)
+   ;(feature-emacs-evil)
    (feature-emacs-erc #:erc-server "minikn.xyz"
                       #:erc-port 6697
                       #:erc-nick "db")
@@ -127,13 +127,14 @@
    ;(feature-emacs-smartparens)
    (feature-emacs-which-key #:min-height 5)
    (feature-emacs-geiser)
+  ; (feature-emacs-geiser)
 
    ;; WIP
-   (feature-emacs-corfu)
-   (feature-emacs-eglot)
-   (feature-javascript #:typescript node-typescript-4.7.3
-                       #:typescript-language-server node-typescript-language-server-0.11.1
-                       #:eslint node-eslint-8.17.0)
+  ; (feature-emacs-corfu)
+  ; (feature-emacs-eglot)
+  ; (feature-javascript #:typescript node-typescript-4.7.3
+  ;                     #:typescript-language-server node-typescript-language-server-0.11.1
+  ;                     #:eslint node-eslint-8.17.0)
 
    ;; direnv
    (feature-direnv)
