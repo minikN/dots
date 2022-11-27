@@ -50,6 +50,12 @@
    ;;; File systems
    (feature-file-systems #:file-systems workhorse-filesystems)
 
+   ;;; Packages
+   (feature-base-packages #:system-packages
+                          (append %base-system-packages)
+                          #:home-packages
+                          (append %base-home-packages))
+
    ;;; HiDPI
    (feature-hidpi)
 
