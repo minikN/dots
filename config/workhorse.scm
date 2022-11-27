@@ -24,6 +24,17 @@
     (workspace 7 output DP-1) ;; Games
     (output eDP-1 scale 1.5)))
 
+(define workhorse-sway-config
+  `((output DP-1 pos 0 0)
+    (output DP-2 pos 2560 0)
+    (workspace 1 output DP-1)   ;; Browser
+    (workspace 2 output DP-2)   ;; Terminal
+    (workspace 3 output DP-2)   ;; Code
+    (workspace 4 output DP-2)   ;; Agenda
+    (workspace 5 output DP-1)   ;; Music/Video
+    (workspace 6 output DP-1)   ;; Chat
+    (workspace 7 output DP-1))) ;; Games
+
 (define workhorse-filesystems
   (list (file-system ;; System partition
          (device (file-system-label "GUIX"))
@@ -60,7 +71,13 @@
    (feature-hidpi)
 
    ;;; Backlight
-   (feature-backlight)))
+   (feature-backlight)
+
+   ;;; Sway
+   (feature-sway #:xwayland? #t
+                 #:extra-config
+                 (append %base-sway-config
+                         workhorse-sway-config))))
 
 (define workhorse-config
   (rde-config
