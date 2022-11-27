@@ -1,4 +1,5 @@
 (define-module (config)
+  #:use-module (config workhorse)
   #:use-module (config geekcave)
   #:use-module (ice-9 match)
   #:use-module (rde features))
@@ -9,17 +10,17 @@
 (define geekcave-he
   (rde-config-home-environment geekcave-config))
 
-;; (define workhorse-os
-;;   (rde-config-operating-system workhorse-config))
+(define workhorse-os
+  (rde-config-operating-system workhorse-config))
 
-;; (define workhorse-he
-;;   (rde-config-home-environment workhorse-config))
+(define workhorse-he
+  (rde-config-home-environment workhorse-config))
 
 (define (dispatcher)
   (let ((target (getenv "TARGET")))
     (match target
-      ;; ("workhorse-he" workhorse-he)
-      ;; ("workhorse-os" workhorse-os)
+      ("workhorse-he" workhorse-he)
+      ("workhorse-os" workhorse-os)
       ("geekcave-he" geekcave-he)
       ("geekcave-os" geekcave-os))))
 

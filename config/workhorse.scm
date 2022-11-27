@@ -1,4 +1,6 @@
 (define-module (config workhorse)
+  #:use-module (config base)
+  #:use-module (config packages)
   #:use-module (gnu packages)
   #:use-module (gnu system file-systems)
   #:use-module (nongnu packages linux)
@@ -8,8 +10,7 @@
   #:use-module (rde features linux)
   #:use-module (rde features system)
   #:use-module (rde features fontutils)
-  #:export (workhorse-features
-            workhorse-sway-config))
+  #:export (workhorse-config))
 
 (define workhorse-sway-config
   `((output DP-1 pos 0 0)
@@ -54,3 +55,10 @@
 
    ;;; Backlight
    (feature-backlight)))
+
+(define workhorse-config
+  (rde-config
+   (features
+    (append
+     %base-features
+     workhorse-features))))

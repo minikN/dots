@@ -106,8 +106,9 @@
                       #:default-terminal? #f)
 
    ;;; Emacs
-   (feature-emacs #:additional-elisp-packages (pkgs "emacs-yasnippet")
-                  #:default-application-launcher? #f)
+   (feature-emacs
+    #:additional-elisp-packages (strings->packages "emacs-yasnippet")
+    #:default-application-launcher? #f)
    (feature-emacs-appearance)
    (feature-emacs-completion #:mini-frame? #f)
    (feature-emacs-vertico)
