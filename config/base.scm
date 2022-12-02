@@ -24,6 +24,7 @@
   #:use-module (rde features keyboard)
   #:use-module (rde features linux)
   #:use-module (rde features mail)
+  #:use-module (rde features networking)
   #:use-module (rde features password-utils)
   #:use-module (rde features shells)
   #:use-module (rde features shellutils)
@@ -143,6 +144,10 @@
    (feature-notmuch)
    (feature-msmtp)
    (feature-isync)
+   (feature-l2md)
+
+   ;; Networking
+   (feature-networking)
 
    ;;; Fonts
    (feature-fonts #:font-monospace (font "Iosevka" #:size 15 #:weight 'semi-light))
@@ -195,6 +200,7 @@
     "htop"
     "vim"
     "make"
+    "flatpak"
     "firefox-wayland"
     "thunar"
     "ungoogled-chromium-wayland"

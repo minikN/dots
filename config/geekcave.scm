@@ -136,10 +136,7 @@
                     (waybar-tray #:bar-id 'right)
                     (waybar-clock
                      #:bar-id 'right
-                     #:format "{:%H:%M}")))
-
-   ;(feature-cura)
-   ))
+                     #:format "{:%H:%M}")))))
 
 (define geekcave-config
   (rde-config
