@@ -239,6 +239,66 @@ and probably others.")
 ;;      (description "")
 ;;      (license license:gpl3+))))
 
+(define-public rofi-streamlink
+  (let ((commit "e9edeff07b46448eb5bc3c63630261831df4f056")
+        (revision "0")
+        (version "0.1"))
+    (package
+     (name "rofi-streamlink")
+     (version (git-version version revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minikN/rofi-streamlink")
+             (commit commit)))
+       (sha256
+        (base32 "0w0hr0w5fngwbxs2zclqgn891lbyzqpfwlvs5lrgs3p6rdr54cvr"))
+       (file-name (git-file-name name version))))
+     (build-system gnu-build-system)
+     (inputs (list
+              curl
+              jq
+              rofi
+              youtube-dl
+              streamlink
+              mpv))
+     (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+         %standard-phases
+         (delete 'configure)
+         (delete 'install)
+         (delete 'build)
+         (add-after 'unpack 'patch-bin
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (curl (string-append (assoc-ref inputs "curl") "/bin/curl"))
+                             (jq (string-append (assoc-ref inputs "jq") "/bin/jq"))
+                             (rofi (string-append (assoc-ref inputs "rofi") "/bin/rofi"))
+                             (youtube-dl (string-append (assoc-ref inputs "youtube-dl") "/bin/youtube-dl"))
+                             (streamlink (string-append (assoc-ref inputs "streamlink") "/bin/streamlink"))
+                             (mpv (string-append (assoc-ref inputs "mpv") "/bin/mpv")))
+                        (substitute* "./rofi-ttv"
+                                     (("curl") curl)
+                                     (("jq") jq)
+                                     (("rofi ") (string-append rofi " "))
+                                     (("youtube-dl") youtube-dl)
+                                     (("streamlink") streamlink)
+                                     (("mpv") mpv)))))
+         (add-after 'patch-bin 'copy-bin
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin")))
+                        (install-file "./rofi-ttv" bin)
+                        (chmod (string-append bin "/rofi-ttv") #o555)))))))
+     (home-page "https://github.com/galeo/corfu-doc")
+     (synopsis "A scripts that uses rofi, youtube-dl and mpv to view twitch streams.")
+     (description "A scripts that uses rofi, youtube-dl and mpv to view twitch streams.")
+     (license license:expat))))
+
 (define-public rofi-ttv
   (let ((commit "e9c722481b740196165f840771b3ae58b7291694")
         (revision "0")
