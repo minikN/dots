@@ -81,6 +81,9 @@
    (feature-sway-run-on-tty #:sway-tty-number 2)
    (feature-sway-screenshot)
 
+   ;; nix-env -iA nixpkgs.docker-compose
+   (feature-docker)
+
    ;; Nix
    ;;; TODO: Move this to base-features
    (feature-nix)
