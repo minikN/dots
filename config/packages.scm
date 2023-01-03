@@ -26,6 +26,23 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix packages)
+
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages cups)
+  #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages gl)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages nss)
+  #:use-module (gnu packages xdisorg)
+  #:use-module ((gnu packages xml) :prefix xml:)
+  #:use-module (gnu packages xorg)
+  #:use-module (nonguix build-system binary)
+  #:use-module (guix licenses)
+
   #:use-module ((guix licenses) #:prefix license:))
 
 (define-public steamos-modeswitch-inhibitor
@@ -238,6 +255,58 @@ and probably others.")
 ;;      (synopsis "Gamescope: The micro-compositor formerly known as steamcompmgr.")
 ;;      (description "")
 ;;      (license license:gpl3+))))
+
+(define-public tree-sitter-javascript
+  (let ((commit "7a29d06274b7cf87d643212a433d970b73969016")
+        (revision "0")
+        (version "0.20.0"))
+    (package
+     (name "tree-sitter-javascript")
+     (version (git-version version revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tree-sitter/tree-sitter-javascript")
+             (commit commit)))
+       (sha256
+        (base32 "1pk6d9g6a7bzhxmwnvfiycarcgz76wq2rgfqr0xjh7y7swfw5hvw"))
+       (file-name (git-file-name name version))))
+     (build-system gnu-build-system)
+     (native-inputs
+      (list gcc))
+     (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+         %standard-phases
+         (delete 'configure)
+         (delete 'install)
+         (delete 'build)
+         (add-after 'unpack 'create-dirs
+                    (lambda _ (mkdir "lib")))
+         (add-after 'create-dirs 'compile
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (gcc (string-append (assoc-ref inputs "gcc") "/bin")))
+                        (copy-file "grammar.js" "src/grammar.js")
+                        (with-directory-excursion
+                         (string-append "./src")
+                         (invoke (string-append gcc "/gcc") "-fPIC" "-c" "-I." "parser.c")
+                         (invoke (string-append gcc "/gcc") "-fPIC" "-c" "-I." "scanner.c")
+                         (invoke (string-append gcc "/gcc")
+                                 "-fPIC" "-shared" "parser.o" "scanner.o" "-o"
+                                 "libtree-sitter-javascript.so")))))
+         (add-after 'compile 'symlink
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (lib (string-append out "/lib")))
+                        (install-file "src/libtree-sitter-javascript.so" lib)))))))
+      (home-page "https://github.com/tree-sitter/tree-sitter-javascript")
+     (synopsis "JavaScript and JSX grammar for tree-sitter.")
+     (description "JavaScript and JSX grammar for tree-sitter.")
+     (license license:expat))))
 
 (define-public rofi-streamlink
   (let ((commit "e9edeff07b46448eb5bc3c63630261831df4f056")
