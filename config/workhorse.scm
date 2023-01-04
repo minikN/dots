@@ -1,3 +1,37 @@
+;;; This machine is meant to run Debian 11 with RDE on top!
+;;; First install Debian 11.6 without any DE.
+;;;
+;;; Install packages: firmware_linux, git, make,
+;;; network-manager, gpg, nscd, policykit-1
+;;;
+;;; Install Guix through install script:
+;;; https://guix.gnu.org/en/manual/en/guix.html#Binary-Installation
+;;;
+;;; Reconfigure home with RDE config
+;;;
+;;; Newer kernel
+;;; Add backports repository
+;;; echo 'deb http://deb.debian.org/debian bullseye-backports main' \
+;;; | sudo tee -a /etc/apt/sources.list
+;;; Install packages: linux-headers-6.0.0-0.deb11.6-amd64,
+;;; linux-image-6.0.0-0.deb11.6-amd64
+;;;
+;;; Hardware stuff
+;;; Add tuxedo repository:
+;;; wget -O - https://deb.tuxedocomputers.com/0x54840598.pub.asc \
+;;; | gpg --dearmor > 0x54840598.pub.gpg
+;;;
+;;; cat 0x54840598.pub.gpg \
+;;; | sudo tee -a /usr/share/keyrings/tuxedo-keyring.gpg > /dev/null
+;;;
+;;; echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/tuxedo-keyring.gpg] \
+;;; https://deb.tuxedocomputers.com/ubuntu jammy main' \
+;;; | sudo tee -a /etc/apt/sources.list.d/tuxedo-computers.list
+
+;;; Install packages: tuxedo-control-center, tuxedo-keyboard,
+;;; tuxedo-restore-audio-fix, libxshmfence, libnss3, libdrm2,
+;;; libgbm1, ffmpeg
+
 (define-module (config workhorse)
   #:use-module (config base)
   #:use-module (config packages)
