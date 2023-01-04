@@ -1,7 +1,7 @@
 CONFIG_FILE = ./config.scm
 
 # Add ./ and ../rde to GUILE_LOAD_PATH
-RDE 	:=	../rde
+RDE 	:=	../rde/src
 GLP 	:=	./:$(RDE)
 NPROCS	:=	$(shell grep -c ^processor /proc/cpuinfo)
 

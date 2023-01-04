@@ -26,6 +26,23 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix packages)
+
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages cups)
+  #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages gl)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages nss)
+  #:use-module (gnu packages xdisorg)
+  #:use-module ((gnu packages xml) :prefix xml:)
+  #:use-module (gnu packages xorg)
+  #:use-module (nonguix build-system binary)
+  #:use-module (guix licenses)
+
   #:use-module ((guix licenses) #:prefix license:))
 
 (define-public steamos-modeswitch-inhibitor
@@ -238,6 +255,118 @@ and probably others.")
 ;;      (synopsis "Gamescope: The micro-compositor formerly known as steamcompmgr.")
 ;;      (description "")
 ;;      (license license:gpl3+))))
+
+(define-public tree-sitter-javascript
+  (let ((commit "7a29d06274b7cf87d643212a433d970b73969016")
+        (revision "0")
+        (version "0.20.0"))
+    (package
+     (name "tree-sitter-javascript")
+     (version (git-version version revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tree-sitter/tree-sitter-javascript")
+             (commit commit)))
+       (sha256
+        (base32 "1pk6d9g6a7bzhxmwnvfiycarcgz76wq2rgfqr0xjh7y7swfw5hvw"))
+       (file-name (git-file-name name version))))
+     (build-system gnu-build-system)
+     (native-inputs
+      (list gcc))
+     (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+         %standard-phases
+         (delete 'configure)
+         (delete 'install)
+         (delete 'build)
+         (add-after 'unpack 'create-dirs
+                    (lambda _ (mkdir "lib")))
+         (add-after 'create-dirs 'compile
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (gcc (string-append (assoc-ref inputs "gcc") "/bin")))
+                        (copy-file "grammar.js" "src/grammar.js")
+                        (with-directory-excursion
+                         (string-append "./src")
+                         (invoke (string-append gcc "/gcc") "-fPIC" "-c" "-I." "parser.c")
+                         (invoke (string-append gcc "/gcc") "-fPIC" "-c" "-I." "scanner.c")
+                         (invoke (string-append gcc "/gcc")
+                                 "-fPIC" "-shared" "parser.o" "scanner.o" "-o"
+                                 "libtree-sitter-javascript.so")))))
+         (add-after 'compile 'symlink
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (lib (string-append out "/lib")))
+                        (install-file "src/libtree-sitter-javascript.so" lib)))))))
+      (home-page "https://github.com/tree-sitter/tree-sitter-javascript")
+     (synopsis "JavaScript and JSX grammar for tree-sitter.")
+     (description "JavaScript and JSX grammar for tree-sitter.")
+     (license license:expat))))
+
+(define-public rofi-streamlink
+  (let ((commit "e9edeff07b46448eb5bc3c63630261831df4f056")
+        (revision "0")
+        (version "0.1"))
+    (package
+     (name "rofi-streamlink")
+     (version (git-version version revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minikN/rofi-streamlink")
+             (commit commit)))
+       (sha256
+        (base32 "0w0hr0w5fngwbxs2zclqgn891lbyzqpfwlvs5lrgs3p6rdr54cvr"))
+       (file-name (git-file-name name version))))
+     (build-system gnu-build-system)
+     (inputs (list
+              curl
+              jq
+              rofi
+              youtube-dl
+              streamlink
+              mpv))
+     (arguments
+      `(#:tests?
+        #f
+        #:phases
+        (modify-phases
+         %standard-phases
+         (delete 'configure)
+         (delete 'install)
+         (delete 'build)
+         (add-after 'unpack 'patch-bin
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (curl (string-append (assoc-ref inputs "curl") "/bin/curl"))
+                             (jq (string-append (assoc-ref inputs "jq") "/bin/jq"))
+                             (rofi (string-append (assoc-ref inputs "rofi") "/bin/rofi"))
+                             (youtube-dl (string-append (assoc-ref inputs "youtube-dl") "/bin/youtube-dl"))
+                             (streamlink (string-append (assoc-ref inputs "streamlink") "/bin/streamlink"))
+                             (mpv (string-append (assoc-ref inputs "mpv") "/bin/mpv")))
+                        (substitute* "./rofi-ttv"
+                                     (("curl") curl)
+                                     (("jq") jq)
+                                     (("rofi ") (string-append rofi " "))
+                                     (("youtube-dl") youtube-dl)
+                                     (("streamlink") streamlink)
+                                     (("mpv") mpv)))))
+         (add-after 'patch-bin 'copy-bin
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin")))
+                        (install-file "./rofi-ttv" bin)
+                        (chmod (string-append bin "/rofi-ttv") #o555)))))))
+     (home-page "https://github.com/galeo/corfu-doc")
+     (synopsis "A scripts that uses rofi, youtube-dl and mpv to view twitch streams.")
+     (description "A scripts that uses rofi, youtube-dl and mpv to view twitch streams.")
+     (license license:expat))))
 
 (define-public rofi-ttv
   (let ((commit "e9c722481b740196165f840771b3ae58b7291694")

@@ -67,6 +67,7 @@
                                           "input"
                                           "cdrom"
                                           "disk"
+                                          "docker"
                                           "lp"))
 
    ;;; Mail
@@ -125,17 +126,8 @@
                           "Best regards / Mit freundlichen Grüßen,\nDemis Balbach")
    (feature-emacs-project)
    (feature-emacs-perspective)
-   ;(feature-emacs-smartparens)
    (feature-emacs-which-key #:min-height 5)
    (feature-emacs-geiser)
-  ; (feature-emacs-geiser)
-
-   ;; WIP
-  ; (feature-emacs-corfu)
-  ; (feature-emacs-eglot)
-  ; (feature-javascript #:typescript node-typescript-4.7.3
-  ;                     #:typescript-language-server node-typescript-language-server-0.11.1
-  ;                     #:eslint node-eslint-8.17.0)
 
    ;; direnv
    (feature-direnv)
