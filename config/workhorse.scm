@@ -66,17 +66,6 @@
     (workspace 7 output DP-1) ;; Games
     (output eDP-1 scale 1.5)))
 
-(define workhorse-sway-config
-  `((output DP-1 pos 0 0)
-    (output DP-2 pos 2560 0)
-    (workspace 1 output DP-1)   ;; Browser
-    (workspace 2 output DP-2)   ;; Terminal
-    (workspace 3 output DP-2)   ;; Code
-    (workspace 4 output DP-2)   ;; Agenda
-    (workspace 5 output DP-1)   ;; Music/Video
-    (workspace 6 output DP-1)   ;; Chat
-    (workspace 7 output DP-1))) ;; Games
-
 (define workhorse-filesystems
   (list (file-system ;; System partition
          (device (file-system-label "GUIX"))
@@ -141,10 +130,15 @@
    (feature-sway-screenshot)
 
    (feature-waybar
-    #:output 'DP-1
+    #:output 'eDP-1
     #:height 30
     #:extra-config
     '(((position . top)
+       (layer . top)
+       (height . 30)
+       (name . left)
+       (output . DP-1))
+      ((position . top)
        (layer . top)
        (height . 30)
        (name . right)
@@ -152,6 +146,7 @@
     #:waybar-modules
     (list
      (waybar-sway-workspaces
+      #:bar-id 'left
       #:format-icons
       '(("1" . " WWW")
         ("5" . " MUSIC")
@@ -178,12 +173,32 @@
       '(("2" . #())
         ("3" . #())
         ("4" . #())))
+     (waybar-sway-workspaces
+      #:format-icons
+      '(("1" . " WWW")
+        ("2" . " TERM")
+        ("3" . " CODE")
+        ("4" . " AGENDA")
+        ("5" . " MUSIC")
+        ("6" . " CHAT")
+        ("7" . " GAMES")
+        ("urgent" . )
+        ("focused" . )
+        ("default" . ))
+      #:persistent-workspaces
+      '(("1" . #())
+        ("2" . #())
+        ("3" . #())
+        ("4" . #())
+        ("5" . #())
+        ("6" . #())
+        ("7" . #())))
      (waybar-sway-window)
-     (waybar-sway-window #:bar-id 'right)
      (waybar-cpu #:bar-id 'right)
      (waybar-memory #:bar-id 'right)
      (waybar-disk #:bar-id 'right)
      (waybar-temperature #:bar-id 'right)
+     (waybar-battery #:bar-id 'right)
      (waybar-volume
       #:bar-id 'right
       #:show-percentage? #t
@@ -191,6 +206,19 @@
      (waybar-tray #:bar-id 'right)
      (waybar-clock
       #:bar-id 'right
+      #:format "{:%H:%M}")
+     (waybar-cpu #:bar-id 'main)
+     (waybar-memory #:bar-id 'main)
+     (waybar-disk #:bar-id 'main)
+     (waybar-temperature #:bar-id 'main)
+     (waybar-battery #:bar-id 'main)
+     (waybar-volume
+      #:bar-id 'main
+      #:show-percentage? #t
+      #:scroll-step 5)
+     (waybar-tray #:bar-id 'main)
+     (waybar-clock
+      #:bar-id 'main
       #:format "{:%H:%M}")))))
 
 (define workhorse-config
