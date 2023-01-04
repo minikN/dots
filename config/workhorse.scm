@@ -35,7 +35,11 @@
 (define-module (config workhorse)
   #:use-module (config base)
   #:use-module (config packages)
+  #:use-module (gnu services)
+  #:use-module (gnu home services)
+  #:use-module (gnu home-services shells)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu system file-systems)
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
@@ -46,6 +50,9 @@
   #:use-module (rde features fontutils)
   #:use-module (rde features wm)
   #:export (workhorse-config))
+
+(define workhorse-packages
+  (list glibc-locales))
 
 (define workhorse-sway-config
   `((output DP-1 pos 0 0)
@@ -82,7 +89,6 @@
 
 (define workhorse-features
   (list
-
    ;;; Host info
    (feature-host-info
     #:host-name "workhorse"
@@ -106,13 +112,24 @@
     #:system-packages
     (append %base-system-packages)
     #:home-packages
-    (append %base-home-packages))
+    (append %base-home-packages
+            workhorse-packages))
 
    ;;; HiDPI
    (feature-hidpi)
 
    ;;; Backlight
    (feature-backlight)
+
+   ;;; Services
+   (feature-custom-services
+    #:home-services
+    (list
+     (simple-service
+      'set-locpath
+      home-environment-variables-service-type
+      '(("GUIX_LOCPATH" . "$HOME/.guix-home/profile/lib/locale")
+        ("LC_ALL" . "en_US.utf8")))))
 
    ;;; Sway
    (feature-sway
