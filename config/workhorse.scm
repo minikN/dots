@@ -3,6 +3,7 @@
 ;;;
 ;;; Install packages: firmware_linux, git, make,
 ;;; network-manager, nscd, policykit-1
+;;; (remove git, make after Guix installation)
 ;;;
 ;;; Install Guix through install script:
 ;;; https://guix.gnu.org/en/manual/en/guix.html#Binary-Installation
@@ -13,8 +14,6 @@
 ;;; Add backports repository
 ;;; echo 'deb http://deb.debian.org/debian bullseye-backports main' \
 ;;; | sudo tee -a /etc/apt/sources.list
-;;; Install packages: linux-headers-6.0.0-0.deb11.6-amd64,
-;;; linux-image-6.0.0-0.deb11.6-amd64
 ;;;
 ;;; Hardware stuff
 ;;; Add tuxedo repository:
@@ -28,9 +27,22 @@
 ;;; https://deb.tuxedocomputers.com/ubuntu jammy main' \
 ;;; | sudo tee -a /etc/apt/sources.list.d/tuxedo-computers.list
 
-;;; Install packages: tuxedo-control-center, tuxedo-keyboard,
-;;; tuxedo-restore-audio-fix, libxshmfence, libnss3, libdrm2,
-;;; libgbm1, ffmpeg
+;;; Installed packages (apt):
+;; ffmpeg
+;; firmware-linux
+;; libdrm2
+;; libgbm1
+;; libnss3
+;; libxshmfence1
+;; linux-headers-6.0.0-0.deb11.6-amd64
+;; linux-image-6.0.0-0.deb11.6-amd64
+;; network-manager
+;; nscd
+;; policykit-1
+;; sudo
+;; tuxedo-restore-audio-fix
+;; tuxedo-touchpad-fix
+;; tuxedo-touchpad-switch
 
 (define-module (config workhorse)
   #:use-module (config base)
