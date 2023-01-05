@@ -11,7 +11,6 @@
   #:use-module (guix gexp)
   #:use-module (ice-9 match)
   #:use-module (config features emacs-xyz)
-  #:use-module (config features javascript)
   #:use-module (config features linux)
   #:use-module (config packages)
   #:use-module (config packages node-xyz)
@@ -35,6 +34,7 @@
   #:use-module (rde features version-control)
   #:use-module (rde features xdg)
   #:use-module (rde features xdisorg)
+  #:use-module (contrib features javascript)
   #:use-module (rde features)
 
   #:export (%base-system-packages
@@ -136,6 +136,11 @@
    (feature-emacs-project)
    (feature-emacs-perspective)
    (feature-emacs-which-key #:min-height 5)
+
+   ;;; LSP
+   (feature-emacs-corfu)
+   (feature-emacs-eglot)
+   (feature-javascript)
    (feature-emacs-geiser)
 
    ;; direnv
