@@ -2,7 +2,7 @@
 ;;; First install Debian 11.6 without any DE.
 ;;;
 ;;; Install packages: firmware_linux, git, make,
-;;; network-manager, gpg, nscd, policykit-1
+;;; network-managerq, nscd, policykit-1
 ;;;
 ;;; Install Guix through install script:
 ;;; https://guix.gnu.org/en/manual/en/guix.html#Binary-Installation
