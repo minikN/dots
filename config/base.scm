@@ -63,6 +63,8 @@
   (append
    (list chromium-web-store/chromium)
    (strings->packages
+    "adwaita-icon-theme"
+    "hicolor-icon-theme"
     "curl"
     "git"
     "htop"
@@ -74,17 +76,15 @@
     "ungoogled-chromium-wayland"
     "ublock-origin-chromium"
     "pavucontrol"
-    "gimp")))
+    "gimp"
+    "gst-libav"
+    "gst-plugins-bad"
+    "gst-plugins-good"
+    "gst-plugins-base"
+    "gst-plugins-ugly")))
 
 (define %base-system-packages
-  (strings->packages
-   "adwaita-icon-theme"
-   "hicolor-icon-theme"
-   "gst-libav"
-   "gst-plugins-bad"
-   "gst-plugins-good"
-   "gst-plugins-base"
-   "gst-plugins-ugly"))
+  '())
 
 ;;;
 ;;; Common features
