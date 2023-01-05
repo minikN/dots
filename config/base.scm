@@ -21,6 +21,7 @@
   #:use-module (rde features emacs-xyz)
   #:use-module (rde features fontutils)
   #:use-module (rde features gnupg)
+  #:use-module (rde features irc)
   #:use-module (rde features keyboard)
   #:use-module (rde features linux)
   #:use-module (rde features mail)
@@ -106,6 +107,14 @@
    (feature-vterm)
    (feature-alacritty #:config-file (local-file "./applications/alacritty/alacritty.yml")
                       #:default-terminal? #f)
+
+   (feature-irc-settings
+    #:irc-accounts (list
+                    (irc-account
+                     (id 'znc)
+                     (network "minikn.xyz")
+                     (bouncer? #t)
+                     (nick "minikN"))))
 
    ;;; Emacs
    (feature-emacs
