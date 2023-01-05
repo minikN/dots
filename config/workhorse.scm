@@ -35,20 +35,24 @@
 (define-module (config workhorse)
   #:use-module (config base)
   #:use-module (config packages)
-  #:use-module (gnu services)
+
   #:use-module (gnu home services)
   #:use-module (gnu home-services shells)
-  #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages)
+  #:use-module (gnu services)
   #:use-module (gnu system file-systems)
+
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
-  #:use-module (rde features)
+
   #:use-module (rde features base)
+  #:use-module (rde features fontutils)
   #:use-module (rde features linux)
   #:use-module (rde features system)
-  #:use-module (rde features fontutils)
   #:use-module (rde features wm)
+  #:use-module (rde features)
+
   #:export (workhorse-config))
 
 (define workhorse-packages
