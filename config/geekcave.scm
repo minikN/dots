@@ -10,6 +10,7 @@
   #:use-module (nongnu system linux-initrd)
   #:use-module (rde features)
   #:use-module (rde features base)
+  #:use-module (rde features docker)
   #:use-module (rde features linux)
   #:use-module (rde features system)
   #:use-module (rde features fontutils)
