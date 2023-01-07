@@ -147,12 +147,17 @@
     #:config-file (local-file "./applications/alacritty/alacritty.yml")
     #:default-terminal? #f)
 
+   ;;; IRC
    (feature-irc-settings
     #:irc-accounts (list
                     (irc-account
                      (id 'znc)
                      (network "minikn.xyz")
                      (bouncer? #t)
+                     (nick "minikN"))
+                    (irc-account
+                     (id 'libera)
+                     (network "irc.libera.chat")
                      (nick "minikN"))))
 
    ;;; Emacs
@@ -163,10 +168,7 @@
    (feature-emacs-completion
     #:mini-frame? #f)
    (feature-emacs-vertico)
-   (feature-emacs-erc
-    #:erc-server "minikn.xyz"
-    #:erc-port 6697
-    #:erc-nick "db")
+   (feature-emacs-erc)
    (feature-emacs-dired)
    (feature-emacs-faces)
    (feature-emacs-files)
