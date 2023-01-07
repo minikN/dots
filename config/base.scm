@@ -244,5 +244,4 @@
                     (bindsym Down resize grow height 10px)
                     (bindsym Up resize shrink height 10px)
                     (bindsym Right resize grow width 10px)
-                    (bindsym Escape mode "default")))
-    (exec nm-applet --indicator)))
+                    (bindsym Escape mode "default")))))
