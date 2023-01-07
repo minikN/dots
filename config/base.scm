@@ -9,6 +9,7 @@
   #:use-module (gnu home-services shells)
   #:use-module (gnu packages base)
   #:use-module (gnu packages cups)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages)
   #:use-module (gnu services cups)
   #:use-module (gnu services nix)
@@ -185,7 +186,8 @@
    (feature-emacs-corfu)
    (feature-emacs-eglot)
    (feature-emacs-geiser)
-   (feature-javascript)
+   (feature-javascript
+    #:node node-lts)
 
    ;; direnv
    (feature-direnv)
