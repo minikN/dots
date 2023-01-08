@@ -79,7 +79,6 @@
     (workspace 4 output DP-2) ;; Agenda
     (workspace 5 output DP-1) ;; Music/Video
     (workspace 6 output DP-1) ;; Chat
-    (workspace 7 output DP-1) ;; Games
     (output eDP-1 scale 1.5)))
 
 (define workhorse-filesystems
@@ -167,15 +166,13 @@
       '(("1" . " WWW")
         ("5" . " MUSIC")
         ("6" . " CHAT")
-        ("7" . " GAMES")
         ("urgent" . )
         ("focused" . )
         ("default" . ))
       #:persistent-workspaces
       '(("1" . #())
         ("5" . #())
-        ("6" . #())
-        ("7" . #())))
+        ("6" . #())))
      (waybar-sway-workspaces
       #:bar-id 'right
       #:format-icons
@@ -197,7 +194,6 @@
         ("4" . " AGENDA")
         ("5" . " MUSIC")
         ("6" . " CHAT")
-        ("7" . " GAMES")
         ("urgent" . )
         ("focused" . )
         ("default" . ))
@@ -207,8 +203,7 @@
         ("3" . #())
         ("4" . #())
         ("5" . #())
-        ("6" . #())
-        ("7" . #())))
+        ("6" . #())))
      (waybar-sway-window)
      (waybar-cpu #:bar-id 'right)
      (waybar-memory #:bar-id 'right)
