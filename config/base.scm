@@ -66,6 +66,7 @@
    (strings->packages
     "adwaita-icon-theme"
     "hicolor-icon-theme"
+    "nss-certs"
     "curl"
     "git"
     "htop"

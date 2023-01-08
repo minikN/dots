@@ -132,7 +132,9 @@
      (simple-service
       'set-locpath
       home-environment-variables-service-type
-      '(("GUIX_LOCPATH" . "$HOME/.guix-home/profile/lib/locale")
+      '(("SSL_CERT_DIR" . "$HOME/.guix-home/profile/etc/ssl/certs")
+        ("SSL_CERT_FILE" . "$HOME/.guix-home/profile/etc/ssl/certs/ca-certificates.crt")
+        ("GUIX_LOCPATH" . "$HOME/.guix-home/profile/lib/locale")
         ("LC_ALL" . "en_US.utf8")))))
 
    ;;; Sway
