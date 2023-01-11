@@ -175,8 +175,8 @@
    (feature-irc-settings
     #:irc-accounts (list
                     (irc-account
-                     (id 'znc)
-                     (network "minikn.xyz")
+                     (id 'pounce)
+                     (network "irc.minikn.xyz")
                      (bouncer? #t)
                      (nick "minikN"))
                     (irc-account
