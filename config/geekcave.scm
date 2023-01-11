@@ -80,6 +80,11 @@
     (append %base-home-packages
             geekcave-packages))
 
+   ;;; Services
+   (feature-custom-services
+    #:home-services
+    (list ssh-extra-config-service))
+
    ;;; HiDPI
    (feature-hidpi)
 

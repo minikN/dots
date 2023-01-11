@@ -7,6 +7,7 @@
   #:use-module (contrib features javascript)
 
   #:use-module (gnu home-services shells)
+  #:use-module (gnu home-services ssh)
   #:use-module (gnu packages base)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages node)
@@ -46,7 +47,8 @@
   #:export (%base-system-packages
             %base-home-packages
             %base-features
-            %base-sway-config))
+            %base-sway-config
+            ssh-extra-config-service))
 
 (define %nonguix-public-key
   (plain-file
@@ -87,6 +89,26 @@
 
 (define %base-system-packages
   '())
+
+(define ssh-extra-config-service
+  (simple-service
+   'ssh-extra-config
+   home-ssh-service-type
+   (home-ssh-extension
+    (extra-config
+     (append
+      (list
+       (ssh-host
+        (host "gnomebeach")
+        (options
+         '((host-name . "116.203.96.122")
+           (port . 22)
+           (control-master . "auto")
+           (control-path . "~/.ssh/master-%r@%h:%p")
+           (compression . #t)))))))
+    (toplevel-options
+     '((host-key-algorithms . "+ssh-rsa")
+       (pubkey-accepted-key-types . "+ssh-rsa"))))))
 
 ;;;
 ;;; Common features
