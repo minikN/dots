@@ -66,26 +66,26 @@
   (append
    (list chromium-web-store/chromium)
    (strings->packages
-    "adwaita-icon-theme"
-    "hicolor-icon-theme"
-    "nss-certs"
-    "curl"
-    "git"
-    "htop"
-    "vim"
-    "make"
+    "git" "curl" "vim" "make"
+
     "flatpak"
+
+    "pavucontrol"
+    "gimp" "thunar"
+
     "firefox-wayland"
-    "thunar"
     "ungoogled-chromium-wayland"
     "ublock-origin-chromium"
-    "pavucontrol"
-    "gimp"
+
     "gst-libav"
     "gst-plugins-bad"
     "gst-plugins-good"
     "gst-plugins-base"
-    "gst-plugins-ugly")))
+    "gst-plugins-ugly"
+
+    "adwaita-icon-theme"
+    "hicolor-icon-theme"
+)))
 
 (define %base-system-packages
   '())

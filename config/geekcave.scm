@@ -47,8 +47,10 @@
 (define geekcave-packages
   (list
    rofi-ttv
+
    guitarix
    guitarix-lv2
+
    carla
    jack-1
    qjackctl))

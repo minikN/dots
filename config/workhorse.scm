@@ -51,6 +51,7 @@
   #:use-module (gnu home services)
   #:use-module (gnu home-services shells)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages)
   #:use-module (gnu services)
   #:use-module (gnu system file-systems)
@@ -68,7 +69,8 @@
   #:export (workhorse-config))
 
 (define workhorse-packages
-  (list glibc-locales))
+  (list glibc-locales
+        nss-certs))
 
 (define workhorse-sway-config
   `((output DP-1 pos 0 0)
