@@ -100,6 +100,9 @@
     #:sway-tty-number 2)
    (feature-sway-screenshot)
 
+   (feature-steam
+    #:steamos? #t)
+
    ;; nix-env -iA nixpkgs.docker-compose
    (feature-docker)
 
