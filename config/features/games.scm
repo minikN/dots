@@ -6,6 +6,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages wine)
+  #:use-module (gnu packages games)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages xorg)
@@ -19,65 +20,9 @@
   #:use-module (nongnu packages steam-client)
   #:use-module (rde features predicates)
   #:use-module (rde features)
-  #:export (feature-games-base
-            feature-games-steam))
+  #:export (feature-steam))
 
-;; Source:
-;; https://github.com/podiki/dot.me/blob/master/guix/.config/guix/config.scm#L57
-(define %steam-input-udev-rules
-  (file->udev-rule
-    "60-steam-input.rules"
-    (let ((version "8a3f1a0e2d208b670aafd5d65e216c71f75f1684"))
-      (origin
-       (method url-fetch)
-       (uri (string-append "https://raw.githubusercontent.com/ValveSoftware/"
-                           "steam-devices/" version "/60-steam-input.rules"))
-       (sha256
-        (base32 "1k6sa9y6qb9vh7qsgvpgfza55ilcsvhvmli60yfz0mlks8skcd1f"))))))
-
-(define %steam-vr-udev-rules
-  (file->udev-rule
-    "60-steam-vr.rules"
-    (let ((version "13847addfd56ef70dee98c1f7e14c4b4079e2ce8"))
-      (origin
-       (method url-fetch)
-       (uri (string-append "https://raw.githubusercontent.com/ValveSoftware/"
-                           "steam-devices/" version "/60-steam-vr.rules"))
-       (sha256
-        (base32 "0f05w4jp2pfp948vwwqa17ym2ps7sgh3i6sdc69ha76jlm49rp0z"))))))
-
-(define* (feature-games-base)
-  "Install and configure base packages for gaming."
-
-  (define (get-home-services config)
-    (list
-     (simple-service
-      'steam-add-packages
-      home-profile-service-type
-      (append
-       (list ;; dxvk-next
-             ;; wine-staging
-             mesa
-             mesa-headers
-             mesa-opencl
-             mesa-opencl-icd
-             mesa-utils
-             spirv-cross
-             spirv-headers
-             spirv-tools
-             vkd3d
-             vulkan-headers
-             vulkan-loader
-             vulkan-tools
-             wine
-             winetricks)))))
-
-  (feature
-   (name 'games-base)
-   (values '((games-base . #t)))
-   (home-services-getter get-home-services)))
-
-(define* (feature-games-steam
+(define* (feature-steam
           #:key
           (steam steam)
           (steamos? #f)
@@ -91,7 +36,6 @@
   (ensure-pred boolean? steamos?)
 
   (define (get-home-services config)
-    (require-value 'games-base config "feature-games-base is required.")
     (list
      (simple-service
       'steam-add-packages
@@ -105,6 +49,7 @@
            ;; https://github.com/ValveSoftware/steam-for-linux/issues/6148
            (list xorg-server
                  xinit
+                 xrandr
                  xf86-input-libinput
                  xf86-input-keyboard
                  xf86-input-mouse
@@ -120,11 +65,8 @@
                             (display
                              (string-append
                               "#!/bin/sh\nDIR=$HOME/.guix-home/profile\n"
-                              ;; #$(file-append pulseaudio "/bin/pactl" " " "load-module module-null-sink sink_name=dummy && ")
-                              ;; #$(file-append pulseaudio "/bin/pactl" " " "load-module module-loopback && ")
                               #$(file-append xinit "/bin/xinit" " ")
                               #$(file-append coreutils "/bin/env" " " "-u" " " "SDL_VIDEODRIVER" " ")
-                              ;; #$(file-append steam "/bin/steam" " " "-tenfoot -steamos -fulldesktopres -nointro")
                               #$(file-append steamos-compositor-plus "/bin/steamos-session")
                               " -- "
                               #$(file-append xorg-server "/bin/Xorg" " " ":1" " " "vt")
@@ -132,7 +74,7 @@
                               " -keeptty "
                               "-configdir $DIR/share/X11/xorg.conf.d "
                               "-modulepath $DIR/lib/xorg/modules")
-                             file)
+                              file)
                             (chmod file #o744))))))
          (simple-service
           'run-steamos-on-login
@@ -154,21 +96,10 @@
 
   (define (get-system-services config)
     (list
-     ;; (when (get-value 'pipewire config)
-     ;;   (simple-service
-     ;;    'pipewire-add-config
-     ;;    etc-service-type
-     ;;    (list
-     ;;     `("pipewire/pipewire.conf"
-     ;;       ,(plain-file
-     ;;         "pipewire.conf"
-     ;;         "default.clock.allowed-rates = [ 48000 ]\n")))))
-     ;; Add udev rules for steam input devices.
-     (udev-rules-service 'steam-input %steam-input-udev-rules)
-     (udev-rules-service 'steam-vr %steam-vr-udev-rules)))
+     (udev-rules-service 'steam-devices steam-devices-udev-rules)))
 
   (feature
-   (name 'games-steam)
-   (values '((games-steam . #t)))
+   (name 'steam)
+   (values '((steam . #t)))
    (home-services-getter get-home-services)
    (system-services-getter get-system-services)))
