@@ -145,9 +145,10 @@
    (feature-ssh)
 
    ;;; Git
-   (feature-git #:sign-commits? #t
-                #:git-gpg-sign-key "F17DDB98CC3C405C"
-                #:git-send-email? #t)
+   (feature-git
+    #:sign-commits? #t
+    #:git-gpg-sign-key "F17DDB98CC3C405C"
+    #:git-send-email? #t)
 
    ;;; Passwords
    (feature-password-store
@@ -173,20 +174,20 @@
 
    ;;; IRC
    (feature-irc-settings
-    #:irc-accounts (list
-                    (irc-account
-                     (id 'pounce)
-                     (network "irc.minikn.xyz")
-                     (bouncer? #t)
-                     (nick "minikN"))
-                    (irc-account
-                     (id 'libera)
-                     (network "irc.libera.chat")
-                     (nick "minikN"))))
+    #:irc-accounts
+    (list
+     (irc-account
+      (id 'pounce)
+      (network "irc.minikn.xyz")
+      (bouncer? #t)
+      (nick "minikN"))
+     (irc-account
+      (id 'libera)
+      (network "irc.libera.chat")
+      (nick "minikN"))))
 
    ;;; Emacs
    (feature-emacs
-    #:additional-elisp-packages (strings->packages "emacs-yasnippet")
     #:default-application-launcher? #f)
    (feature-emacs-appearance)
    (feature-emacs-completion
