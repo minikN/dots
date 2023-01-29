@@ -10,8 +10,6 @@
   #:use-module (gnu packages music)
   #:use-module (gnu system file-systems)
 
-  #:use-module (guix gexp)
-
   #:use-module (nongnu packages linux)
   #:use-module (nongnu system linux-initrd)
 
@@ -19,7 +17,6 @@
   #:use-module (rde features docker)
   #:use-module (rde features fontutils)
   #:use-module (rde features linux)
-  #:use-module (rde features mail)
   #:use-module (rde features system)
   #:use-module (rde features wm)
   #:use-module (rde features)
@@ -65,21 +62,6 @@
     #:host-name "geekcave"
     #:timezone  "Europe/Berlin"
     #:locale "en_US.utf8")
-
-   ;;; Mail
-   (feature-mail-settings
-    #:mail-accounts
-    (list (mail-account
-           (id 'personal)
-           (fqda "db@minikn.xyz")
-           (type 'mailbox)
-           (pass-cmd "pass show Mail/mailbox.org/db@minikn.xyz"))
-          ;; (mail-account
-          ;;  (id 'work)
-          ;;  (fqda "demis.balbach@apprologic.de")
-          ;;  (type 'hosteurope-de)
-          ;;  (pass-cmd "pass show Mail/mailbox.org/db@minikn.xyz"))
-          ))
 
    ;;; Kernel
    (feature-kernel

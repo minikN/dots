@@ -126,6 +126,15 @@
                         "input" "cdrom" "disk"
                         "docker" "lp"))
 
+   ;;; Mail
+   (feature-mail-settings
+    #:mail-accounts
+    (list (mail-account
+           (id 'personal)
+           (fqda "db@minikn.xyz")
+           (type 'mailbox)
+           (pass-cmd "pass show Mail/mailbox.org/db@minikn.xyz"))))
+
    ;;; GnuPG
    (feature-gnupg
     #:gpg-primary-key "F17DDB98CC3C405C"
