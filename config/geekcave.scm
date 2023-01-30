@@ -39,6 +39,10 @@
          (device (file-system-label "GUIX"))
          (mount-point "/")
          (type "btrfs"))
+        (file-system ;; System partition
+         (device (file-system-label "GAMES"))
+         (mount-point "/home/db/Games")
+         (type "btrfs"))
         (file-system ;; Boot partition
          (device (file-system-label "BOOT"))
          (mount-point "/boot/efi")
@@ -101,7 +105,10 @@
    (feature-sway-screenshot)
 
    (feature-steam
-    #:steamos? #t)
+    #:steamos? #t
+    #:sandbox-location (string-append
+                        (getenv "HOME")
+                        "/Games/steam-standbox"))
 
    ;; nix-env -iA nixpkgs.docker-compose
    (feature-docker)
