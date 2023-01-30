@@ -162,7 +162,13 @@
      (waybar-tray #:bar-id 'right)
      (waybar-clock
       #:bar-id 'right
-      #:format "{:%H:%M}")))))
+      #:format "{:%H:%M}")))
+
+   (feature-kanshi
+    #:extra-config
+    `((profile desktop ((output DP-1 enable)
+                        (output DP-2 enable)
+                        (output HDMI-A-2 disable)))))))
 
 (define geekcave-config
   (rde-config
