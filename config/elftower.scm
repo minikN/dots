@@ -1,0 +1,140 @@
+(define-module (config elftower)
+  #:use-module (config base)
+  #:use-module (config packages)
+
+  #:use-module (gnu packages)
+  #:use-module (gnu system file-systems)
+
+  #:use-module (nongnu packages linux)
+  #:use-module (nongnu system linux-initrd)
+
+  #:use-module (rde features base)
+  #:use-module (rde features fontutils)
+  #:use-module (rde features linux)
+  #:use-module (rde features system)
+  #:use-module (rde features wm)
+  #:use-module (rde features)
+
+  #:export (elftower-config))
+
+(define elftower-sway-config
+  `((output DP-1 pos 0 0)
+    (output DP-2 pos 2560 0)
+    (workspace 1 output DP-1) ;; Browser
+    (workspace 2 output DP-2) ;; Terminal
+    (workspace 3 output DP-2) ;; Code
+    (workspace 4 output DP-2) ;; Agenda
+    (workspace 5 output DP-1) ;; Music/Video
+    (workspace 6 output DP-1) ;; Chat
+    (workspace 7 output DP-1) ;; Games
+    (output eDP-1 scale 1.5)))
+
+(define elftower-filesystems
+  (list (file-system ;; System partition
+         (device (file-system-label "GUIX"))
+         (mount-point "/")
+         (type "btrfs"))
+        (file-system ;; Boot partition
+         (device (file-system-label "BOOT"))
+         (mount-point "/boot/efi")
+         (type "vfat"))))
+
+(define elftower-features
+  (list
+
+   ;;; Host info
+   (feature-host-info
+    #:host-name "elftower"
+    #:timezone  "Europe/Berlin"
+    #:locale "en_US.utf8")
+
+   ;;; Kernel
+   (feature-kernel
+    #:kernel linux
+    #:initrd microcode-initrd
+    #:initrd-modules '("vmd")
+    #:firmware (list linux-firmware sof-firmware))
+
+   ;;; File systems
+   (feature-file-systems
+    #:file-systems elftower-filesystems)
+
+   ;;; Packages
+   (feature-base-packages
+    #:system-packages
+    (append %base-system-packages)
+    #:home-packages
+    (append %base-home-packages))
+
+   ;;; HiDPI
+   (feature-hidpi)
+
+   ;;; Backlight
+   (feature-backlight)
+
+   ;;; Sway
+   (feature-sway
+    #:xwayland? #t
+    #:extra-config
+    (append %base-sway-config
+            elftower-sway-config))
+   (feature-sway-run-on-tty #:sway-tty-number 2)
+   (feature-sway-screenshot)
+
+   (feature-waybar
+    #:output 'DP-1
+    #:height 30
+    #:extra-config
+    '(((position . top)
+       (layer . top)
+       (height . 30)
+       (name . right)
+       (output . DP-2)))
+    #:waybar-modules
+    (list
+     (waybar-sway-workspaces
+      #:format-icons
+      '(("1" . " WWW")
+        ("5" . " MUSIC")
+        ("6" . " CHAT")
+        ("urgent" . )
+        ("focused" . )
+        ("default" . ))
+      #:persistent-workspaces
+      '(("1" . #())
+        ("5" . #())
+        ("6" . #())))
+     (waybar-sway-workspaces
+      #:bar-id 'right
+      #:format-icons
+      '(("2" . " TERM")
+        ("3" . " CODE")
+        ("4" . " AGENDA")
+        ("urgent" . )
+        ("focused" . )
+        ("default" . ))
+      #:persistent-workspaces
+      '(("2" . #())
+        ("3" . #())
+        ("4" . #())))
+     (waybar-sway-window)
+     (waybar-sway-window #:bar-id 'right)
+     (waybar-cpu #:bar-id 'right)
+     (waybar-memory #:bar-id 'right)
+     (waybar-disk #:bar-id 'right)
+     (waybar-temperature #:bar-id 'right)
+     (waybar-volume
+      #:bar-id 'right
+      #:show-percentage? #t
+      #:scroll-step 5)
+     (waybar-tray #:bar-id 'right)
+     (waybar-clock
+      #:bar-id 'right
+      #:format "{:%H:%M}")))))
+
+(define elftower-config
+  (rde-config
+   (features
+    (append
+     %base-features
+     elftower-features))))
