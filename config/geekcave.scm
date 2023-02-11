@@ -1,7 +1,6 @@
 (define-module (config geekcave)
   #:use-module (config base)
   #:use-module (config features games)
-  #:use-module (config features package-management)
   #:use-module (config packages)
   ;; #:use-module (config features engineering)
 
@@ -112,10 +111,6 @@
 
    ;; nix-env -iA nixpkgs.docker-compose
    (feature-docker)
-
-   ;; Nix
-   ;;; TODO: Move this to base-features
-   (feature-nix)
 
    ;; Waybar
    (feature-waybar

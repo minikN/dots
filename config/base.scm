@@ -1,6 +1,8 @@
 (define-module (config base)
   #:use-module (config features emacs-xyz)
   #:use-module (config features linux)
+  #:use-module (config features package-management)
+
   #:use-module (config packages node-xyz)
   #:use-module (config packages)
 
@@ -237,6 +239,7 @@
                                  "https://substitutes.nonguix.org")
     #:guix-authorized-keys (list %nonguix-public-key))
    (feature-desktop-services)
+   (feature-nix)
 
    (feature-pipewire)
    (feature-rofi)
