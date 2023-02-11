@@ -191,7 +191,9 @@
    ;;; Emacs
    (feature-emacs
     #:default-application-launcher? #f)
-   (feature-emacs-appearance)
+   (feature-emacs-appearance
+    #:fringes #f)
+   (feature-emacs-modus-themes)
    (feature-emacs-completion
     #:mini-frame? #f)
    (feature-emacs-vertico)
