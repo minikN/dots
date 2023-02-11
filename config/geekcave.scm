@@ -161,6 +161,11 @@
      (waybar-cpu #:bar-id 'right)
      (waybar-memory #:bar-id 'right)
      (waybar-disk #:bar-id 'right)
+     (waybar-disk
+      #:name 'games
+      #:path "/home/db/Games"
+      #:disk-icon ""
+      #:bar-id 'right)
      (waybar-temperature #:bar-id 'right)
      (waybar-volume
       #:bar-id 'right
