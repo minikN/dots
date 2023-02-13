@@ -17,17 +17,24 @@
 
   #:export (elftower-config))
 
+(define left 'DP-1)
+(define right 'HDMI-A-1)
+(define primary 'eDP-1)
+
 (define elftower-sway-config
-  `((output DP-1 pos 0 0)
-    (output DP-2 pos 2560 0)
-    (workspace 1 output DP-1) ;; Browser
-    (workspace 2 output DP-2) ;; Terminal
-    (workspace 3 output DP-2) ;; Code
-    (workspace 4 output DP-2) ;; Agenda
-    (workspace 5 output DP-1) ;; Music/Video
-    (workspace 6 output DP-1) ;; Chat
-    (workspace 7 output DP-1) ;; Games
-    (output eDP-1 scale 1.5)))
+  `((output ,left pos 0 0)
+    (output ,right pos 2560 0)
+    (workspace 1 output ,left) ;; Browser
+    (workspace 2 output ,right) ;; Terminal
+    (workspace 3 output ,right) ;; Code
+    (workspace 4 output ,right) ;; Agenda
+    (workspace 5 output ,left) ;; Music/Video
+    (workspace 6 output ,left) ;; Chat
+    (workspace 7 output ,primary)
+    (workspace 8 output ,primary)
+    (workspace 9 output ,primary)
+    (workspace 0 output ,primary)
+    (output ,primary scale 1.5)))
 
 (define elftower-filesystems
   (list (file-system ;; System partition
@@ -39,9 +46,85 @@
          (mount-point "/boot/efi")
          (type "vfat"))))
 
+(define (common-modules bar)
+  (list
+   (waybar-cpu #:bar-id bar)
+   (waybar-memory #:bar-id bar)
+   (waybar-disk #:bar-id bar)
+   (waybar-temperature #:bar-id bar)
+   (waybar-volume
+    #:show-percentage? #t
+    #:scroll-step 5
+    #:bar-id bar)
+   (waybar-battery #:bar-id bar)
+   (waybar-tray #:bar-id bar)
+   (waybar-clock
+    #:format "{:%H:%M}"
+    #:bar-id bar)))
+
+(define left-bar-modules
+  (list
+   (waybar-sway-workspaces
+    #:bar-id 'left
+    #:format-icons
+    '(("1" . " WWW")
+      ("5" . " MUSIC")
+      ("6" . " CHAT")
+      ("urgent" . )
+      ("focused" . )
+      ("default" . ))
+    #:persistent-workspaces
+    '(("1" . #())
+      ("5" . #())
+      ("6" . #())))
+   (waybar-sway-window
+    #:bar-id 'left)))
+
+(define right-bar-modules
+  (append (list
+           (waybar-sway-workspaces
+            #:bar-id 'right
+            #:format-icons
+            '(("2" . " TERM")
+              ("3" . " CODE")
+              ("4" . " AGENDA")
+              ("urgent" . )
+              ("focused" . )
+              ("default" . ))
+            #:persistent-workspaces
+            '(("2" . #())
+              ("3" . #())
+              ("4" . #())))
+           (waybar-sway-window
+            #:bar-id 'right))
+          (common-modules 'right)))
+
+(define primary-bar-modules
+  (append (list
+           (waybar-sway-workspaces
+            #:all-outputs? #t
+            #:format-icons
+            '(("1" . " WWW")
+              ("2" . " TERM")
+              ("3" . " CODE")
+              ("4" . " AGENDA")
+              ("5" . " MUSIC")
+              ("6" . " CHAT")
+              ("urgent" . )
+              ("focused" . )
+              ("default" . ))
+            #:persistent-workspaces
+            '(("1" . #())
+              ("2" . #())
+              ("3" . #())
+              ("4" . #())
+              ("5" . #())
+              ("6" . #())))
+           (waybar-sway-window))
+          (common-modules 'main)))
+
 (define elftower-features
   (list
-
    ;;; Host info
    (feature-host-info
     #:host-name "elftower"
@@ -81,56 +164,28 @@
    (feature-sway-run-on-tty #:sway-tty-number 2)
    (feature-sway-screenshot)
 
+
    (feature-waybar
-    #:output 'DP-1
     #:height 30
+    #:output primary
     #:extra-config
-    '(((position . top)
+    `(;; left bar
+      ((position . top)
+       (layer . top)
+       (height . 30)
+       (name . left)
+       (output . ,left))
+      ;; right bar
+      ((position . top)
        (layer . top)
        (height . 30)
        (name . right)
-       (output . DP-2)))
+       (output . ,right)))
     #:waybar-modules
-    (list
-     (waybar-sway-workspaces
-      #:format-icons
-      '(("1" . " WWW")
-        ("5" . " MUSIC")
-        ("6" . " CHAT")
-        ("urgent" . )
-        ("focused" . )
-        ("default" . ))
-      #:persistent-workspaces
-      '(("1" . #())
-        ("5" . #())
-        ("6" . #())))
-     (waybar-sway-workspaces
-      #:bar-id 'right
-      #:format-icons
-      '(("2" . " TERM")
-        ("3" . " CODE")
-        ("4" . " AGENDA")
-        ("urgent" . )
-        ("focused" . )
-        ("default" . ))
-      #:persistent-workspaces
-      '(("2" . #())
-        ("3" . #())
-        ("4" . #())))
-     (waybar-sway-window)
-     (waybar-sway-window #:bar-id 'right)
-     (waybar-cpu #:bar-id 'right)
-     (waybar-memory #:bar-id 'right)
-     (waybar-disk #:bar-id 'right)
-     (waybar-temperature #:bar-id 'right)
-     (waybar-volume
-      #:bar-id 'right
-      #:show-percentage? #t
-      #:scroll-step 5)
-     (waybar-tray #:bar-id 'right)
-     (waybar-clock
-      #:bar-id 'right
-      #:format "{:%H:%M}")))))
+    (append
+     left-bar-modules
+     right-bar-modules
+     primary-bar-modules))))
 
 (define elftower-config
   (rde-config
