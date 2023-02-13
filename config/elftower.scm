@@ -3,6 +3,9 @@
   #:use-module (config packages)
 
   #:use-module (gnu packages)
+  #:use-module (gnu services)
+  #:use-module (gnu home services)
+  #:use-module (gnu home-services wm)
   #:use-module (gnu system file-systems)
 
   #:use-module (nongnu packages linux)
@@ -21,20 +24,23 @@
 (define right 'HDMI-A-1)
 (define primary 'eDP-1)
 
-(define elftower-sway-config
-  `((output ,left pos 0 0)
-    (output ,right pos 2560 0)
-    (workspace 1 output ,left) ;; Browser
-    (workspace 2 output ,right) ;; Terminal
-    (workspace 3 output ,right) ;; Code
-    (workspace 4 output ,right) ;; Agenda
-    (workspace 5 output ,left) ;; Music/Video
-    (workspace 6 output ,left) ;; Chat
-    (workspace 7 output ,primary)
-    (workspace 8 output ,primary)
-    (workspace 9 output ,primary)
-    (workspace 0 output ,primary)
-    (output ,primary scale 1.5)))
+(define sway-extra-config-service
+  (simple-service
+   'sway-extra-config
+   home-sway-service-type
+   `((output ,left pos 0 0)
+     (output ,right pos 2560 0)
+     (workspace 1 output ,left) ;; Browser
+     (workspace 2 output ,right) ;; Terminal
+     (workspace 3 output ,right) ;; Code
+     (workspace 4 output ,right) ;; Agenda
+     (workspace 5 output ,left) ;; Music/Video
+     (workspace 6 output ,left) ;; Chat
+     (workspace 7 output ,primary)
+     (workspace 8 output ,primary)
+     (workspace 9 output ,primary)
+     (workspace 0 output ,primary)
+     (output ,primary scale 1.5))))
 
 (define elftower-filesystems
   (list (file-system ;; System partition
@@ -149,6 +155,16 @@
     #:home-packages
     (append %base-home-packages))
 
+   ;; Services
+   (feature-custom-services
+    #:home-services
+    (list
+     sway-extra-config-service
+     (simple-service
+      'set-locpath
+      home-environment-variables-service-type
+      '(("PATH" . "$PATH:$HOME/.local/bin")))))
+
    ;;; HiDPI
    (feature-hidpi)
 
@@ -156,15 +172,8 @@
    (feature-backlight)
 
    ;;; Sway
-   (feature-sway
-    #:xwayland? #t
-    #:extra-config
-    (append %base-sway-config
-            elftower-sway-config))
-   (feature-sway-run-on-tty #:sway-tty-number 2)
-   (feature-sway-screenshot)
 
-
+   ;;; Waybar
    (feature-waybar
     #:height 30
     #:output primary

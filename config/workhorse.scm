@@ -50,6 +50,7 @@
 
   #:use-module (gnu home services)
   #:use-module (gnu home-services shells)
+  #:use-module (gnu home-services wm)
   #:use-module (gnu packages base)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages dunst)
@@ -74,16 +75,19 @@
         nss-certs
         dunst))
 
-(define workhorse-sway-config
-  `((output DP-1 pos 0 0)
-    (output HDMI-A-1 pos 2560 0)
-    (workspace 1 output DP-1) ;; Browser
-    (workspace 2 output HDMI-A-1) ;; Terminal
-    (workspace 3 output HDMI-A-1) ;; Code
-    (workspace 4 output HDMI-A-1) ;; Agenda
-    (workspace 5 output DP-1) ;; Music/Video
-    (workspace 6 output DP-1) ;; Chat
-    (output eDP-1 scale 1.5)))
+(define sway-extra-config-service
+  (simple-service
+   'sway-extra-config
+   home-sway-service-type
+   `((output DP-1 pos 0 0)
+     (output HDMI-A-1 pos 2560 0)
+     (workspace 1 output DP-1) ;; Browser
+     (workspace 2 output HDMI-A-1) ;; Terminal
+     (workspace 3 output HDMI-A-1) ;; Code
+     (workspace 4 output HDMI-A-1) ;; Agenda
+     (workspace 5 output DP-1) ;; Music/Video
+     (workspace 6 output DP-1) ;; Chat
+     (output eDP-1 scale 1.5))))
 
 (define workhorse-filesystems
   (list (file-system ;; System partition
@@ -133,6 +137,7 @@
    (feature-custom-services
     #:home-services
     (list
+     sway-extra-config-service
      (simple-service
       'set-locpath
       home-environment-variables-service-type
@@ -140,15 +145,6 @@
         ("SSL_CERT_FILE" . "$HOME/.guix-home/profile/etc/ssl/certs/ca-certificates.crt")
         ("GUIX_LOCPATH" . "$HOME/.guix-home/profile/lib/locale")
         ("LC_ALL" . "en_US.utf8")))))
-
-   ;;; Sway
-   (feature-sway
-    #:xwayland? #t
-    #:extra-config
-    (append %base-sway-config
-            workhorse-sway-config))
-   (feature-sway-run-on-tty #:sway-tty-number 2)
-   (feature-sway-screenshot)
 
    (feature-waybar
     ;#:output '!HDMI-A-1

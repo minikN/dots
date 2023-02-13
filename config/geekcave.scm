@@ -4,6 +4,8 @@
   #:use-module (config packages)
   ;; #:use-module (config features engineering)
 
+  #:use-module (gnu services)
+  #:use-module (gnu home-services wm)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages engineering)
   #:use-module (gnu packages music)
@@ -22,16 +24,19 @@
 
   #:export (geekcave-config))
 
-(define geekcave-sway-config
-  `((output DP-1 pos 0 0)
-    (output DP-2 pos 2560 0)
-    (workspace 1 output DP-1)   ;; Browser
-    (workspace 2 output DP-2)   ;; Terminal
-    (workspace 3 output DP-2)   ;; Code
-    (workspace 4 output DP-2)   ;; Agenda
-    (workspace 5 output DP-1)   ;; Music/Video
-    (workspace 6 output DP-1)   ;; Chat
-    (workspace 7 output DP-1))) ;; Games
+(define sway-extra-config-service
+  (simple-service
+   'sway-extra-config
+   home-sway-service-type
+   `((output DP-1 pos 0 0)
+     (output DP-2 pos 2560 0)
+     (workspace 1 output DP-1)   ;; Browser
+     (workspace 2 output DP-2)   ;; Terminal
+     (workspace 3 output DP-2)   ;; Code
+     (workspace 4 output DP-2)   ;; Agenda
+     (workspace 5 output DP-1)   ;; Music/Video
+     (workspace 6 output DP-1)   ;; Chat
+     (workspace 7 output DP-1))))
 
 (define geekcave-filesystems
   (list (file-system ;; System partition
@@ -88,20 +93,12 @@
    ;;; Services
    (feature-custom-services
     #:home-services
-    (list ssh-extra-config-service))
+    (list
+     sway-extra-config-service
+     ssh-extra-config-service))
 
    ;;; HiDPI
    (feature-hidpi)
-
-   ;; Sway
-   (feature-sway
-    #:xwayland? #t
-    #:extra-config
-    (append %base-sway-config
-            geekcave-sway-config))
-   (feature-sway-run-on-tty
-    #:sway-tty-number 2)
-   (feature-sway-screenshot)
 
    (feature-steam
     #:steamos? #t

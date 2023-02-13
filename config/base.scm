@@ -41,6 +41,7 @@
   #:use-module (rde features system)
   #:use-module (rde features terminals)
   #:use-module (rde features version-control)
+  #:use-module (rde features wm)
   #:use-module (rde features xdg)
   #:use-module (rde features xdisorg)
   #:use-module (rde features)
@@ -256,21 +257,31 @@
      (desktop "$HOME")
      (publicshare "$HOME")
      (templates "$HOME")))
-   (feature-bootloader)))
+   (feature-bootloader)
 
-(define %base-sway-config
-  `((default_border none)
-    (assign "[app_id=\"Chromium-browser\"]" workspace 1) ;; TODO: Move
-    (for_window "[app_id=\"pavucontrol\"]" floating enable, border pixel) ;; TODO: Move
-    (for_window "[app_id=\"pinentry-qt\"]" floating enable, border pixel) ;; TODO: Move
-    (for_window "[app_id=\"thunar\"]" floating enable, border pixel) ;; TODO: Move
-    (for_window "[app_id=\"org.kde.krename\"]" floating enable, border pixel) ;; TODO: Move
-    (for_window "[app_id=\"org.rncbc.qjackctl\"]" floating enable, border pixel) ;; TODO: Move
-    (bindsym $mod+grave exec $term) ;; TODO: Move
-    (bindsym $mod+Shift+q kill) ;; TODO: Move
-    (bindsym $mod+Shift+Ctrl+r mode "resize")
-    (mode "resize" ((bindsym Left resize shrink width 30px)
-                    (bindsym Down resize grow height 30px)
-                    (bindsym Up resize shrink height 30px)
-                    (bindsym Right resize grow width 30px)
-                    (bindsym Escape mode "default")))))
+   ;;; Sway
+   (feature-sway
+    #:xwayland? #t
+    #:extra-config
+    `((default_border none)
+     (assign "[app_id=\"chromium-browser\"]" workspace 1)
+     (for_window "[app_id=\"pavucontrol\"]" floating enable, border pixel)
+     (for_window "[app_id=\"pinentry-qt\"]" floating enable, border pixel)
+     (for_window "[app_id=\"thunar\"]" floating enable, border pixel)
+     (for_window "[app_id=\"org.kde.krename\"]" floating enable, border pixel)
+     (for_window "[app_id=\"org.rncbc.qjackctl\"]" floating enable, border pixel)
+     (bindsym $mod+Shift+q kill)
+     (bindsym $mod+Shift+Ctrl+r mode "resize")
+     (mode "resize" ((bindsym Left resize shrink width 30px)
+                     (bindsym Down resize grow height 30px)
+                     (bindsym Up resize shrink height 30px)
+                     (bindsym Right resize grow width 30px)
+                     (bindsym Escape mode "default")))))
+   (feature-sway-run-on-tty #:sway-tty-number 2)
+   (feature-sway-screenshot)
+   (feature-swaylock
+    #:swaylock (@ (gnu packages wm) swaylock-effects)
+    ;; The blur on lock screen is not privacy-friendly.
+    #:extra-config '((screenshots)
+                     (effect-blur . 7x5)
+                     (clock)))))
