@@ -20,8 +20,8 @@
 
   #:export (elftower-config))
 
-(define left 'DP-1)
-(define right 'HDMI-A-1)
+(define left 'DP-6)
+(define right 'DP-5)
 (define primary 'eDP-1)
 
 (define sway-extra-config-service
