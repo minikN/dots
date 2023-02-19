@@ -33,4 +33,3 @@
    (values '((nix . #t)))
    (home-services-getter get-home-services)
    (system-services-getter get-system-services)))
-feature-nix
