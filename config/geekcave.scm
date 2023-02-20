@@ -2,6 +2,7 @@
   #:use-module (config base)
   #:use-module (config features games)
   #:use-module (config packages)
+  #:use-module (config features wm)
   ;; #:use-module (config features engineering)
 
   #:use-module (gnu services)
@@ -24,19 +25,22 @@
 
   #:export (geekcave-config))
 
+(define primary 'DP-1)
+(define right 'DP-2)
+
 (define sway-extra-config-service
   (simple-service
    'sway-extra-config
    home-sway-service-type
-   `((output DP-1 pos 0 0)
-     (output DP-2 pos 2560 0)
-     (workspace 1 output DP-1)   ;; Browser
-     (workspace 2 output DP-2)   ;; Terminal
-     (workspace 3 output DP-2)   ;; Code
-     (workspace 4 output DP-2)   ;; Agenda
-     (workspace 5 output DP-1)   ;; Music/Video
-     (workspace 6 output DP-1)   ;; Chat
-     (workspace 7 output DP-1))))
+   `((output ,primary pos 0 0)
+     (output ,right pos 2560 0)
+     (workspace 1 output ,primary)   ;; Browser
+     (workspace 2 output ,right)   ;; Terminal
+     (workspace 3 output ,right)   ;; Code
+     (workspace 4 output ,right)   ;; Agenda
+     (workspace 5 output ,primary)   ;; Music/Video
+     (workspace 6 output ,primary)   ;; Chat
+     (workspace 7 output ,primary))))
 
 (define geekcave-filesystems
   (list (file-system ;; System partition
@@ -102,77 +106,28 @@
 
    (feature-steam
     #:steamos? #t
-    #:sandbox-location (string-append
-                        (getenv "HOME")
-                        "/Games/steam-standbox"))
+    #:sandbox-location
+    (string-append
+     (getenv "HOME")
+     "/Games/steam-standbox"))
 
    ;; nix-env -iA nixpkgs.docker-compose
    (feature-docker)
 
    ;; Waybar
    (feature-waybar
-    #:output 'DP-1
     #:height 30
+    #:output primary
     #:extra-config
-    '(((position . top)
+    `(((position . top)
        (layer . top)
        (height . 30)
        (name . right)
-       (output . DP-2)))
+       (output . ,right)))
     #:waybar-modules
-    (list
-     (waybar-sway-workspaces
-      #:format-icons
-      '(("1" . " WWW")
-        ("5" . " MUSIC")
-        ("6" . " CHAT")
-        ("7" . " GAMES")
-        ("urgent" . )
-        ("focused" . )
-        ("default" . ))
-      #:persistent-workspaces
-      '(("1" . #())
-        ("5" . #())
-        ("6" . #())
-        ("7" . #())))
-     (waybar-sway-workspaces
-      #:bar-id 'right
-      #:format-icons
-      '(("2" . " TERM")
-        ("3" . " CODE")
-        ("4" . " AGENDA")
-        ("urgent" . )
-        ("focused" . )
-        ("default" . ))
-      #:persistent-workspaces
-      '(("2" . #())
-        ("3" . #())
-        ("4" . #())))
-     (waybar-sway-window)
-     (waybar-sway-window #:bar-id 'right)
-     (waybar-cpu #:bar-id 'right)
-     (waybar-memory #:bar-id 'right)
-     (waybar-disk #:bar-id 'right)
-     (waybar-disk
-      #:name 'games
-      #:path "/home/db/Games"
-      #:disk-icon ""
-      #:bar-id 'right)
-     (waybar-temperature #:bar-id 'right)
-     (waybar-volume
-      #:bar-id 'right
-      #:show-percentage? #t
-      #:scroll-step 5)
-     (waybar-tray #:bar-id 'right)
-     (waybar-clock
-      #:bar-id 'right
-      #:format "{:%H:%M}")))
-
-   (feature-kanshi
-    #:extra-config
-    `((profile desktop ((output DP-1 enable)
-                        (output DP-2 enable)
-                        (output HDMI-A-2 disable)))))))
+    (append
+     (waybar-left-modules #:bar-id 'main)
+     waybar-right-modules))))
 
 (define geekcave-config
   (rde-config

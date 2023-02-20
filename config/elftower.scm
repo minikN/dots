@@ -1,6 +1,7 @@
 (define-module (config elftower)
   #:use-module (config base)
   #:use-module (config packages)
+  #:use-module (config features wm)
 
   #:use-module (gnu packages)
   #:use-module (gnu services)
@@ -51,84 +52,6 @@
          (device (file-system-label "BOOT"))
          (mount-point "/boot/efi")
          (type "vfat"))))
-
-(define (common-modules bar)
-  (list
-   (waybar-cpu #:bar-id bar)
-   (waybar-memory #:bar-id bar)
-   (waybar-disk #:bar-id bar)
-   (waybar-temperature #:bar-id bar)
-   (waybar-volume
-    #:show-percentage? #t
-    #:scroll-step 5
-    #:bar-id bar)
-   (waybar-battery #:bar-id bar)
-   (waybar-tray #:bar-id bar)
-   (waybar-clock
-    #:format "{:%H:%M}"
-    #:bar-id bar)))
-
-(define left-bar-modules
-  (list
-   (waybar-sway-workspaces
-    #:bar-id 'left
-    #:format-icons
-    '(("1" . " WWW")
-      ("5" . " MUSIC")
-      ("6" . " CHAT")
-      ("urgent" . )
-      ("focused" . )
-      ("default" . ))
-    #:persistent-workspaces
-    '(("1" . #())
-      ("5" . #())
-      ("6" . #())))
-   (waybar-sway-window
-    #:bar-id 'left)))
-
-(define right-bar-modules
-  (append (list
-           (waybar-sway-workspaces
-            #:bar-id 'right
-            #:format-icons
-            '(("2" . " TERM")
-              ("3" . " CODE")
-              ("4" . " AGENDA")
-              ("urgent" . )
-              ("focused" . )
-              ("default" . ))
-            #:persistent-workspaces
-            '(("2" . #())
-              ("3" . #())
-              ("4" . #())))
-           (waybar-sway-window
-            #:bar-id 'right))
-          (common-modules 'right)))
-
-(define primary-bar-modules
-  (append (list
-           (waybar-sway-workspaces
-            #:all-outputs? #t
-            #:format-icons
-            '(("1" . " WWW")
-              ("2" . " TERM")
-              ("3" . " CODE")
-              ("4" . " AGENDA")
-              ("5" . " MUSIC")
-              ("6" . " CHAT")
-              ("urgent" . )
-              ("focused" . )
-              ("default" . ))
-            #:persistent-workspaces
-            '(("1" . #())
-              ("2" . #())
-              ("3" . #())
-              ("4" . #())
-              ("5" . #())
-              ("6" . #())))
-           (waybar-sway-window))
-          (common-modules 'main)))
-
 (define elftower-features
   (list
    ;;; Host info
@@ -192,9 +115,9 @@
        (output . ,right)))
     #:waybar-modules
     (append
-     left-bar-modules
-     right-bar-modules
-     primary-bar-modules))))
+     (waybar-left-modules)
+     waybar-right-modules
+     waybar-primary-modules))))
 
 (define elftower-config
   (rde-config
