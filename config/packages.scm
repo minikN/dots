@@ -1,11 +1,5 @@
 (define-module (config packages)
-  #:use-module (guix gexp)
-  #:use-module (guix download)
-  #:use-module (guix git-download)
-  #:use-module (guix build-system copy)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix packages)
-
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu build chromium-extension)
 
   #:use-module (gnu packages autotools)
@@ -22,10 +16,22 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
 
+  #:use-module (guix build-system copy)
+  #:use-module (guix build-system gnu)
+
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix packages)
+
   #:use-module (nongnu packages steam-client)
 
-  #:use-module (guix licenses)
-  #:use-module ((guix licenses) #:prefix license:))
+  ;; #:use-module (gnu packages gcc)
+  ;; #:use-module (gnu packages libusb)
+  ;; #:use-module (gnu packages llvm)
+  ;; #:use-module (guix build-system linux-module)
+  ;; #:use-module (nonguix build-system binary)
+  )
 
 (define-public steamos-modeswitch-inhibitor
   (package
@@ -284,4 +290,149 @@ them on the badge.
   (make-chromium-extension chromium-web-store "chromium"))
 
 
-rofi-ttv
+;; (define-public evdi
+;;   (package
+;;     (name "evdi")
+;;     (version "1.12.0")
+;;     (source
+;;      (origin
+;;        (method git-fetch)
+;;        (uri (git-reference
+;;              (url "https://github.com/DisplayLink/evdi.git")
+;;              (commit "bdc258b25df4d00f222fde0e3c5003bf88ef17b5")))
+;;        (file-name (git-file-name name version))
+;;        (sha256
+;;         (base32 "1yi7mbyvxm9lsx6i1xbwp2bihwgzhwxkydk1kbngw5a5kw9azpws"))))
+;;     (build-system linux-module-build-system)
+;;     (arguments
+;;      `(#:tests? #f ;; no test suite
+;;        #:phases
+;;        (modify-phases %standard-phases
+;;          (add-after 'unpack 'chdir
+;;            (lambda _ (chdir "module"))))))
+;;     (home-page "https://github.com/DisplayLink/evdi")
+;;     (synopsis "EVDI Linux kernel module")
+;;     (description
+;;      "The @acronym{EVDI, Extensible Virtual Display Interface} is a Linux kernel module
+;; that enables management of multiple screens, allowing user-space programs to
+;; take control over what happens with the image.")
+;;     (license license:gpl2)))
+
+;; (define-public libevdi
+;;   (package
+;;     (name "libevdi")
+;;     (version "1.12.0")
+;;     (source
+;;      (origin
+;;        (method git-fetch)
+;;        (uri (git-reference
+;;              (url "https://github.com/DisplayLink/evdi.git")
+;;              (commit "bdc258b25df4d00f222fde0e3c5003bf88ef17b5")))
+;;        (file-name (git-file-name name version))
+;;        (sha256
+;;         (base32 "1yi7mbyvxm9lsx6i1xbwp2bihwgzhwxkydk1kbngw5a5kw9azpws"))))
+;;     (build-system gnu-build-system)
+;;     (arguments
+;;      `(#:tests? #f ;; no test suite
+;;        #:make-flags `("CC=gcc")
+;;        #:phases
+;;        (modify-phases %standard-phases
+;;          (delete 'configure) ;; no configure script
+;;          (replace 'install
+;;            (lambda* (#:key outputs #:allow-other-keys)
+;;              (let* ((out (assoc-ref outputs "out"))
+;;                     (lib (string-append out "/lib")))
+;;                (mkdir-p lib)
+;;                (copy-file "libevdi.so" (string-append lib "/libevdi.so")))))
+;;          (add-after 'unpack 'chdir
+;;            (lambda _ (chdir "library"))))))
+;;     (inputs
+;;      (list libdrm))
+;;     (home-page "https://github.com/DisplayLink/evdi")
+;;     (synopsis "EVDI Linux kernel module")
+;;     (description
+;;      "The @acronym{EVDI, Extensible Virtual Display Interface} is a Linux kernel module
+;; that enables management of multiple screens, allowing user-space programs to
+;; take control over what happens with the image.")
+;;     (license license:lgpl2.1)))
+
+;; (define-public displaylink
+;;   (package
+;;     (name "displaylink")
+;;     (version "5.6.1")
+;;     (source
+;;      (origin
+;;        (method url-fetch/zipbomb)
+;;        (uri (string-append
+;;              "https://www.synaptics.com/sites/default/files/exe_files/2022-08/DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu"
+;;              version
+;;              "-EXE.zip"))
+;;        (sha256
+;;         (base32
+;;          "1hihsz35ccydzx04r8r9kz0hvqwj5fgr8zpzvwyhfxp2m549f9w9"))
+;;        (file-name (string-append name "-" version ".zip"))))
+;;     (supported-systems '("x86_64-linux"))
+;;     (build-system binary-build-system)
+;;     (inputs
+;;      (list
+;;       libusb
+;;       glibc
+;;       `(,gcc "lib")
+;;       `(,util-linux "lib")
+;;       ))
+;;     (arguments
+;;      (list
+;;       #:validate-runpath? #f
+;;       #:patchelf-plan
+;;        #~'(("lib/DisplayLinkManager"
+;;             ("util-linux"
+;;              "gcc"
+;;              "glibc"
+;;              "libusb")))
+;;        #:phases
+;;        #~(modify-phases %standard-phases
+;;          (add-after 'unpack 'unpack-runfile
+;;            (lambda* _
+;;              (let* ((lib (string-append #$output "/lib"))
+;;                     (bin (string-append #$output "/bin"))
+;;                     (src-file (car (find-files "." "\\.run$")))
+;;                     (src-folder (string-drop-right src-file 4)))
+;;                (invoke "sh" src-file "--keep" "--noexec")
+;;                (rename-file (string-append src-folder "/") "lib")
+;;                (copy-recursively "lib/aarch64-linux-gnu/" "lib/")
+;;                (delete-file-recursively "lib/arm-linux-gnueabihf")
+;;                (delete-file-recursively "lib/aarch64-linux-gnu")
+;;                (delete-file-recursively "lib/x64-ubuntu-1604")
+;;                (delete-file-recursively "lib/x86-ubuntu-1604")
+;;                (delete-file-recursively "__MACOSX")
+;;                (delete-file src-file)
+;;                (delete-file (car (find-files "." "\\.txt$"))))))
+;;          (add-after 'install 'symlink-binary
+;;            (lambda _
+;;              (mkdir-p (string-append #$output "/bin"))
+;;              (symlink (string-append #$output "/lib/DisplayLinkManager")
+;;                             (string-append #$output "/bin/DisplayLinkManager"))
+;;              (invoke "ls" "-la" #$output)))
+
+;;  ;; (add-after 'install 'wrap-where-patchelf-does-not-work
+;;  ;;                 (lambda _
+;;  ;;                   (wrap-program (string-append #$output "/lib/DisplayLinkManager")
+;;  ;;                     `("LD_LIBRARY_PATH" ":" prefix
+;;  ;;                       (,(string-join
+;;  ;;                          (list
+;;  ;;                           (string-append #$(this-package-input "gcc") "/lib")
+;;  ;;                           (string-append #$output "/lib")
+;;  ;;                           #$output)
+;;  ;;                          ":"))))))
+
+
+;;          )))
+;;     (home-page "https://github.com/DisplayLink/evdi")
+;;     (synopsis "EVDI Linux kernel module")
+;;     (description
+;;      "The @acronym{EVDI, Extensible Virtual Display Interface} is a Linux kernel module
+;; that enables management of multiple screens, allowing
+;; displaylink
+;;  user-space programs to
+;; take control over what happens with the image.")
+;;     (license license:lgpl2.1)))

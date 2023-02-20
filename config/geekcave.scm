@@ -1,15 +1,13 @@
 (define-module (config geekcave)
   #:use-module (config base)
   #:use-module (config features games)
-  #:use-module (config packages)
   #:use-module (config features wm)
-  ;; #:use-module (config features engineering)
+  #:use-module (config packages)
 
-  #:use-module (gnu services)
   #:use-module (gnu home-services wm)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages engineering)
-  #:use-module (gnu packages music)
+  #:use-module (gnu services)
   #:use-module (gnu system file-systems)
 
   #:use-module (nongnu packages linux)
@@ -17,8 +15,6 @@
 
   #:use-module (rde features base)
   #:use-module (rde features docker)
-  #:use-module (rde features fontutils)
-  #:use-module (rde features linux)
   #:use-module (rde features system)
   #:use-module (rde features wm)
   #:use-module (rde features)
@@ -59,6 +55,8 @@
 (define geekcave-packages
   (list
    rofi-ttv
+   cura
+   cura-binary-data
 
    guitarix
    guitarix-lv2

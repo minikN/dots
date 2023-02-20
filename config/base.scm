@@ -1,28 +1,16 @@
 (define-module (config base)
-  #:use-module (config features emacs-xyz)
   #:use-module (config features linux)
   #:use-module (config features package-management)
 
-  #:use-module (config packages node-xyz)
   #:use-module (config packages)
 
   #:use-module (contrib features javascript)
 
-  #:use-module (gnu home-services shells)
   #:use-module (gnu home-services ssh)
-  #:use-module (gnu packages base)
-  #:use-module (gnu packages cups)
   #:use-module (gnu packages node)
-  #:use-module (gnu packages)
-  #:use-module (gnu services cups)
-  #:use-module (gnu services nix)
   #:use-module (gnu services)
-  #:use-module (gnu system keyboard)
 
   #:use-module (guix gexp)
-  #:use-module (ice-9 match)
-
-  #:use-module (nongnu packages mozilla)
 
   #:use-module (rde features base)
   #:use-module (rde features emacs)
@@ -201,7 +189,6 @@
    (feature-emacs-erc)
    (feature-emacs-dired)
    (feature-emacs-faces)
-   (feature-emacs-files)
    (feature-emacs-git)
    (feature-emacs-message
     #:message-signature
