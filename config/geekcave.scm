@@ -52,11 +52,12 @@
          (mount-point "/boot/efi")
          (type "vfat"))))
 
-(define geekcave-packages
+(define geekcave-system-packages
+  (list ))
+
+(define geekcave-home-packages
   (list
    rofi-ttv
-   cura
-   cura-binary-data
 
    guitarix
    guitarix-lv2
@@ -87,10 +88,11 @@
    ;;; Packages
    (feature-base-packages
     #:system-packages
-    (append %base-system-packages)
+    (append %base-system-packages
+            geekcave-system-packages)
     #:home-packages
     (append %base-home-packages
-            geekcave-packages))
+            geekcave-home-packages))
 
    ;;; Services
    (feature-custom-services
