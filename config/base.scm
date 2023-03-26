@@ -229,7 +229,6 @@
                                  "https://substitutes.nonguix.org")
     #:guix-authorized-keys (list %nonguix-public-key))
    (feature-desktop-services)
-   (feature-nix)
 
    (feature-pipewire)
    (feature-rofi)
@@ -251,19 +250,19 @@
     #:xwayland? #t
     #:extra-config
     `((default_border none)
-     (assign "[app_id=\"chromium-browser\"]" workspace 1)
-     (for_window "[app_id=\"pavucontrol\"]" floating enable, border pixel)
-     (for_window "[app_id=\"pinentry-qt\"]" floating enable, border pixel)
-     (for_window "[app_id=\"thunar\"]" floating enable, border pixel)
-     (for_window "[app_id=\"org.kde.krename\"]" floating enable, border pixel)
-     (for_window "[app_id=\"org.rncbc.qjackctl\"]" floating enable, border pixel)
-     (bindsym $mod+Shift+q kill)
-     (bindsym $mod+Shift+Ctrl+r mode "resize")
-     (mode "resize" ((bindsym Left resize shrink width 30px)
-                     (bindsym Down resize grow height 30px)
-                     (bindsym Up resize shrink height 30px)
-                     (bindsym Right resize grow width 30px)
-                     (bindsym Escape mode "default")))))
+      (assign "[app_id=\"chromium-browser\"]" workspace 1)
+      (for_window "[app_id=\"pavucontrol\"]" floating enable, border pixel)
+      (for_window "[app_id=\"pinentry-qt\"]" floating enable, border pixel)
+      (for_window "[app_id=\"thunar\"]" floating enable, border pixel)
+      (for_window "[app_id=\"org.kde.krename\"]" floating enable, border pixel)
+      (for_window "[app_id=\"org.rncbc.qjackctl\"]" floating enable, border pixel)
+      (bindsym $mod+Shift+q kill)
+      (bindsym $mod+Shift+Ctrl+r mode "resize")
+      (mode "resize" ((bindsym Left resize shrink width 30px)
+                      (bindsym Down resize grow height 30px)
+                      (bindsym Up resize shrink height 30px)
+                      (bindsym Right resize grow width 30px)
+                      (bindsym Escape mode "default")))))
    (feature-sway-run-on-tty #:sway-tty-number 2)
    (feature-sway-screenshot)
    (feature-swaylock
@@ -271,4 +270,8 @@
     ;; The blur on lock screen is not privacy-friendly.
     #:extra-config '((screenshots)
                      (effect-blur . 7x5)
-                     (clock)))))
+                     (clock)))
+
+   ;;; Package management
+   ;;; Has to come after feature-sway.
+   (feature-nix)))
