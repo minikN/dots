@@ -171,6 +171,7 @@
    (feature-alacritty
     #:config-file (local-file "./applications/alacritty/alacritty.yml")
     #:default-terminal? #f)
+   (feature-compile)
 
    ;;; IRC
    (feature-irc-settings
