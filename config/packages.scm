@@ -254,42 +254,6 @@ and probably others.")
      (description "A scripts that uses rofi, youtube-dl and mpv to view twitch streams.")
      (license license:expat))))
 
-(define-public chromium-web-store
-  (package
-   (name "chromium-web-store")
-   (version "1.4.4.3")
-   (home-page "https://github.com/NeverDecaf/chromium-web-store")
-   (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url home-page)
-                  (commit (string-append "v" version))))
-            (file-name (git-file-name name version))
-            (sha256
-             (base32
-              "17jp05dpd8lk8k7fi56jdbhiisx4ajylr6kax01mzfkwfhkd0q9d"))))
-   (build-system copy-build-system)
-   (outputs '("chromium"))
-   (arguments
-    '(#:phases
-      (modify-phases %standard-phases
-                     (replace 'install
-                              (lambda* (#:key outputs #:allow-other-keys)
-                                (copy-recursively "src" (assoc-ref outputs "chromium")))))))
-   (synopsis "Allows adding extensions from chrome web store on ungoogled-chromium")
-   (description "This extension brings the following functionality to
-ungoogled-chromium (and other forks that lack web store support):
-@itemize
-@item Allows installing extensions directly from chrome web store.
-@item Automatically checks for updates to your installed extensions and displays
-them on the badge.
-@end itemize")
-   (license license:expat)))
-
-(define-public chromium-web-store/chromium
-  (make-chromium-extension chromium-web-store "chromium"))
-
-
 ;; (define-public evdi
 ;;   (package
 ;;     (name "evdi")

@@ -30,6 +30,7 @@
   #:use-module (rde features system)
   #:use-module (rde features terminals)
   #:use-module (rde features version-control)
+  #:use-module (rde features web-browsers)
   #:use-module (rde features wm)
   #:use-module (rde features xdg)
   #:use-module (rde features xdisorg)
@@ -56,7 +57,6 @@
 ;;;
 (define %base-home-packages
   (append
-   (list chromium-web-store/chromium)
    (strings->packages
     "git" "curl" "vim" "make"
 
@@ -66,8 +66,6 @@
     "gimp" "thunar"
 
     "firefox-wayland"
-    "ungoogled-chromium-wayland"
-    "ublock-origin-chromium"
 
     "gst-libav"
     "gst-plugins-bad"
@@ -227,6 +225,9 @@
 
    ;; Networking
    (feature-networking)
+
+   (feature-ungoogled-chromium
+    #:default-browser? #t)
 
    ;;; Fonts
    (feature-fonts
