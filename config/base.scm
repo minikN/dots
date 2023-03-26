@@ -5,6 +5,7 @@
   #:use-module (config packages)
 
   #:use-module (contrib features javascript)
+  #:use-module (contrib features emacs-xyz)
 
   #:use-module (gnu home-services ssh)
   #:use-module (gnu packages node)
@@ -205,6 +206,7 @@
    (feature-emacs-perspective)
    (feature-emacs-which-key
     #:min-height 5)
+   (feature-emacs-evil)
 
    ;;; LSP
    (feature-emacs-corfu)
