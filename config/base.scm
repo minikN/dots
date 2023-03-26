@@ -96,6 +96,14 @@
            (port . 22)
            (control-master . "auto")
            (control-path . "~/.ssh/master-%r@%h:%p")
+           (compression . #t))))
+       (ssh-host
+        (host "pihole")
+        (options
+         '((host-name . "192.168.178.55")
+           (port . 22)
+           (control-master . "auto")
+           (control-path . "~/.ssh/master-%r@%h:%p")
            (compression . #t)))))))
     (toplevel-options
      '((host-key-algorithms . "+ssh-rsa")
