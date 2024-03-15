@@ -52,6 +52,7 @@
          (device (file-system-label "BOOT"))
          (mount-point "/boot/efi")
          (type "vfat"))))
+
 (define elftower-features
   (list
    ;;; Host info
@@ -61,32 +62,37 @@
     #:locale "en_US.utf8")
 
    ;;; Kernel
-   (feature-kernel
-    #:kernel linux
-    #:initrd microcode-initrd
-    #:initrd-modules '("vmd")
-    #:firmware (list linux-firmware sof-firmware))
+ (feature-kernel
+  #:kernel linux
+  #:initrd microcode-initrd
+  #:initrd-modules '(
+		     ;"xhci_pci" "ehci_pci" "ahci" "firewire_ohci"
+		     ;"usb_storage" "sd_mod" "sr_mod" "sdhci_pci"
+		     )
+  ; Fix
+  ; #:kernel-modules '("kvm-intel")
+  #:firmware (list linux-firmware sof-firmware))
 
    ;;; File systems
-   (feature-file-systems
-    #:file-systems elftower-filesystems)
+  (feature-file-systems
+   #:file-systems elftower-filesystems)
 
    ;;; Packages
-   (feature-base-packages
-    #:system-packages
-    (append %base-system-packages)
-    #:home-packages
-    (append %base-home-packages))
+  (feature-base-packages
+   #:system-packages
+   (append %base-system-packages)
+   #:home-packages
+   (append %base-home-packages))
 
    ;; Services
-   (feature-custom-services
-    #:home-services
-    (list
-     sway-extra-config-service
-     (simple-service
-      'set-locpath
-      home-environment-variables-service-type
-      '(("PATH" . "$PATH:$HOME/.local/bin")))))
+ ;  (feature-custom-services
+ ;   #:home-services
+ ;   (list
+ ;    sway-extra-config-service
+ ;    (simple-service
+ ;     'set-locpath
+ ;     home-environment-variables-service-type
+;      '(("PATH" . "$PATH:$HOME/.local/bin")))))
 
    ;;; HiDPI
    (feature-hidpi)
@@ -97,31 +103,34 @@
    ;;; Sway
 
    ;;; Waybar
-   (feature-waybar
-    #:height 30
-    #:output primary
-    #:extra-config
-    `(;; left bar
-      ((position . top)
-       (layer . top)
-       (height . 30)
-       (name . left)
-       (output . ,left))
-      ;; right bar
-      ((position . top)
-       (layer . top)
-       (height . 30)
-       (name . right)
-       (output . ,right)))
-    #:waybar-modules
-    (append
-     (waybar-left-modules)
-     waybar-right-modules
-     waybar-primary-modules))))
+   (feature-waybar)
+   ;; (feature-waybar
+   ;;  #:height 30
+   ;;  #:output primary
+   ;;  #:extra-config
+   ;;  `(;; left bar
+   ;;    ((position . top)
+   ;;     (layer . top)
+   ;;     (height . 30)
+   ;;     (name . left)
+   ;;     (output . ,left))
+   ;;    ;; right bar
+   ;;    ((position . top)
+   ;;     (layer . top)
+   ;;     (height . 30)
+   ;;     (name . right)
+   ;;     (output . ,right)))
+   ;;  #:waybar-modules
+   ;;  (append
+   ;;   (waybar-left-modules)
+   ;;   waybar-right-modules
+   ;;   waybar-primary-modules))
+   ))
 
 (define elftower-config
   (rde-config
    (features
     (append
      %base-features
-     elftower-features))))
+     elftower-features
+     ))))

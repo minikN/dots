@@ -122,16 +122,16 @@
     #:email "db@minikn.xyz"
     #:user-groups (list "wheel" "audio" "video"
                         "input" "cdrom" "disk"
-                        "docker" "lp"))
+                        "lp"))
 
    ;;; Mail
-   (feature-mail-settings
-    #:mail-accounts
-    (list (mail-account
-           (id 'personal)
-           (fqda "db@minikn.xyz")
-           (type 'mailbox)
-           (pass-cmd "pass show Mail/mailbox.org/db@minikn.xyz"))))
+   ;; (feature-mail-settings
+   ;;  #:mail-accounts
+   ;;  (list (mail-account
+   ;;         (id 'personal)
+   ;;         (fqda "db@minikn.xyz")
+   ;;         (type 'mailbox)
+   ;;         (pass-cmd "pass show Mail/mailbox.org/db@minikn.xyz"))))
 
    ;;; GnuPG
    (feature-gnupg
@@ -145,7 +145,7 @@
    ;;; Git
    (feature-git
     #:sign-commits? #t
-    #:git-gpg-sign-key "F17DDB98CC3C405C"
+    #:git-sign-key "F17DDB98CC3C405C"
     #:git-send-email? #t)
 
    ;;; Passwords
@@ -165,75 +165,73 @@
 
    ;;; Terminal, shell
    (feature-zsh)
-   (feature-vterm)
+   ;(feature-vterm)
    (feature-alacritty
     #:config-file (local-file "./applications/alacritty/alacritty.yml")
     #:default-terminal? #f)
-   (feature-compile)
+   ;(feature-compile)
 
    ;;; IRC
-   (feature-irc-settings
-    #:irc-accounts
-    (list
-     (irc-account
-      (id 'pounce)
-      (network "irc.minikn.xyz")
-      (bouncer? #t)
-      (nick "minikN"))
-     (irc-account
-      (id 'libera)
-      (network "irc.libera.chat")
-      (nick "minikN"))))
+  ;; (feature-irc-settings
+  ;;   #:irc-accounts
+  ;;   (list
+  ;;    (irc-account
+  ;;     (id 'pounce)
+  ;;     (network "irc.minikn.xyz")
+  ;;     (bouncer? #t)
+  ;;     (nick "minikN"))
+  ;;    (irc-account
+  ;;     (id 'libera)
+  ;;     (network "irc.libera.chat")
+  ;;     (nick "minikN"))))
 
    ;;; Emacs
    (feature-emacs
     #:default-application-launcher? #f)
-   (feature-emacs-appearance
-    #:fringes #f)
-   (feature-emacs-modus-themes)
-   (feature-emacs-completion
-    #:mini-frame? #f)
-   (feature-emacs-vertico)
-   (feature-emacs-erc)
-   (feature-emacs-dired)
-   (feature-emacs-faces)
-   (feature-emacs-git)
-   (feature-emacs-message
-    #:message-signature
-    "Best regards / Mit freundlichen Grüßen,\nDemis Balbach")
-   (feature-emacs-project)
-   (feature-emacs-perspective)
-   (feature-emacs-which-key
-    #:min-height 5)
-   (feature-emacs-evil)
+   ;; (feature-emacs-appearance
+   ;;  #:fringes #f)
+   ;; (feature-emacs-modus-themes)
+   ;; (feature-emacs-completion
+   ;;  #:mini-frame? #f)
+   ;; (feature-emacs-vertico)
+   ;; (feature-emacs-erc)
+   ;; (feature-emacs-dired)
+   ;; (feature-emacs-faces)
+   ;; (feature-emacs-git)
+   ;; (feature-emacs-message
+   ;;  #:message-signature
+   ;;  "Best regards / Mit freundlichen Grüßen,\nDemis Balbach")
+   ;; (feature-emacs-project)
+   ;; (feature-emacs-perspective)
+   ;; (feature-emacs-which-key
+   ;;  #:min-height 5)
+   ;; (feature-emacs-evil)
 
-   ;;; LSP
-   (feature-emacs-corfu)
-   (feature-emacs-eglot)
-   (feature-emacs-geiser)
-   (feature-javascript
-    #:node node-lts)
+   ;; ;;; LSP
+   ;; (feature-emacs-corfu)
+   ;; (feature-emacs-eglot)
+   ;; (feature-emacs-geiser)
+   ;; (feature-javascript
+   ;;  #:node node-lts)
 
    ;; direnv
    (feature-direnv)
 
-   ;;; Mail
-   (feature-notmuch)
-   (feature-msmtp)
-   (feature-isync)
-   (feature-l2md)
+   ;; ;;; Mail
+   ;; (feature-notmuch)
+   ;; (feature-msmtp)
+   ;; (feature-isync)
+   ;; (feature-l2md)
 
    ;; Networking
    (feature-networking)
 
    (feature-ungoogled-chromium
-    #:default-browser? #t)
+   #:default-browser? #t)
 
    ;;; Fonts
    (feature-fonts
-    #:font-monospace (font "Iosevka"
-                           #:size 15
-                           #:weight 'semi-light))
+    #:default-font-size 15)
 
    ;;; Services
    (feature-base-services
@@ -257,7 +255,7 @@
      (templates "$HOME")))
    (feature-bootloader)
 
-   ;;; Sway
+   ;; ;;; Sway
    (feature-sway
     #:xwayland? #t
     #:extra-config
@@ -286,4 +284,5 @@
 
    ;;; Package management
    ;;; Has to come after feature-sway.
-   (feature-nix)))
+   ;;(feature-nix)
+   ))
