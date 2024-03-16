@@ -61,6 +61,7 @@
     "git" "curl" "vim" "make"
 
     "flatpak"
+    "font-awesome" ;; needed for waybar
 
     "pavucontrol"
     "gimp" "thunar"
