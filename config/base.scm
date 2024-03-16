@@ -234,6 +234,8 @@
    (feature-fonts
     #:default-font-size 15)
 
+   (feature-swaynotificationcenter)
+
    ;;; Services
    (feature-base-services
     #:guix-substitute-urls (list "https://bordeaux.guix.gnu.org"
