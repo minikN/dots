@@ -65,7 +65,7 @@
     "pavucontrol"
     "gimp" "thunar"
 
-    "firefox-wayland"
+    "firefox"
 
     "gst-libav"
     "gst-plugins-bad"
