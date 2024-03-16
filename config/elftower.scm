@@ -103,34 +103,13 @@
    ;;; Sway
 
    ;;; Waybar
-   (feature-waybar)
-   ;; (feature-waybar
-   ;;  #:height 30
-   ;;  #:output primary
-   ;;  #:extra-config
-   ;;  `(;; left bar
-   ;;    ((position . top)
-   ;;     (layer . top)
-   ;;     (height . 30)
-   ;;     (name . left)
-   ;;     (output . ,left))
-   ;;    ;; right bar
-   ;;    ((position . top)
-   ;;     (layer . top)
-   ;;     (height . 30)
-   ;;     (name . right)
-   ;;     (output . ,right)))
-   ;;  #:waybar-modules
-   ;;  (append
-   ;;   (waybar-left-modules)
-   ;;   waybar-right-modules
-   ;;   waybar-primary-modules))
-   ))
+   (feature-waybar
+    #:waybar-modules
+    waybar-main-modules)))
 
 (define elftower-config
   (rde-config
    (features
     (append
      %base-features
-     elftower-features
-     ))))
+     elftower-features))))
