@@ -150,6 +150,7 @@
 
    ;;; Passwords
    (feature-password-store
+    #:password-store-directory "/data/abcdw/password-store"
     #:remote-password-store-url "git@gitlab.com:minikN/pass.git")
 
    ;;; Keyboard layout
@@ -165,11 +166,11 @@
 
    ;;; Terminal, shell
    (feature-zsh)
-   ;(feature-vterm)
+   (feature-vterm)
    (feature-alacritty
     #:config-file (local-file "./applications/alacritty/alacritty.yml")
-    #:default-terminal? #f)
-   ;(feature-compile)
+    #:default-terminal? #t)
+   (feature-compile)
 
    ;;; IRC
   ;; (feature-irc-settings
@@ -187,24 +188,24 @@
 
    ;;; Emacs
    (feature-emacs
+    #:default-terminal? #f
     #:default-application-launcher? #f)
-   ;; (feature-emacs-appearance
-   ;;  #:fringes #f)
-   ;; (feature-emacs-modus-themes)
-   ;; (feature-emacs-completion
-   ;;  #:mini-frame? #f)
-   ;; (feature-emacs-vertico)
+   (feature-emacs-appearance
+    #:fringes #f)
+   (feature-emacs-modus-themes)
+   (feature-emacs-completion
+    #:mini-frame? #f)
+   (feature-emacs-vertico)
    ;; (feature-emacs-erc)
-   ;; (feature-emacs-dired)
-   ;; (feature-emacs-faces)
-   ;; (feature-emacs-git)
+   (feature-emacs-dired)
+   (feature-emacs-git)
    ;; (feature-emacs-message
    ;;  #:message-signature
    ;;  "Best regards / Mit freundlichen Grüßen,\nDemis Balbach")
-   ;; (feature-emacs-project)
+   (feature-emacs-project)
    ;; (feature-emacs-perspective)
-   ;; (feature-emacs-which-key
-   ;;  #:min-height 5)
+   (feature-emacs-which-key
+    #:min-height 5)
    ;; (feature-emacs-evil)
 
    ;; ;;; LSP
