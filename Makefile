@@ -26,6 +26,12 @@ repl:
 	${GUIX} repl \
 	-L ../files/emacs/gider/src --listen=tcp:37146
 
+ares-rs:
+	${GUIX} shell guile-next guile-ares-rs \
+	-e '(@ (rde packages package-management) guix-from-channels-lock)' \
+	-- guile \
+	-c "((@ (nrepl server) run-nrepl-server) #:port 7888)"
+
 hb: guix
 	TARGET=${HOST}-he ${GUIX} home \
 	build --cores=${NPROCS} ${CONFIGS}
