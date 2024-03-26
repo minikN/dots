@@ -67,6 +67,7 @@
     "gimp" "thunar"
 
     "firefox"
+    "emacs-arei"
 
     "gst-libav"
     "gst-plugins-bad"
