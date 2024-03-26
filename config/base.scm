@@ -151,7 +151,6 @@
 
    ;;; Passwords
    (feature-password-store
-    #:password-store-directory "/data/abcdw/password-store"
     #:remote-password-store-url "git@gitlab.com:minikN/pass.git")
 
    ;;; Keyboard layout
