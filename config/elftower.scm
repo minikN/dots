@@ -4,6 +4,7 @@
   #:use-module (config features wm)
 
   #:use-module (gnu packages)
+  #:use-module (gnu packages docker)
   #:use-module (gnu services)
   #:use-module (gnu home services)
   #:use-module (gnu home-services wm)
@@ -13,6 +14,7 @@
   #:use-module (nongnu system linux-initrd)
 
   #:use-module (rde features base)
+  #:use-module (rde features docker)
   #:use-module (rde features fontutils)
   #:use-module (rde features linux)
   #:use-module (rde features system)
@@ -100,7 +102,10 @@
    ;;; Backlight
    (feature-backlight)
 
-   ;;; Sway
+   ;;; Docker
+   ;; curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o $HOME/.docker/cli-plugins/docker-compose
+   ;; sudo chmod +x $HOME/.docker/cli-plugins/docker-compose
+   (feature-docker)
 
    ;;; Waybar
    (feature-waybar
