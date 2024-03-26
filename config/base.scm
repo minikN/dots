@@ -173,18 +173,19 @@
    (feature-compile)
 
    ;;; IRC
-  ;; (feature-irc-settings
-  ;;   #:irc-accounts
-  ;;   (list
-  ;;    (irc-account
-  ;;     (id 'pounce)
-  ;;     (network "irc.minikn.xyz")
-  ;;     (bouncer? #t)
-  ;;     (nick "minikN"))
-  ;;    (irc-account
-  ;;     (id 'libera)
-  ;;     (network "irc.libera.chat")
-  ;;     (nick "minikN"))))
+  (feature-irc-settings
+    #:irc-accounts
+    (list
+     (irc-account
+      (id 'soju)
+      (network "irc.minikn.xyz")
+      (bouncer? #t)
+      (nick "minikN"))
+     (irc-account
+      (id 'libera)
+      (network "irc.libera.chat")
+      (bouncer? #f)
+      (nick "minikN"))))
 
    ;;; Emacs
    (feature-emacs
@@ -196,7 +197,7 @@
    (feature-emacs-completion
     #:mini-frame? #f)
    (feature-emacs-vertico)
-   ;; (feature-emacs-erc)
+   (feature-emacs-erc)
    (feature-emacs-dired)
    (feature-emacs-git)
    ;; (feature-emacs-message
