@@ -127,13 +127,13 @@
                         "lp"))
 
    ;;; Mail
-   ;; (feature-mail-settings
-   ;;  #:mail-accounts
-   ;;  (list (mail-account
-   ;;         (id 'personal)
-   ;;         (fqda "db@minikn.xyz")
-   ;;         (type 'mailbox)
-   ;;         (pass-cmd "pass show Mail/mailbox.org/db@minikn.xyz"))))
+   (feature-mail-settings
+    #:mail-accounts
+    (list (mail-account
+           (id 'personal)
+           (fqda "db@minikn.xyz")
+           (type 'mailbox)
+           (pass-cmd "pass show Mail/mailbox.org/db@minikn.xyz"))))
 
    ;;; GnuPG
    (feature-gnupg
@@ -201,9 +201,9 @@
    (feature-emacs-erc)
    (feature-emacs-dired)
    (feature-emacs-git)
-   ;; (feature-emacs-message
-   ;;  #:message-signature
-   ;;  "Best regards / Mit freundlichen Grüßen,\nDemis Balbach")
+   (feature-emacs-message
+    #:message-signature
+    "Best regards / Mit freundlichen Grüßen,\nDemis Balbach")
    (feature-emacs-project)
    ;; (feature-emacs-perspective)
    (feature-emacs-which-key
@@ -221,10 +221,10 @@
    (feature-direnv)
 
    ;; ;;; Mail
-   ;; (feature-notmuch)
-   ;; (feature-msmtp)
-   ;; (feature-isync)
-   ;; (feature-l2md)
+   (feature-notmuch)
+   (feature-msmtp)
+   (feature-isync)
+   (feature-l2md) ;; needed for mbsync -a
 
    ;; Networking
    (feature-networking)
