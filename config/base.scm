@@ -77,7 +77,7 @@
 
     "adwaita-icon-theme"
     "hicolor-icon-theme"
-)))
+    )))
 
 (define %base-system-packages
   '())
@@ -174,7 +174,7 @@
    (feature-compile)
 
    ;;; IRC
-  (feature-irc-settings
+   (feature-irc-settings
     #:irc-accounts
     (list
      (irc-account
@@ -230,7 +230,7 @@
    (feature-networking)
 
    (feature-ungoogled-chromium
-   #:default-browser? #t)
+    #:default-browser? #t)
 
    ;;; Fonts
    (feature-fonts
