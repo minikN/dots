@@ -235,7 +235,8 @@
    (feature-direnv)
 
    ;; ;;; Mail
-   (feature-notmuch)
+   (feature-notmuch
+    #:notmuch-search-oldest-first #f)
    (feature-msmtp)
    (feature-isync)
    (feature-l2md) ;; needed for mbsync -a
