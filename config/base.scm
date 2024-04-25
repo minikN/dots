@@ -69,6 +69,8 @@
     "firefox"
     "emacs-arei"
 
+    "kid3"
+
     "thunar"
     "thunar-volman"
     "thunar-shares-plugin"
