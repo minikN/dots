@@ -9,6 +9,7 @@
 
   #:use-module (gnu home-services ssh)
   #:use-module (gnu packages node)
+  #:use-module (gnu packages emacs)
   #:use-module (gnu services)
 
   #:use-module (guix gexp)
@@ -202,10 +203,11 @@
 
    ;;; Emacs
    (feature-emacs
+    #:emacs emacs-next-pgtk
     #:default-terminal? #f
     #:default-application-launcher? #f)
    (feature-emacs-appearance
-    #:fringes #f)
+    #:fringes 8)
    (feature-emacs-modus-themes)
    (feature-emacs-completion
     #:mini-frame? #f)
