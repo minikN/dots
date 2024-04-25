@@ -7,6 +7,7 @@
 
   #:use-module (gnu packages)
   #:use-module (gnu packages docker)
+  #:use-module (gnu packages linux)
   #:use-module (gnu services)
   #:use-module (gnu home services)
   #:use-module (gnu home-services wm)
@@ -71,13 +72,13 @@
  (feature-kernel
   #:kernel linux
   #:initrd microcode-initrd
-  #:initrd-modules '(
-		     ;"xhci_pci" "ehci_pci" "ahci" "firewire_ohci"
-		     ;"usb_storage" "sd_mod" "sr_mod" "sdhci_pci"
-		     )
-  ; Fix
-  ; #:kernel-modules '("kvm-intel")
-  #:firmware (list linux-firmware sof-firmware))
+  #:kernel-arguments (list "efi_pstore.pstore_disable=1")
+  #:kernel-loadable-modules (list tp-smapi-module)
+  #:firmware
+  (list
+   linux-firmware
+   sof-firmware
+   i915-firmware))
 
    ;;; File systems
   (feature-file-systems
