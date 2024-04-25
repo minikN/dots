@@ -1,4 +1,6 @@
 (define-module (config elftower)
+  #:use-module (config file-systems nas)
+
   #:use-module (config base)
   #:use-module (config packages)
   #:use-module (config features wm)
@@ -46,14 +48,16 @@
      (output ,primary scale 1.5))))
 
 (define elftower-filesystems
-  (list (file-system ;; System partition
-         (device (file-system-label "GUIX"))
-         (mount-point "/")
-         (type "btrfs"))
-        (file-system ;; Boot partition
-         (device (file-system-label "BOOT"))
-         (mount-point "/boot/efi")
-         (type "vfat"))))
+  (append
+   (list (file-system ;; System partition
+          (device (file-system-label "GUIX"))
+          (mount-point "/")
+          (type "btrfs"))
+         (file-system ;; Boot partition
+          (device (file-system-label "BOOT"))
+          (mount-point "/boot/efi")
+          (type "vfat")))
+   %nas-filesystems))
 
 (define elftower-features
   (list
@@ -79,6 +83,10 @@
   (feature-file-systems
    #:file-systems elftower-filesystems)
 
+  (feature-custom-services
+   #:system-services
+   (append %nas-mount-services))
+
    ;;; Packages
   (feature-base-packages
    #:system-packages
@@ -86,31 +94,22 @@
    #:home-packages
    (append %base-home-packages))
 
-   ;; Services
- ;  (feature-custom-services
- ;   #:home-services
- ;   (list
- ;    sway-extra-config-service
- ;    (simple-service
- ;     'set-locpath
- ;     home-environment-variables-service-type
-;      '(("PATH" . "$PATH:$HOME/.local/bin")))))
 
    ;;; HiDPI
-   (feature-hidpi)
+  (feature-hidpi)
 
    ;;; Backlight
-   (feature-backlight)
+  (feature-backlight)
 
    ;;; Docker
-   ;; curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o $HOME/.docker/cli-plugins/docker-compose
-   ;; sudo chmod +x $HOME/.docker/cli-plugins/docker-compose
-   (feature-docker)
+  ;; curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o $HOME/.docker/cli-plugins/docker-compose
+  ;; sudo chmod +x $HOME/.docker/cli-plugins/docker-compose
+  (feature-docker)
 
    ;;; Waybar
-   (feature-waybar
-    #:waybar-modules
-    waybar-main-modules)))
+  (feature-waybar
+   #:waybar-modules
+   waybar-main-modules)))
 
 (define elftower-config
   (rde-config

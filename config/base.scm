@@ -64,10 +64,15 @@
     "font-awesome" ;; needed for waybar
 
     "pavucontrol"
-    "gimp" "thunar"
+    "gimp"
 
     "firefox"
     "emacs-arei"
+
+    "thunar"
+    "thunar-volman"
+    "thunar-shares-plugin"
+    "thunar-archive-plugin"
 
     "gst-libav"
     "gst-plugins-bad"
@@ -80,7 +85,12 @@
     )))
 
 (define %base-system-packages
-  '())
+  (append (strings->packages
+           "gvfs"
+           "cifs-utils"
+           "nfs-utils"
+           "libnfs")))
+
 
 (define ssh-extra-config-service
   (simple-service
