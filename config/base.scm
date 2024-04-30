@@ -112,9 +112,9 @@
            (control-path . "~/.ssh/master-%r@%h:%p")
            (compression . #t))))
        (ssh-host
-        (host "pihole")
+        (host "elftower")
         (options
-         '((host-name . "192.168.178.55")
+         '((host-name . "192.168.178.92")
            (port . 22)
            (control-master . "auto")
            (control-path . "~/.ssh/master-%r@%h:%p")
