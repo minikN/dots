@@ -86,7 +86,9 @@
 
   (feature-custom-services
    #:system-services
-   (append %nas-mount-services))
+   (append %nas-mount-services)
+   #:home-services
+   (list ssh-extra-config-service))
 
    ;;; Packages
   (feature-base-packages
