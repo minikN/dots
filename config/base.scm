@@ -283,7 +283,7 @@
       (assign "[app_id=\"chromium-browser\"]" workspace 1)
       (for_window "[app_id=\"pavucontrol\"]" floating enable, border pixel)
       (for_window "[app_id=\"pinentry-qt\"]" floating enable, border pixel)
-      (for_window "[app_id=\"thunar\"]" floating enable, border pixel)
+      (for_window "[title=\"File Operation Progress\"]" floating enable, border pixel)
       (for_window "[app_id=\"org.kde.krename\"]" floating enable, border pixel)
       (for_window "[app_id=\"org.rncbc.qjackctl\"]" floating enable, border pixel)
       (bindsym $mod+Shift+q kill)
