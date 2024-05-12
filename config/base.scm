@@ -161,7 +161,12 @@
    (feature-git
     #:sign-commits? #t
     #:git-sign-key "F17DDB98CC3C405C"
-    #:git-send-email? #t)
+    #:git-send-email? #t
+    #:extra-config
+    '((format
+       ((to . ~abcdw/rde-devel@lists.sr.ht)
+        (subjectPrefix . "PATCH rde")
+        (coverLetter . auto)))))
 
    ;;; Passwords
    (feature-password-store
