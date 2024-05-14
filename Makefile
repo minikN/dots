@@ -3,7 +3,7 @@
 include profiles.mk
 
 # Also defined in .envrc to make proper guix version available project-wide
-GUIX_PROFILE=target/profiles/guix
+GUIX_PROFILE=target/profiles/guix-local
 GUIX=GUILE_LOAD_PATH="../rde/src:../rde/tests:." GUILE_LOAD_COMPILED_PATH="" ${GUIX_PROFILE}/bin/guix
 
 HOST=$(shell cat /etc/hostname)
