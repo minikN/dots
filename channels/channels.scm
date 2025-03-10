@@ -19,11 +19,11 @@
     "46c1d8bcca674d3a71cd077c52dde9552a89873d"
     (openpgp-fingerprint
      "8141 6036 E81A 5CF7 8F80  1071 ECFC 8398 8B4E 4B9F"))))
-(channel
+ (channel
   (name 'emacs)
-  (url "https://github.com/babariviere/guix-emacs")
+  (url "https://github.com/garrgravarr/guix-emacs")
   (introduction
    (make-channel-introduction
-    "72ca4ef5b572fea10a4589c37264fa35d4564783"
+    "d676ef5f94d2c1bd32f11f084d47dcb1a180fdd4"
     (openpgp-fingerprint
-     "261C A284 3452 FB01 F6DF  6CF4 F9B7 864F 2AB4 6F18")))))
+     "2DDF 9601 2828 6172 F10C  51A4 E80D 3600 684C 71BA")))))
